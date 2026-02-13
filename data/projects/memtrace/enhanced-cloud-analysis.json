@@ -1,207 +1,259 @@
 {
-  "project_name": "memtrace",
-  "analysis_version": "2.0",
-  "analysis_date": "2026-02-13",
   "storage": {
-    "vector_database": {
-      "type": "none",
-      "provider": "无向量数据库 - 核心设计原则",
-      "embedding_dimensions": 0,
-      "estimated_storage_per_1m_vectors": "N/A",
-      "index_type": "N/A",
-      "distance_metric": "N/A",
-      "code_evidence": {
-        "file": "go.mod",
-        "details": "无任何向量数据库或嵌入相关依赖,架构明确采用无嵌入纯文本设计"
-      }
+    "types": [
+      "Time-Series DB",
+      "SQLite"
+    ],
+    "requirements": [
+      "Arc时序数据库",
+      "高性能写入"
+    ],
+    "vector_storage": {
+      "solution": "不需要",
+      "database": "Arc (时序数据库，无向量)",
+      "scale_requirement": "千万级时序事件"
     },
     "primary_database": {
-      "type": "Arc Time-Series Database",
-      "version": "自建Arc DB实例",
-      "usage": "时序记忆存储,Parquet列式存储格式,5-10x压缩率",
-      "connection_pattern": "HTTP API with API key认证,10 idle connections per instance",
-      "code_evidence": {
-        "file": "go.mod + internal/",
-        "details": "通过HTTP API连接Arc DB,端口8000,支持SQL时序查询"
-      }
-    },
-    "graph_database": {
-      "type": "none",
-      "usage": "N/A"
+      "type": "Arc / SQLite",
+      "min_version": "Arc latest",
+      "required_extensions": [],
+      "schema_isolation": "多租户Database隔离",
+      "connection_pool": true
     },
     "cache": {
-      "type": "内存写缓冲",
-      "usage": "100MB写缓冲区(10K records),批量刷新到Arc DB",
-      "ttl_strategy": "基于时间序列的自然过期和归档",
-      "code_evidence": {
-        "file": "internal/",
-        "details": "Go内存缓冲区实现写批处理,1秒flush间隔"
-      }
+      "type": "内存缓存",
+      "required_modules": [],
+      "persistence_required": false
     },
     "object_storage": {
-      "type": "Parquet文件备份",
-      "usage": "Arc DB的Parquet文件可备份到S3/GCS/OBS"
+      "required": false,
+      "use_case": [],
+      "s3_compatible": false
     },
     "data_scale": {
-      "estimated_size": "<1GB (1K memories/day) 到 100GB-1TB (1M+ memories/day)",
-      "growth_rate": "线性增长,Parquet压缩5-10x",
-      "retention_policy": "时间分区 + 归档策略,>100M记忆需要时间分区"
+      "estimated_total": "10GB-500GB",
+      "per_user_avg": "100MB",
+      "growth_rate": "日增1GB (时序事件)",
+      "max_single_record": "1MB"
     },
     "performance": {
-      "read_latency": "10-200ms (Arc SQL查询)",
-      "write_latency": "<100ms (缓冲写入)",
-      "throughput": "500-1000 writes/sec/instance, 可水平扩展到10K/sec"
+      "vector_search_latency": "不适用",
+      "qps_target": "10000+",
+      "p95_latency": "<50ms",
+      "concurrent_connections": 5000
     }
   },
   "compute": {
+    "embedding": false,
+    "gpu_needed": false,
+    "estimated_requirements": "Go高性能服务，CPU密集型",
     "cpu": {
-      "minimum": "2 vCPUs",
-      "recommended": "4-8 vCPUs",
-      "workload_type": "I/O-bound + 轻量CPU(Go运行时,写批处理)",
-      "code_evidence": {
-        "file": "Dockerfile",
-        "details": "Go 1.25 Alpine构建,CGO_ENABLED=1(SQLite依赖),最终镜像极小"
-      }
+      "min_vcpu": 2,
+      "recommended_vcpu": 4,
+      "workload_type": "CPU密集型",
+      "instruction_set_requirements": []
     },
     "memory": {
-      "minimum": "512MB",
-      "recommended": "2-4GB",
-      "peak_usage_scenario": "100MB写缓冲区(10K records) + Go运行时"
+      "min_gb": 2,
+      "recommended_gb": 8,
+      "memory_intensive_ops": [
+        "时序数据批量写入",
+        "查询缓存"
+      ],
+      "oom_risk": "低"
     },
     "gpu": {
       "required": false,
-      "usage": "完全不使用GPU - 零ML工作负载",
-      "cuda_dependencies": [],
-      "gpu_code_locations": [],
-      "frameworks": [],
-      "code_evidence": {
-        "file": "go.mod",
-        "details": "纯Go语言项目,依赖仅有fiber/sqlite3/viper/zerolog/msgpack/crypto,无任何ML/GPU相关依赖"
+      "recommended": false,
+      "use_case": "不需要",
+      "cuda_dependency": {
+        "has_direct_cuda": false,
+        "cuda_version": null,
+        "cudnn_required": false,
+        "tensorrt_used": false,
+        "custom_cuda_kernels": false,
+        "gpu_libraries": []
       }
     },
     "ascend_npu": {
-      "compatibility": "not_applicable",
-      "migration_effort": "none",
-      "analysis": "项目完全不涉及GPU/NPU计算。Go语言实现,无ML工作负载,无嵌入计算,无模型推理。架构核心设计原则就是避免嵌入和向量计算。",
-      "required_changes": [],
-      "cann_toolkit_version": "N/A",
-      "torch_ascend_support": "N/A - Go语言项目,无torch依赖",
-      "alternative_solutions": [
-        "无需NPU适配,项目设计上就是LLM不可知的纯文本时序记忆"
-      ]
+      "compatibility_level": "不适用(无GPU需求)",
+      "framework_analysis": {
+        "framework": "Go",
+        "framework_version": "1.25+",
+        "ascend_support": true,
+        "ascend_version": "N/A"
+      },
+      "migration": {
+        "effort_level": "低(1-2天)",
+        "code_changes_required": [],
+        "testing_effort": "无需特殊测试"
+      },
+      "blockers": [],
+      "performance_expectation": {
+        "expected_vs_gpu": "不适用",
+        "bottlenecks": []
+      },
+      "recommendation": "Go服务无GPU依赖，直接部署到华为云ECS或CCI即可。"
     },
     "scalability": {
-      "horizontal": true,
-      "auto_scaling_support": true,
-      "scaling_strategy": "无状态设计,负载均衡;1实例500-1000 writes/sec,3实例1500-3000,10实例5000-10000(需Arc集群)",
-      "code_evidence": {
-        "file": "Dockerfile + architecture",
-        "details": "Stateless Go binary, load-balanced, horizontal scaling with write throughput vertical scaling"
+      "horizontal_scaling": true,
+      "stateless": true,
+      "session_persistence_required": false,
+      "auto_scaling": {
+        "supported": true,
+        "trigger_metrics": [
+          "CPU",
+          "QPS"
+        ],
+        "scale_down_safe": true
       }
     },
     "serverless": {
-      "compatible": false,
-      "limitations": "需要持久状态(SQLite元数据)和Arc DB连接,不适合Serverless",
-      "recommended_services": ["ECS/CCE容器部署"]
+      "suitable": true,
+      "cold_start_tolerance": "<1s",
+      "cold_start_actual": "<500ms",
+      "state_management": "DB状态",
+      "reasons": [
+        "Go编译型语言启动快",
+        "无状态设计"
+      ]
     },
     "concurrency": {
-      "model": "Go goroutines (高并发原生支持)",
-      "estimated_concurrent_users": "500-1000 concurrent writes per instance",
-      "bottlenecks": "Arc DB写入吞吐量, SQLite单文件限制(HA需迁移PostgreSQL)"
+      "model": "异步",
+      "async_framework": "Go goroutines",
+      "message_queue": {
+        "required": false
+      },
+      "long_connection": {
+        "websocket": false,
+        "sse": true,
+        "streaming": false
+      }
     }
   },
   "external_services": {
-    "llm_providers": [],
-    "other_apis": [
-      {
-        "name": "Arc Database",
-        "usage": "核心时序存储后端",
-        "required": true
-      }
-    ]
+    "llm": {
+      "required_providers": [
+        "任意LLM"
+      ],
+      "optional_providers": [],
+      "embedding_models": {
+        "default": "不需要",
+        "alternatives": [],
+        "local_option": false
+      },
+      "llm_models": {
+        "default": "可选任意",
+        "alternatives": [],
+        "local_option": true
+      },
+      "cost_optimization": [
+        "时序存储压缩",
+        "批量写入"
+      ]
+    },
+    "object_storage": {
+      "required": false
+    }
   },
   "deployment": {
+    "complexity": 4,
+    "containerized": true,
+    "orchestration": [
+      "Kubernetes",
+      "Docker"
+    ],
     "docker": {
-      "has_dockerfile": true,
-      "base_image": "golang:1.25-alpine (build) + alpine:3.21 (runtime)",
-      "multi_stage": true,
-      "size_estimate": "~20MB (Go static binary + Alpine)",
-      "code_evidence": {
-        "file": "Dockerfile",
-        "details": "Multi-stage build, CGO_ENABLED=1 for SQLite, exposes port 9100, minimal Alpine runtime"
-      }
+      "available": true,
+      "image_size": "20MB",
+      "multi_stage_build": true,
+      "base_image": "alpine"
     },
     "kubernetes": {
-      "ready": true,
-      "helm_chart": false,
-      "resource_limits": {
-        "cpu": "2-8 cores",
-        "memory": "2-4Gi",
-        "gpu": "none"
-      },
-      "notes": "需要PersistentVolume for SQLite, Arc DB需独立部署"
+      "required": false,
+      "recommended": true,
+      "helm_chart_available": false,
+      "manifests_available": false,
+      "operators_available": false,
+      "min_k8s_version": "1.24"
     },
     "configuration": {
-      "env_vars": ["ARC_URL", "ARC_API_KEY", "API_KEY"],
-      "config_files": ["memtrace.toml"],
-      "secrets_management": "TOML配置 + 环境变量, 推荐AWS Secrets Manager/GCP Secret Manager/Vault"
+      "env_vars_count": 8,
+      "secrets_count": 2,
+      "config_files": [
+        "memtrace.toml"
+      ],
+      "complexity_level": "中等"
     },
     "observability": {
-      "logging": "结构化JSON日志到stdout (zerolog)",
-      "metrics": "健康端点 /health, /ready + 自定义指标",
-      "tracing": "无内置分布式追踪",
-      "health_checks": "/health (liveness), /ready (Arc connectivity)"
+      "metrics_export": true,
+      "structured_logging": true,
+      "tracing_support": false,
+      "health_checks": true
+    },
+    "upgrade": {
+      "rolling_update_support": true,
+      "blue_green_support": true,
+      "migration_scripts_available": false,
+      "backward_compatible": true
     }
   },
   "huawei_cloud": {
+    "overall_difficulty": "中等",
     "recommended_services": {
-      "compute": {
-        "service": "CCE (Cloud Container Engine) 或 ECS",
-        "spec": "通用计算型 4vCPU/4GB RAM",
-        "justification": "Go微服务,低资源消耗,高并发能力"
-      },
       "database": {
-        "service": "ECS自建Arc DB + GaussDB(for PostgreSQL)替代SQLite",
-        "spec": "Arc DB: 4vCPU/8GB RAM; PostgreSQL: 2vCPU/4GB(替代SQLite实现HA)",
-        "justification": "Arc DB需自建(非华为云托管服务);SQLite需迁移PostgreSQL实现高可用",
-        "limitations": "Arc DB为非主流数据库,华为云无托管服务,需自行运维",
-        "alternatives": [
-          "GaussDB(for Influx)替代Arc DB(需适配层)",
-          "CSS Elasticsearch作为时序查询替代",
-          "IoTDA数据分析作为时序存储"
-        ]
+        "primary": "GaussDB(for Influx) 时序数据库 或 自建Arc on ECS",
+        "vector_solution": "不需要"
       },
-      "storage": {
-        "service": "EVS SSD + OBS",
-        "justification": "EVS for SQLite/Arc持久化, OBS for Parquet备份"
+      "cache": "DCS Redis (可选，会话缓存)",
+      "compute": {
+        "primary": "CCE容器引擎 (K8s)",
+        "ai_acceleration": "不需要",
+        "auto_scaling": "CCE HPA"
       },
-      "networking": {
-        "service": "VPC + ELB",
-        "justification": "内网通信,端口9100 HTTP, 端口8000 Arc内部通信"
+      "middleware": {
+        "message_queue": "可选DMS Kafka (事件流)"
+      },
+      "network": {
+        "vpc": true,
+        "elb": true,
+        "nat": false
       }
     },
     "cost_estimation": {
-      "monthly": {
-        "small": "$20-50 (ECS 2vCPU + EVS 10GB)",
-        "medium": "$150-300 (2x ECS + ECS for Arc + ELB)",
-        "large": "$500-1500 (CCE集群 + Arc集群 + GaussDB)"
+      "small_scale": {
+        "description": "1000 agents，5000 events/min",
+        "monthly_cost": "¥2,500-4,000",
+        "breakdown": {
+          "ECS 2核4G (Arc数据库)": "¥400",
+          "CCE节点 2核4G x 2": "¥1,200",
+          "ELB": "¥300",
+          "DCS Redis 2GB": "¥200",
+          "VPC/带宽": "¥400"
+        }
       },
-      "notes": "极低基础设施成本,无LLM API费用,无嵌入计算费用。主要成本为计算和存储"
+      "medium_scale": {
+        "description": "1万 agents，5万 events/min",
+        "monthly_cost": "¥10,000-15,000",
+        "breakdown": {
+          "GaussDB(for Influx) 通用型": "¥3,500",
+          "CCE节点 4核8G x 4": "¥4,800",
+          "ELB (性能型)": "¥800",
+          "DCS Redis 8GB": "¥600",
+          "VPC/带宽": "¥1,000",
+          "DMS Kafka (可选)": "¥1,500"
+        }
+      }
     },
-    "special_requirements": {
-      "arc_db": "需自建Arc DB,华为云无托管版本,建议容器化部署在CCE",
-      "sqlite_ha": "SQLite单文件不支持HA,生产环境建议迁移到GaussDB(for PostgreSQL)",
-      "persistent_volume": "需要PersistentVolume for SQLite数据",
-      "network_ports": "9100 (API), 8000 (Arc内部通信)"
-    },
+    "special_requirements": [
+      "需要部署Arc时序数据库(开源项目)到ECS或使用GaussDB(for Influx)替代",
+      "Arc数据库需要SSD存储以保证写入性能"
+    ],
     "architecture_recommendations": [
-      "使用CCE部署Memtrace容器和Arc DB容器",
-      "将SQLite替换为GaussDB(for PostgreSQL)实现高可用",
-      "使用OBS存储Parquet备份文件",
-      "配置ELB for API负载均衡(端口9100)",
-      "使用VPC Peering连接Memtrace和Arc DB",
-      "利用AOM(应用运维管理)收集结构化JSON日志",
-      "考虑使用GaussDB(for Influx)替代Arc DB减少运维复杂度"
+      "时序数据库可用GaussDB(for Influx)替代Arc，获得托管服务优势",
+      "Go服务编译后体积小、启动快，适合容器化部署",
+      "建议使用CCE部署，配合HPA实现自动伸缩",
+      "高频写入场景建议使用SSD云盘或本地SSD实例"
     ]
   }
 }

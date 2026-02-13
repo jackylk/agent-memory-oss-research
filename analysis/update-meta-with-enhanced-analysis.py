@@ -86,6 +86,8 @@ def main():
         'mem0', 'letta', 'hindsight',  # 试点
         'A-MEM', 'graphiti', 'cognee', 'supermemory', 'MemOS',  # 批次1
         'Memary', 'beads', 'claude-mem', 'easymemory', 'LightMem',  # 批次2
+        'langgraph-redis', 'memory-agent', 'memtrace', 'memU', 'SimpleMem', 'general-agentic-memory',  # 批次5
+        'Memori', 'ReMe', 'Backboard-Locomo-Benchmark', 'LongMemEval', 'MemoryAgentBench', 'locomo',  # 批次6
     ]
 
     print("📊 开始更新项目的 meta.json...\n")

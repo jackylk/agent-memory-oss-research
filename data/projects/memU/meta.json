@@ -60,6 +60,218 @@
         "24/7 Uptime",
         "Kubernetes"
       ]
+    },
+    "storage_detail": {
+      "vector_storage": {
+        "solution": "PostgreSQL+pgvector",
+        "database": "pgvector",
+        "vector_dimension": 1536,
+        "index_type": "HNSW",
+        "scale_requirement": "百万级"
+      },
+      "primary_database": {
+        "type": "PostgreSQL",
+        "min_version": "14.0",
+        "required_extensions": [
+          "pgvector"
+        ],
+        "schema_isolation": "多租户Schema隔离",
+        "connection_pool": true
+      },
+      "graph_database": {},
+      "cache": {
+        "type": "内存缓存",
+        "required_modules": [],
+        "persistence_required": false
+      },
+      "data_scale": {
+        "estimated_total": "10GB-100GB",
+        "per_user_avg": "50MB",
+        "growth_rate": "日增200MB",
+        "max_single_record": "5MB"
+      },
+      "performance": {
+        "vector_search_latency": "<100ms",
+        "qps_target": "2000",
+        "p95_latency": "<200ms",
+        "concurrent_connections": 500
+      }
+    },
+    "compute_detail": {
+      "cpu": {
+        "min_vcpu": 2,
+        "recommended_vcpu": 4,
+        "workload_type": "均衡型",
+        "instruction_set_requirements": [
+          "AVX2"
+        ]
+      },
+      "memory": {
+        "min_gb": 4,
+        "recommended_gb": 8,
+        "memory_intensive_ops": [
+          "Embedding模型",
+          "向量索引",
+          "Rust核心组件"
+        ],
+        "oom_risk": "中"
+      },
+      "gpu": {
+        "required": false,
+        "recommended": true,
+        "gpu_models": [
+          "T4",
+          "L4"
+        ],
+        "use_case": "仅推理",
+        "vram_requirement": "4GB",
+        "cuda_dependency": {
+          "has_direct_cuda": false,
+          "cuda_version": null,
+          "cudnn_required": false,
+          "tensorrt_used": false,
+          "custom_cuda_kernels": false,
+          "gpu_libraries": []
+        }
+      },
+      "scalability": {
+        "horizontal_scaling": true,
+        "stateless": true,
+        "session_persistence_required": false,
+        "auto_scaling": {
+          "supported": true,
+          "trigger_metrics": [
+            "CPU",
+            "Memory",
+            "QPS"
+          ],
+          "scale_down_safe": true
+        }
+      },
+      "serverless": {
+        "suitable": false,
+        "cold_start_tolerance": "<5s",
+        "cold_start_actual": "5-8s (Rust+Python混合启动)",
+        "state_management": "DB状态",
+        "reasons": [
+          "Rust核心需要编译时优化",
+          "proactive agent需要常驻进程"
+        ]
+      },
+      "concurrency": {
+        "model": "异步",
+        "async_framework": "asyncio",
+        "message_queue": {
+          "required": false
+        },
+        "long_connection": {
+          "websocket": true,
+          "sse": true,
+          "streaming": true
+        }
+      }
+    },
+    "ascend_npu": {
+      "compatibility_level": "容易适配",
+      "framework_analysis": {
+        "framework": "PyTorch (via lazyllm)",
+        "framework_version": "2.x",
+        "ascend_support": true,
+        "ascend_version": "CANN 8.0"
+      },
+      "migration": {
+        "effort_level": "低(1-2天)",
+        "code_changes_required": [
+          "lazyllm框架配置NPU后端",
+          "验证embedding推理"
+        ],
+        "testing_effort": "基础推理测试"
+      },
+      "blockers": [],
+      "performance_expectation": {
+        "expected_vs_gpu": "相当",
+        "bottlenecks": [
+          "Rust核心已优化，瓶颈主要在embedding"
+        ]
+      },
+      "recommendation": "使用ModelArts部署embedding模型到昇腾NPU，Rust核心组件CPU即可。整体迁移成本低。"
+    },
+    "external_services": {
+      "llm": {
+        "required_providers": [
+          "OpenAI",
+          "本地模型"
+        ],
+        "optional_providers": [
+          "Anthropic",
+          "自定义"
+        ],
+        "embedding_models": {
+          "default": "OpenAI text-embedding-3-small",
+          "alternatives": [
+            "BGE",
+            "本地模型"
+          ],
+          "local_option": true
+        },
+        "llm_models": {
+          "default": "gpt-4o-mini",
+          "alternatives": [
+            "本地模型"
+          ],
+          "local_option": true
+        },
+        "cost_optimization": [
+          "Proactive预测减少LLM调用",
+          "Memory缓存",
+          "本地embedding"
+        ]
+      },
+      "object_storage": {
+        "required": false
+      }
+    },
+    "deployment_detail": {
+      "complexity": 6,
+      "containerized": true,
+      "orchestration": [
+        "Docker",
+        "Kubernetes"
+      ],
+      "docker": {
+        "available": false,
+        "image_size": "1.2GB",
+        "multi_stage_build": true,
+        "base_image": "rust:1.75 + python:3.13"
+      },
+      "kubernetes": {
+        "required": false,
+        "recommended": true,
+        "helm_chart_available": false,
+        "manifests_available": false,
+        "operators_available": false,
+        "min_k8s_version": "1.24"
+      },
+      "configuration": {
+        "env_vars_count": 12,
+        "secrets_count": 4,
+        "config_files": [
+          "config.yaml"
+        ],
+        "complexity_level": "中等"
+      },
+      "observability": {
+        "metrics_export": true,
+        "structured_logging": true,
+        "tracing_support": false,
+        "health_checks": true
+      },
+      "upgrade": {
+        "rolling_update_support": true,
+        "blue_green_support": true,
+        "migration_scripts_available": true,
+        "backward_compatible": true
+      }
     }
   },
   "categories": {
@@ -174,5 +386,65 @@
       "name": "层次化文件系统记忆",
       "description": "采用分布式目录结构组织记忆(类文件系统),结合交叉引用和符号链接实现直观的多层级知识组织,通过双模混合检索(快速向量嵌入+LLM深度推理)平衡成本和准确性,支持多模态资源(文本、文档、图像、音频、视频)统一处理。"
     }
-  ]
+  ],
+  "huawei_cloud": {
+    "overall_difficulty": "中等",
+    "recommended_services": {
+      "database": {
+        "primary": "RDS PostgreSQL 14 (增强版)",
+        "vector_solution": "RDS PostgreSQL + pgvector插件",
+        "graph": "不需要"
+      },
+      "cache": "DCS Redis 6.0 (可选)",
+      "compute": {
+        "primary": "CCE容器引擎 (K8s)",
+        "ai_acceleration": "ModelArts在线服务 (embedding)",
+        "auto_scaling": "CCE HPA"
+      },
+      "network": {
+        "vpc": true,
+        "elb": true,
+        "nat": false
+      }
+    },
+    "cost_estimation": {
+      "small_scale": {
+        "description": "500用户，proactive agent常驻",
+        "monthly_cost": "¥4,000-6,500",
+        "breakdown": {
+          "RDS PostgreSQL 2核4G": "¥800",
+          "CCE节点 2核4G x 2": "¥1,200",
+          "ModelArts推理 (embedding)": "¥800",
+          "ELB": "¥300",
+          "VPC/带宽": "¥500",
+          "LLM API": "¥1,000-2,500"
+        }
+      },
+      "medium_scale": {
+        "description": "5000用户，高频proactive",
+        "monthly_cost": "¥15,000-22,000",
+        "breakdown": {
+          "RDS PostgreSQL 4核8G (高可用)": "¥2,500",
+          "CCE节点 4核8G x 4": "¥4,800",
+          "ModelArts推理 (多实例)": "¥2,500",
+          "DCS Redis 4GB": "¥400",
+          "ELB (性能型)": "¥800",
+          "VPC/带宽": "¥1,000",
+          "LLM API": "¥5,000-10,000"
+        }
+      }
+    },
+    "special_requirements": [
+      "需在RDS PostgreSQL上启用pgvector插件",
+      "Rust编译需要在容器镜像中完成",
+      "Proactive agent需要常驻进程，不适合Serverless"
+    ],
+    "architecture_recommendations": [
+      "使用CCE托管K8s集群，部署常驻proactive agent服务",
+      "Embedding推理迁移到ModelArts昇腾服务降低成本",
+      "建议使用盘古大模型替代OpenAI API节省成本",
+      "RDS PostgreSQL启用pgvector后性能优异，支持百万级向量",
+      "Proactive预测可配置定时任务或事件触发"
+    ]
+  }
 }

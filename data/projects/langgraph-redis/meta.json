@@ -55,6 +55,251 @@
         "Docker",
         "Redis cluster"
       ]
+    },
+    "storage_detail": {
+      "vector_storage": {
+        "solution": "PostgreSQL+pgvector",
+        "database": "Redis + RediSearch (内置向量)",
+        "vector_dimension": 1536,
+        "index_type": "HNSW",
+        "scale_requirement": "百万级"
+      },
+      "primary_database": {
+        "type": "Redis",
+        "min_version": "8.0",
+        "required_extensions": [
+          "RedisJSON",
+          "RediSearch",
+          "RedisGraph"
+        ],
+        "schema_isolation": "单租户",
+        "connection_pool": true
+      },
+      "graph_database": {
+        "type": "内置Redis数据结构",
+        "required": false,
+        "use_case": "Checkpoint依赖关系和会话状态图",
+        "complexity": "简单"
+      },
+      "cache": {
+        "type": "Redis",
+        "min_version": "8.0",
+        "required_modules": [
+          "RedisJSON",
+          "RediSearch"
+        ],
+        "persistence_required": true,
+        "persistence_strategy": "AOF+RDB混合"
+      },
+      "data_scale": {
+        "estimated_total": "10GB-100GB",
+        "per_user_avg": "50MB",
+        "growth_rate": "日增500MB",
+        "max_single_record": "10MB"
+      },
+      "performance": {
+        "vector_search_latency": "<100ms",
+        "qps_target": "5000+",
+        "p95_latency": "<150ms",
+        "concurrent_connections": 1000
+      }
+    },
+    "compute_detail": {
+      "cpu": {
+        "min_vcpu": 2,
+        "recommended_vcpu": 4,
+        "workload_type": "IO密集型",
+        "instruction_set_requirements": [
+          "AVX2"
+        ]
+      },
+      "memory": {
+        "min_gb": 4,
+        "recommended_gb": 8,
+        "memory_intensive_ops": [
+          "sentence-transformers模型加载",
+          "Redis连接池",
+          "向量索引缓存"
+        ],
+        "oom_risk": "中"
+      },
+      "gpu": {
+        "required": false,
+        "recommended": true,
+        "gpu_models": [
+          "T4",
+          "L4"
+        ],
+        "use_case": "仅推理",
+        "vram_requirement": "4GB",
+        "cuda_dependency": {
+          "has_direct_cuda": false,
+          "cuda_version": null,
+          "cudnn_required": false,
+          "tensorrt_used": false,
+          "custom_cuda_kernels": false,
+          "gpu_libraries": []
+        }
+      },
+      "scalability": {
+        "horizontal_scaling": true,
+        "stateless": true,
+        "session_persistence_required": false,
+        "auto_scaling": {
+          "supported": true,
+          "trigger_metrics": [
+            "CPU",
+            "QPS",
+            "Memory"
+          ],
+          "scale_down_safe": true
+        }
+      },
+      "serverless": {
+        "suitable": true,
+        "cold_start_tolerance": "<5s",
+        "cold_start_actual": "3-5s (模型加载)",
+        "state_management": "Redis状态",
+        "reasons": [
+          "无状态设计",
+          "所有数据存储在Redis",
+          "适合函数计算模式"
+        ]
+      },
+      "concurrency": {
+        "model": "异步",
+        "async_framework": "asyncio",
+        "message_queue": {
+          "required": false,
+          "systems": [],
+          "use_case": null
+        },
+        "long_connection": {
+          "websocket": false,
+          "sse": false,
+          "streaming": false
+        }
+      }
+    },
+    "ascend_npu": {
+      "compatibility_level": "容易适配",
+      "framework_analysis": {
+        "framework": "PyTorch",
+        "framework_version": "2.x (via sentence-transformers)",
+        "ascend_support": true,
+        "ascend_version": "CANN 8.0"
+      },
+      "migration": {
+        "effort_level": "低(1-2天)",
+        "code_changes_required": [
+          "使用torch_npu替换torch.cuda调用(如有)",
+          "验证sentence-transformers在NPU上运行"
+        ],
+        "testing_effort": "基础embedding推理测试即可"
+      },
+      "blockers": [],
+      "performance_expectation": {
+        "expected_vs_gpu": "相当",
+        "bottlenecks": [
+          "首次模型加载时间略长"
+        ]
+      },
+      "recommendation": "该项目主要依赖sentence-transformers做embedding，PyTorch 2.x已有昇腾NPU支持。迁移成本极低，建议直接使用ModelArts推理服务部署embedding模型。"
+    },
+    "external_services": {
+      "llm": {
+        "required_providers": [
+          "OpenAI",
+          "Anthropic",
+          "本地模型"
+        ],
+        "optional_providers": [
+          "Azure OpenAI",
+          "Google Vertex AI"
+        ],
+        "embedding_models": {
+          "default": "sentence-transformers/all-MiniLM-L6-v2",
+          "alternatives": [
+            "OpenAI text-embedding-ada-002",
+            "BGE-large-zh"
+          ],
+          "local_option": true
+        },
+        "llm_models": {
+          "default": "gpt-4",
+          "alternatives": [
+            "claude-3-sonnet",
+            "gpt-3.5-turbo"
+          ],
+          "local_option": true
+        },
+        "cost_optimization": [
+          "Embedding本地化",
+          "Checkpoint缓存",
+          "向量相似度去重"
+        ]
+      },
+      "object_storage": {
+        "required": false,
+        "use_case": [
+          "可选：大型Checkpoint Blob外部存储"
+        ]
+      },
+      "search_service": {
+        "type": "RediSearch (内置)",
+        "required": true
+      },
+      "monitoring": {
+        "apm": [
+          "OpenTelemetry兼容"
+        ],
+        "logging": [
+          "结构化JSON日志"
+        ]
+      }
+    },
+    "deployment_detail": {
+      "complexity": 5,
+      "containerized": true,
+      "orchestration": [
+        "Kubernetes",
+        "Docker Compose"
+      ],
+      "docker": {
+        "available": false,
+        "image_size": "800MB",
+        "multi_stage_build": true,
+        "base_image": "python:3.11-slim"
+      },
+      "kubernetes": {
+        "required": false,
+        "recommended": true,
+        "helm_chart_available": false,
+        "manifests_available": false,
+        "operators_available": false,
+        "min_k8s_version": "1.24"
+      },
+      "configuration": {
+        "env_vars_count": 10,
+        "secrets_count": 3,
+        "config_files": [
+          "redis连接配置"
+        ],
+        "complexity_level": "简单",
+        "external_config_service": null
+      },
+      "observability": {
+        "metrics_export": false,
+        "structured_logging": true,
+        "tracing_support": false,
+        "health_checks": true
+      },
+      "upgrade": {
+        "rolling_update_support": true,
+        "blue_green_support": true,
+        "migration_scripts_available": true,
+        "backward_compatible": true
+      }
     }
   },
   "categories": {
@@ -192,5 +437,69 @@
       "name": "语义缓存与成本优化",
       "description": "基于向量相似度的LLM响应缓存和工具结果缓存中间件,30%+缓存命中率可节省30%+ LLM费用,支持自适应集群检测(单机、Cluster、Azure/Enterprise代理),避免CROSSSLOT错误,单一代码库兼容所有Redis部署模式。"
     }
-  ]
+  ],
+  "huawei_cloud": {
+    "overall_difficulty": "容易",
+    "recommended_services": {
+      "database": {
+        "primary": "DCS Redis 7.0 企业版 (内存型)",
+        "vector_solution": "DCS Redis 7.0自带RediSearch向量",
+        "graph": "不需要"
+      },
+      "cache": "DCS Redis 7.0 (主备版，持久化AOF+RDB)",
+      "object_storage": "OBS (可选，用于大Blob)",
+      "compute": {
+        "primary": "CCI云容器实例 (Serverless)",
+        "ai_acceleration": "ModelArts在线服务 (可选，加速embedding)",
+        "auto_scaling": "CCI自动伸缩"
+      },
+      "middleware": {
+        "message_queue": "不需要",
+        "api_gateway": "APIG (可选)"
+      },
+      "network": {
+        "vpc": true,
+        "elb": true,
+        "nat": false
+      }
+    },
+    "cost_estimation": {
+      "small_scale": {
+        "description": "1000用户，2000 QPS",
+        "monthly_cost": "¥3,500-6,000",
+        "breakdown": {
+          "DCS Redis 企业版 8GB": "¥1,200",
+          "CCI容器实例 (2核4G x 2)": "¥1,800",
+          "ELB负载均衡": "¥300",
+          "VPC/带宽": "¥500",
+          "ModelArts推理(可选)": "¥700"
+        }
+      },
+      "medium_scale": {
+        "description": "1万用户，1万 QPS",
+        "monthly_cost": "¥12,000-18,000",
+        "breakdown": {
+          "DCS Redis 集群版 32GB": "¥4,800",
+          "CCI容器实例 (4核8G x 4)": "¥7,200",
+          "ELB负载均衡 (性能型)": "¥800",
+          "VPC/带宽 (增强)": "¥1,500",
+          "OBS存储 (100GB)": "¥50",
+          "ModelArts推理": "¥1,500",
+          "监控APM": "¥500"
+        }
+      }
+    },
+    "special_requirements": [
+      "需确认DCS Redis企业版已启用RediSearch和RedisJSON模块",
+      "建议使用Redis 7.0+版本以获得完整模块支持",
+      "embedding模型可部署到ModelArts在线服务以提升性能"
+    ],
+    "architecture_recommendations": [
+      "采用CCI Serverless部署，按需弹性伸缩降低成本",
+      "使用DCS Redis集群版保证高可用和高性能",
+      "embedding推理可选ModelArts加速，也可用CPU推理节省成本",
+      "生产环境建议启用Redis持久化AOF+RDB保证数据安全",
+      "通过APIG统一API网关，便于流量管控和监控"
+    ]
+  }
 }

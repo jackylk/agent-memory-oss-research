@@ -226,7 +226,191 @@
       "LLM-agnostic (works with any model without re-indexing)",
       "Temporal-first (time-series DB optimized for 'what happened when')",
       "50-70% cheaper than vector solutions"
-    ]
+    ],
+    "storage_detail": {
+      "vector_storage": {
+        "solution": "不需要",
+        "database": "Arc (时序数据库，无向量)",
+        "scale_requirement": "千万级时序事件"
+      },
+      "primary_database": {
+        "type": "Arc / SQLite",
+        "min_version": "Arc latest",
+        "required_extensions": [],
+        "schema_isolation": "多租户Database隔离",
+        "connection_pool": true
+      },
+      "graph_database": {},
+      "cache": {
+        "type": "内存缓存",
+        "required_modules": [],
+        "persistence_required": false
+      },
+      "data_scale": {
+        "estimated_total": "10GB-500GB",
+        "per_user_avg": "100MB",
+        "growth_rate": "日增1GB (时序事件)",
+        "max_single_record": "1MB"
+      },
+      "performance": {
+        "vector_search_latency": "不适用",
+        "qps_target": "10000+",
+        "p95_latency": "<50ms",
+        "concurrent_connections": 5000
+      }
+    },
+    "compute_detail": {
+      "cpu": {
+        "min_vcpu": 2,
+        "recommended_vcpu": 4,
+        "workload_type": "CPU密集型",
+        "instruction_set_requirements": []
+      },
+      "memory": {
+        "min_gb": 2,
+        "recommended_gb": 8,
+        "memory_intensive_ops": [
+          "时序数据批量写入",
+          "查询缓存"
+        ],
+        "oom_risk": "低"
+      },
+      "gpu": {
+        "required": false,
+        "recommended": false,
+        "use_case": "不需要",
+        "cuda_dependency": {
+          "has_direct_cuda": false,
+          "cuda_version": null,
+          "cudnn_required": false,
+          "tensorrt_used": false,
+          "custom_cuda_kernels": false,
+          "gpu_libraries": []
+        }
+      },
+      "scalability": {
+        "horizontal_scaling": true,
+        "stateless": true,
+        "session_persistence_required": false,
+        "auto_scaling": {
+          "supported": true,
+          "trigger_metrics": [
+            "CPU",
+            "QPS"
+          ],
+          "scale_down_safe": true
+        }
+      },
+      "serverless": {
+        "suitable": true,
+        "cold_start_tolerance": "<1s",
+        "cold_start_actual": "<500ms",
+        "state_management": "DB状态",
+        "reasons": [
+          "Go编译型语言启动快",
+          "无状态设计"
+        ]
+      },
+      "concurrency": {
+        "model": "异步",
+        "async_framework": "Go goroutines",
+        "message_queue": {
+          "required": false
+        },
+        "long_connection": {
+          "websocket": false,
+          "sse": true,
+          "streaming": false
+        }
+      }
+    },
+    "ascend_npu": {
+      "compatibility_level": "不适用(无GPU需求)",
+      "framework_analysis": {
+        "framework": "Go",
+        "framework_version": "1.25+",
+        "ascend_support": true,
+        "ascend_version": "N/A"
+      },
+      "migration": {
+        "effort_level": "低(1-2天)",
+        "code_changes_required": [],
+        "testing_effort": "无需特殊测试"
+      },
+      "blockers": [],
+      "performance_expectation": {
+        "expected_vs_gpu": "不适用",
+        "bottlenecks": []
+      },
+      "recommendation": "Go服务无GPU依赖，直接部署到华为云ECS或CCI即可。"
+    },
+    "external_services": {
+      "llm": {
+        "required_providers": [
+          "任意LLM"
+        ],
+        "optional_providers": [],
+        "embedding_models": {
+          "default": "不需要",
+          "alternatives": [],
+          "local_option": false
+        },
+        "llm_models": {
+          "default": "可选任意",
+          "alternatives": [],
+          "local_option": true
+        },
+        "cost_optimization": [
+          "时序存储压缩",
+          "批量写入"
+        ]
+      },
+      "object_storage": {
+        "required": false
+      }
+    },
+    "deployment_detail": {
+      "complexity": 4,
+      "containerized": true,
+      "orchestration": [
+        "Kubernetes",
+        "Docker"
+      ],
+      "docker": {
+        "available": true,
+        "image_size": "20MB",
+        "multi_stage_build": true,
+        "base_image": "alpine"
+      },
+      "kubernetes": {
+        "required": false,
+        "recommended": true,
+        "helm_chart_available": false,
+        "manifests_available": false,
+        "operators_available": false,
+        "min_k8s_version": "1.24"
+      },
+      "configuration": {
+        "env_vars_count": 8,
+        "secrets_count": 2,
+        "config_files": [
+          "memtrace.toml"
+        ],
+        "complexity_level": "中等"
+      },
+      "observability": {
+        "metrics_export": true,
+        "structured_logging": true,
+        "tracing_support": false,
+        "health_checks": true
+      },
+      "upgrade": {
+        "rolling_update_support": true,
+        "blue_green_support": true,
+        "migration_scripts_available": false,
+        "backward_compatible": true
+      }
+    }
   },
   "categories": {
     "tech_approach": [
@@ -250,5 +434,63 @@
       "name": "快速结构化时间查询",
       "description": "基于Arc数据库的SQL时序查询实现10-200ms查询延迟和50-500ms会话上下文聚合,支持MCP Server、Python SDK、TypeScript SDK多接口部署,通过Go运行时效率和写批处理并行化,单实例可处理500-1000写入/秒。"
     }
-  ]
+  ],
+  "huawei_cloud": {
+    "overall_difficulty": "中等",
+    "recommended_services": {
+      "database": {
+        "primary": "GaussDB(for Influx) 时序数据库 或 自建Arc on ECS",
+        "vector_solution": "不需要"
+      },
+      "cache": "DCS Redis (可选，会话缓存)",
+      "compute": {
+        "primary": "CCE容器引擎 (K8s)",
+        "ai_acceleration": "不需要",
+        "auto_scaling": "CCE HPA"
+      },
+      "middleware": {
+        "message_queue": "可选DMS Kafka (事件流)"
+      },
+      "network": {
+        "vpc": true,
+        "elb": true,
+        "nat": false
+      }
+    },
+    "cost_estimation": {
+      "small_scale": {
+        "description": "1000 agents，5000 events/min",
+        "monthly_cost": "¥2,500-4,000",
+        "breakdown": {
+          "ECS 2核4G (Arc数据库)": "¥400",
+          "CCE节点 2核4G x 2": "¥1,200",
+          "ELB": "¥300",
+          "DCS Redis 2GB": "¥200",
+          "VPC/带宽": "¥400"
+        }
+      },
+      "medium_scale": {
+        "description": "1万 agents，5万 events/min",
+        "monthly_cost": "¥10,000-15,000",
+        "breakdown": {
+          "GaussDB(for Influx) 通用型": "¥3,500",
+          "CCE节点 4核8G x 4": "¥4,800",
+          "ELB (性能型)": "¥800",
+          "DCS Redis 8GB": "¥600",
+          "VPC/带宽": "¥1,000",
+          "DMS Kafka (可选)": "¥1,500"
+        }
+      }
+    },
+    "special_requirements": [
+      "需要部署Arc时序数据库(开源项目)到ECS或使用GaussDB(for Influx)替代",
+      "Arc数据库需要SSD存储以保证写入性能"
+    ],
+    "architecture_recommendations": [
+      "时序数据库可用GaussDB(for Influx)替代Arc，获得托管服务优势",
+      "Go服务编译后体积小、启动快，适合容器化部署",
+      "建议使用CCE部署，配合HPA实现自动伸缩",
+      "高频写入场景建议使用SSD云盘或本地SSD实例"
+    ]
+  }
 }

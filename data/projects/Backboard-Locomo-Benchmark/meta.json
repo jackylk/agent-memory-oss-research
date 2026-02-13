@@ -189,6 +189,151 @@
         "min_replicas": 0,
         "max_replicas": 10
       }
+    },
+    "storage_detail": {
+      "vector_storage": {
+        "solution": "Backboard托管服务(外部)",
+        "database": "Backboard Cloud (抽象化,无本地向量DB)",
+        "vector_dimension": 0,
+        "index_type": "由Backboard平台管理",
+        "evidence": "项目不直接管理向量存储; 所有记忆操作通过Backboard REST API完成(POST /threads/{id}/messages); requirements.txt仅含httpx/openai/numpy"
+      },
+      "primary_database": {
+        "type": "无本地数据库",
+        "min_version": "不适用",
+        "required_extensions": [],
+        "connection_pooling": {},
+        "evidence": "数据持久化通过文件JSON存储(results/目录); 无数据库依赖; 所有记忆数据由Backboard云端管理"
+      },
+      "graph_database": {
+        "required": false,
+        "type": "无",
+        "evidence": "纯API驱动的评估框架,不使用任何数据库"
+      },
+      "cache": {
+        "type": "Python内存字典 (临时)",
+        "min_version": "不适用",
+        "required_modules": [],
+        "evidence": "数据集加载到内存dict; 无外部缓存; 可选Redis缓存GPT-4.1评估结果(优化建议)"
+      },
+      "data_scale": {
+        "estimated_total": "50MB数据集 + 5-10MB/次评估结果",
+        "per_user_avg": "不适用(批处理评估工具)",
+        "evidence": "LoCoMo-MC10: 10个对话约50MB; 每次评估约250个问题产生5-10MB JSON; 总推荐5GB历史数据"
+      },
+      "performance": {
+        "vector_search_latency": "200-500ms (Backboard API记忆检索)",
+        "qps_target": "不适用(批处理模式)",
+        "p95_latency": "2-4秒/问题 (含LLM生成+评估)",
+        "concurrent_connections": "1-5 (每次评估1个对话)"
+      }
+    },
+    "compute_detail": {
+      "cpu": {
+        "min_vcpu": 2,
+        "recommended_vcpu": 4,
+        "workload_type": "I/O密集型(API网络调用主导)"
+      },
+      "memory": {
+        "min_gb": 4,
+        "recommended_gb": 8,
+        "memory_intensive_ops": [
+          "JSON数据集加载(~500MB)",
+          "评估结果聚合"
+        ],
+        "oom_risk": "低-数据量小,纯I/O工作负载"
+      },
+      "gpu": {
+        "required": false,
+        "recommended": false,
+        "use_case": "不需要",
+        "cuda_dependency": {
+          "has_direct_cuda": false,
+          "custom_cuda_kernels": false,
+          "gpu_libraries": [],
+          "evidence": "requirements.txt仅含httpx/openai/python-dotenv/numpy; 所有LLM推理通过外部API(Backboard/OpenAI/Gemini); locomo_ingest_eval.py无任何GPU代码"
+        }
+      },
+      "scalability": {
+        "horizontal_scaling": true,
+        "stateless": true,
+        "auto_scaling_metrics": [
+          "待评估对话队列深度"
+        ]
+      },
+      "serverless": {
+        "suitable": false,
+        "cold_start_tolerance": "1秒",
+        "reasons": [
+          "单次评估运行10-30分钟",
+          "长时间API调用流",
+          "Kubernetes Job更适合"
+        ]
+      },
+      "concurrency": {
+        "model": "异步IO",
+        "async_framework": "asyncio + httpx.AsyncClient",
+        "message_queue": {
+          "required": false,
+          "systems": []
+        },
+        "websocket": false,
+        "streaming": true
+      }
+    },
+    "ascend_npu": {
+      "compatibility_level": "不适用(无GPU需求)",
+      "framework_analysis": {
+        "framework": "httpx + openai SDK",
+        "framework_version": "httpx>=0.24.0, openai>=1.0.0",
+        "ascend_support": false,
+        "cann_version": "不适用"
+      },
+      "migration": {
+        "effort_level": "无需迁移",
+        "blockers": [],
+        "code_changes_required": []
+      },
+      "recommendation": "该项目是纯API驱动的评估框架,不进行任何本地模型推理。所有计算由Backboard云端、OpenAI API和Google Gemini API完成。完全不需要GPU/NPU。"
+    },
+    "external_services": {
+      "llm": {
+        "providers": [
+          "Backboard API (记忆存储+检索)",
+          "OpenAI GPT-4.1 (LLM评判)",
+          "Google Gemini-2.5-pro (对话生成)"
+        ],
+        "embedding_models": [],
+        "local_model_support": false,
+        "cost_optimization": [
+          "缓存GPT-4.1评估结果",
+          "批量评估减少API调用",
+          "Spot实例运行(60-80%节省)"
+        ]
+      }
+    },
+    "deployment_detail": {
+      "complexity": 3,
+      "docker": {
+        "available": false,
+        "image_size": "~200MB (Python 3.11-slim + 极少依赖)",
+        "multi_stage_build": false
+      },
+      "kubernetes": {
+        "required": false,
+        "recommended": true,
+        "helm_available": false
+      },
+      "configuration": {
+        "env_vars_count": 3,
+        "secrets_count": 2,
+        "complexity_level": "简单"
+      },
+      "observability": {
+        "metrics_export": false,
+        "structured_logging": true,
+        "health_checks": false
+      }
     }
   },
   "categories": {
@@ -361,5 +506,57 @@
       "name": "云原生评估框架",
       "description": "采用LLM-as-Judge评估(GPT-4.1)和Gemini-2.5-pro对话生成,通过Backboard托管记忆存储和异步I/O(httpx)实现2-4秒/问题响应时间,支持Kubernetes Job并行处理和自动重试逻辑,10-30分钟完成250+问题的多维度评估,完整开源实现保证可复现性。"
     }
-  ]
+  ],
+  "huawei_cloud": {
+    "overall_difficulty": "容易",
+    "recommended_services": {
+      "database": {
+        "primary": "不需要(Backboard云端托管)",
+        "vector_solution": "不需要(Backboard云端托管)"
+      },
+      "cache": "不需要",
+      "compute": {
+        "primary": "华为云ECS (按需) 或 CCI (容器实例,适合批处理)",
+        "ai_acceleration": "不需要GPU/NPU"
+      },
+      "middleware": {
+        "secret_management": "华为云DEW管理API密钥"
+      }
+    },
+    "cost_estimation": {
+      "small_scale": {
+        "description": "每月10次评估运行",
+        "monthly_cost": "¥500-1,000",
+        "breakdown": {
+          "compute_ecs": "¥20 (按需实例,每次运行30分钟)",
+          "backboard_api": "¥200-500 (Backboard API调用)",
+          "openai_api": "¥200-400 (GPT-4.1评判)",
+          "storage_obs": "¥5 (结果存档)"
+        }
+      },
+      "medium_scale": {
+        "description": "每月50次评估, 并行化",
+        "monthly_cost": "¥2,000-5,000",
+        "breakdown": {
+          "compute_cci": "¥100 (容器实例批处理)",
+          "backboard_api": "¥1,000-2,500",
+          "openai_api": "¥800-2,000",
+          "storage_obs": "¥10"
+        }
+      }
+    },
+    "special_requirements": [
+      "需要访问外网API(app.backboard.io和api.openai.com)",
+      "华为云NAT网关需配置出站HTTPS规则",
+      "API密钥需安全存储在DEW服务中",
+      "评估结果建议存储到华为云OBS进行长期归档"
+    ],
+    "architecture_recommendations": [
+      "使用华为云CCI容器实例批处理模式运行评估",
+      "通过华为云FunctionGraph定时触发评估任务",
+      "评估结果存储到华为云OBS,配置生命周期策略(90天后转冷存储)",
+      "如需替代OpenAI GPT-4.1评判,可使用华为云ModelArts部署开源LLM作为评判模型",
+      "使用华为云VPC私有子网+NAT网关确保网络安全"
+    ]
+  }
 }

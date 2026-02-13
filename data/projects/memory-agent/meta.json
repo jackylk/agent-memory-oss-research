@@ -54,6 +54,189 @@
         "LangGraph Cloud",
         "Docker"
       ]
+    },
+    "storage_detail": {
+      "vector_storage": {
+        "solution": "不需要",
+        "database": "LangGraph内置Store (无向量搜索)",
+        "scale_requirement": "小规模(千级)"
+      },
+      "primary_database": {
+        "type": "内存/可选PostgreSQL",
+        "min_version": "14.0",
+        "required_extensions": [],
+        "schema_isolation": "单租户",
+        "connection_pool": false
+      },
+      "graph_database": {},
+      "cache": {
+        "type": "内存缓存",
+        "required_modules": [],
+        "persistence_required": false
+      },
+      "data_scale": {
+        "estimated_total": "100MB-1GB",
+        "per_user_avg": "1MB",
+        "growth_rate": "日增10MB",
+        "max_single_record": "100KB"
+      },
+      "performance": {
+        "vector_search_latency": "不适用",
+        "qps_target": "100-500",
+        "p95_latency": "<200ms",
+        "concurrent_connections": 50
+      }
+    },
+    "compute_detail": {
+      "cpu": {
+        "min_vcpu": 1,
+        "recommended_vcpu": 2,
+        "workload_type": "IO密集型",
+        "instruction_set_requirements": []
+      },
+      "memory": {
+        "min_gb": 1,
+        "recommended_gb": 2,
+        "memory_intensive_ops": [
+          "内存Store"
+        ],
+        "oom_risk": "低"
+      },
+      "gpu": {
+        "required": false,
+        "recommended": false,
+        "use_case": "不需要",
+        "cuda_dependency": {
+          "has_direct_cuda": false,
+          "cuda_version": null,
+          "cudnn_required": false,
+          "tensorrt_used": false,
+          "custom_cuda_kernels": false,
+          "gpu_libraries": []
+        }
+      },
+      "scalability": {
+        "horizontal_scaling": true,
+        "stateless": false,
+        "session_persistence_required": true,
+        "auto_scaling": {
+          "supported": true,
+          "trigger_metrics": [
+            "CPU",
+            "Memory"
+          ],
+          "scale_down_safe": true
+        }
+      },
+      "serverless": {
+        "suitable": true,
+        "cold_start_tolerance": "<1s",
+        "cold_start_actual": "<500ms",
+        "state_management": "DB状态",
+        "reasons": [
+          "轻量级",
+          "无复杂依赖"
+        ]
+      },
+      "concurrency": {
+        "model": "同步",
+        "async_framework": null,
+        "message_queue": {
+          "required": false
+        },
+        "long_connection": {
+          "websocket": false,
+          "sse": true,
+          "streaming": true
+        }
+      }
+    },
+    "ascend_npu": {
+      "compatibility_level": "不适用(无GPU需求)",
+      "framework_analysis": {
+        "framework": "N/A",
+        "framework_version": "N/A",
+        "ascend_support": true,
+        "ascend_version": "N/A"
+      },
+      "migration": {
+        "effort_level": "低(1-2天)",
+        "code_changes_required": [],
+        "testing_effort": "无需GPU测试"
+      },
+      "blockers": [],
+      "performance_expectation": {
+        "expected_vs_gpu": "不适用",
+        "bottlenecks": []
+      },
+      "recommendation": "该项目不需要GPU/NPU，纯CPU即可运行。"
+    },
+    "external_services": {
+      "llm": {
+        "required_providers": [
+          "OpenAI",
+          "Anthropic"
+        ],
+        "optional_providers": [],
+        "embedding_models": {
+          "default": "不需要",
+          "alternatives": [],
+          "local_option": false
+        },
+        "llm_models": {
+          "default": "claude-3-5-sonnet",
+          "alternatives": [
+            "gpt-4"
+          ],
+          "local_option": false
+        },
+        "cost_optimization": [
+          "Memory缓存减少重复查询"
+        ]
+      },
+      "object_storage": {
+        "required": false
+      }
+    },
+    "deployment_detail": {
+      "complexity": 2,
+      "containerized": true,
+      "orchestration": [
+        "Docker"
+      ],
+      "docker": {
+        "available": false,
+        "image_size": "300MB",
+        "multi_stage_build": true,
+        "base_image": "python:3.11-slim"
+      },
+      "kubernetes": {
+        "required": false,
+        "recommended": false,
+        "helm_chart_available": false,
+        "manifests_available": false,
+        "operators_available": false
+      },
+      "configuration": {
+        "env_vars_count": 5,
+        "secrets_count": 2,
+        "config_files": [
+          ".env"
+        ],
+        "complexity_level": "简单"
+      },
+      "observability": {
+        "metrics_export": false,
+        "structured_logging": false,
+        "tracing_support": false,
+        "health_checks": true
+      },
+      "upgrade": {
+        "rolling_update_support": true,
+        "blue_green_support": false,
+        "migration_scripts_available": false,
+        "backward_compatible": true
+      }
     }
   },
   "categories": {
@@ -162,5 +345,54 @@
       "name": "ReAct闭环与异步优化",
       "description": "采用InjectedToolArg注解隐藏系统级参数和store_memory节点自动回到call_model节点的ReAct闭环设计,结合完全异步架构支持并发记忆保存(asyncio.gather),单实例可处理20-50并发请求,实现最小化状态设计和时间上下文注入。"
     }
-  ]
+  ],
+  "huawei_cloud": {
+    "overall_difficulty": "容易",
+    "recommended_services": {
+      "database": {
+        "primary": "RDS PostgreSQL 14 (可选)",
+        "vector_solution": "不需要"
+      },
+      "cache": "不需要",
+      "compute": {
+        "primary": "CCI云容器实例",
+        "ai_acceleration": "不需要",
+        "auto_scaling": "CCI自动伸缩"
+      },
+      "network": {
+        "vpc": true,
+        "elb": false,
+        "nat": false
+      }
+    },
+    "cost_estimation": {
+      "small_scale": {
+        "description": "100用户，200 QPS",
+        "monthly_cost": "¥800-1,500",
+        "breakdown": {
+          "CCI容器实例 (1核2G)": "¥600",
+          "LLM API调用": "¥500-1000",
+          "VPC": "¥100"
+        }
+      },
+      "medium_scale": {
+        "description": "1000用户，1000 QPS",
+        "monthly_cost": "¥3,000-5,000",
+        "breakdown": {
+          "CCI容器实例 (2核4G x 2)": "¥1,800",
+          "RDS PostgreSQL 通用型": "¥600",
+          "LLM API调用": "¥1,500-2,500",
+          "VPC/ELB": "¥300"
+        }
+      }
+    },
+    "special_requirements": [
+      "极简模板，主要成本在LLM API调用"
+    ],
+    "architecture_recommendations": [
+      "适合快速原型开发和小规模应用",
+      "生产环境建议添加外部存储(RDS/DCS)",
+      "LLM调用建议使用盘古大模型降低成本"
+    ]
+  }
 }

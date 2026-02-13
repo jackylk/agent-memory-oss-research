@@ -59,6 +59,217 @@
         "Docker",
         "Kubernetes"
       ]
+    },
+    "storage_detail": {
+      "vector_storage": {
+        "solution": "专用向量DB",
+        "database": "FAISS (CPU) / Qdrant",
+        "vector_dimension": 1024,
+        "index_type": "HNSW / Flat",
+        "scale_requirement": "百万级"
+      },
+      "primary_database": {
+        "type": "本地文件存储",
+        "min_version": "N/A",
+        "required_extensions": [],
+        "schema_isolation": "单租户",
+        "connection_pool": false
+      },
+      "graph_database": {},
+      "cache": {
+        "type": "内存缓存",
+        "required_modules": [],
+        "persistence_required": false
+      },
+      "data_scale": {
+        "estimated_total": "10GB-100GB",
+        "per_user_avg": "100MB",
+        "growth_rate": "日增500MB",
+        "max_single_record": "10MB"
+      },
+      "performance": {
+        "vector_search_latency": "<100ms",
+        "qps_target": "500-1000",
+        "p95_latency": "<200ms",
+        "concurrent_connections": 200
+      }
+    },
+    "compute_detail": {
+      "cpu": {
+        "min_vcpu": 4,
+        "recommended_vcpu": 8,
+        "workload_type": "CPU密集型",
+        "instruction_set_requirements": [
+          "AVX2"
+        ]
+      },
+      "memory": {
+        "min_gb": 8,
+        "recommended_gb": 16,
+        "memory_intensive_ops": [
+          "FAISS索引",
+          "Embedding模型",
+          "BM25索引"
+        ],
+        "oom_risk": "中"
+      },
+      "gpu": {
+        "required": false,
+        "recommended": true,
+        "gpu_models": [
+          "T4",
+          "L4"
+        ],
+        "use_case": "仅推理",
+        "vram_requirement": "8GB",
+        "cuda_dependency": {
+          "has_direct_cuda": false,
+          "cuda_version": null,
+          "cudnn_required": false,
+          "tensorrt_used": false,
+          "custom_cuda_kernels": false,
+          "gpu_libraries": []
+        }
+      },
+      "scalability": {
+        "horizontal_scaling": true,
+        "stateless": false,
+        "session_persistence_required": true,
+        "auto_scaling": {
+          "supported": true,
+          "trigger_metrics": [
+            "CPU",
+            "Memory"
+          ],
+          "scale_down_safe": true
+        }
+      },
+      "serverless": {
+        "suitable": false,
+        "cold_start_tolerance": "<5s",
+        "cold_start_actual": "5-10s (模型+索引加载)",
+        "state_management": "文件存储",
+        "reasons": [
+          "需要预加载FAISS索引",
+          "研究任务可能长时间运行"
+        ]
+      },
+      "concurrency": {
+        "model": "同步",
+        "async_framework": null,
+        "message_queue": {
+          "required": false
+        },
+        "long_connection": {
+          "websocket": false,
+          "sse": false,
+          "streaming": true
+        }
+      }
+    },
+    "ascend_npu": {
+      "compatibility_level": "容易适配",
+      "framework_analysis": {
+        "framework": "PyTorch",
+        "framework_version": "2.x (via transformers)",
+        "ascend_support": true,
+        "ascend_version": "CANN 8.0"
+      },
+      "migration": {
+        "effort_level": "低(1-2天)",
+        "code_changes_required": [
+          "确保transformers使用torch_npu",
+          "FAISS可用CPU版本",
+          "验证embedding推理"
+        ],
+        "testing_effort": "基础推理和检索测试"
+      },
+      "blockers": [],
+      "performance_expectation": {
+        "expected_vs_gpu": "相当",
+        "bottlenecks": [
+          "FAISS检索在CPU上性能足够"
+        ]
+      },
+      "recommendation": "该项目依赖transformers做embedding，无复杂GPU依赖。迁移到昇腾NPU非常简单，使用ModelArts部署embedding模型即可。FAISS可用CPU版本，性能足够。"
+    },
+    "external_services": {
+      "llm": {
+        "required_providers": [
+          "OpenAI",
+          "本地vllm"
+        ],
+        "optional_providers": [
+          "Qwen"
+        ],
+        "embedding_models": {
+          "default": "FlagEmbedding/bge-base-en-v1.5",
+          "alternatives": [
+            "OpenAI text-embedding-3"
+          ],
+          "local_option": true
+        },
+        "llm_models": {
+          "default": "gpt-4o-mini",
+          "alternatives": [
+            "Qwen2.5",
+            "本地vllm"
+          ],
+          "local_option": true
+        },
+        "cost_optimization": [
+          "本地embedding",
+          "本地vllm推理",
+          "检索缓存"
+        ]
+      },
+      "object_storage": {
+        "required": true,
+        "use_case": [
+          "数据集存储",
+          "评估数据"
+        ]
+      }
+    },
+    "deployment_detail": {
+      "complexity": 6,
+      "containerized": true,
+      "orchestration": [
+        "Docker"
+      ],
+      "docker": {
+        "available": false,
+        "image_size": "2GB",
+        "multi_stage_build": true,
+        "base_image": "python:3.11"
+      },
+      "kubernetes": {
+        "required": false,
+        "recommended": false,
+        "helm_chart_available": false,
+        "manifests_available": false,
+        "operators_available": false
+      },
+      "configuration": {
+        "env_vars_count": 10,
+        "secrets_count": 3,
+        "config_files": [
+          "config文件"
+        ],
+        "complexity_level": "中等"
+      },
+      "observability": {
+        "metrics_export": false,
+        "structured_logging": false,
+        "tracing_support": false,
+        "health_checks": false
+      },
+      "upgrade": {
+        "rolling_update_support": true,
+        "blue_green_support": false,
+        "migration_scripts_available": false,
+        "backward_compatible": true
+      }
     }
   },
   "categories": {
@@ -120,5 +331,64 @@
       "name": "深度研究与记忆保持",
       "description": "通过TTL时间管理支持长期运行应用和基于文件系统的可靠持久化存储,采用模块化插件化设计易于扩展,支持跨模型兼容(GPT-4、Qwen2.5等)和云端API+本地vLLM混合部署,离线保持完整上下文保真度,在线执行深度研究。"
     }
-  ]
+  ],
+  "huawei_cloud": {
+    "overall_difficulty": "容易",
+    "recommended_services": {
+      "database": {
+        "primary": "OBS + ECS本地存储",
+        "vector_solution": "FAISS (CPU版本)",
+        "graph": "不需要"
+      },
+      "cache": "不需要",
+      "object_storage": "OBS对象存储",
+      "compute": {
+        "primary": "ECS通用型 (8核16G)",
+        "ai_acceleration": "ModelArts在线服务 (可选)",
+        "auto_scaling": "AS弹性伸缩"
+      },
+      "network": {
+        "vpc": true,
+        "elb": true,
+        "nat": false
+      }
+    },
+    "cost_estimation": {
+      "small_scale": {
+        "description": "研究评估场景",
+        "monthly_cost": "¥2,000-4,000",
+        "breakdown": {
+          "ECS 8核16G": "¥1,200",
+          "OBS 100GB": "¥50",
+          "VPC/带宽": "¥300",
+          "LLM API (OpenAI/盘古)": "¥1,000-2,500"
+        }
+      },
+      "medium_scale": {
+        "description": "生产应用场景",
+        "monthly_cost": "¥8,000-12,000",
+        "breakdown": {
+          "ECS 16核32G x 2": "¥4,800",
+          "ModelArts推理": "¥1,500",
+          "OBS 500GB": "¥250",
+          "ELB": "¥500",
+          "VPC/带宽": "¥800",
+          "LLM API": "¥2,000-5,000"
+        }
+      }
+    },
+    "special_requirements": [
+      "FAISS使用CPU版本即可，无需GPU",
+      "评估数据集建议存储到OBS",
+      "本地vllm推理可降低LLM成本"
+    ],
+    "architecture_recommendations": [
+      "适合研究和评估场景，部署简单",
+      "FAISS CPU版本性能足够，无需GPU加速",
+      "建议使用盘古大模型或本地vllm降低LLM成本",
+      "Embedding可部署到ModelArts昇腾服务加速",
+      "评估数据集通过OBS管理，支持版本控制",
+      "生产环境建议使用AS自动伸缩应对突发流量"
+    ]
+  }
 }

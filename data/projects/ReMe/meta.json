@@ -66,6 +66,168 @@
         "Docker",
         "Kubernetes"
       ]
+    },
+    "storage_detail": {
+      "vector_storage": {
+        "solution": "多后端向量存储(5种)",
+        "database": "SQLite-vec(默认) / Elasticsearch / ChromaDB / Qdrant / PostgreSQL pgvector",
+        "vector_dimension": 1024,
+        "index_type": "sqlite-vec FLOAT[1024] / 各后端原生索引",
+        "evidence": "pyproject.toml: sqlite-vec>=0.1.6, elasticsearch>=9.2.0, chromadb>=1.3.5, qdrant-client>=1.16.0, asyncpg>=0.31.0; default.yaml: dimensions=1024; 5种向量存储实现约94,555行代码"
+      },
+      "primary_database": {
+        "type": "SQLite (内置记忆索引)",
+        "min_version": "SQLite 3 + sqlite-vec + FTS5",
+        "required_extensions": [
+          "sqlite-vec (向量搜索)",
+          "FTS5 (全文搜索,三元组分词)"
+        ],
+        "connection_pooling": {
+          "method": "异步SQLite连接",
+          "pool_size": 1,
+          "max_overflow": 0,
+          "pool_pre_ping": false
+        },
+        "evidence": "reme/core/memory_store/sqlite_memory_store.py: 857行代码; 使用sqlite-vec虚拟表存储向量; FTS5三元组分词支持全文搜索; 默认路径.reme/memory.db"
+      },
+      "graph_database": {
+        "required": false,
+        "type": "无",
+        "evidence": "项目不使用图数据库,记忆关系通过向量相似度和LLM推理实现"
+      },
+      "cache": {
+        "type": "内存缓存 (内置)",
+        "min_version": "无外部依赖",
+        "required_modules": [],
+        "evidence": "向量存储backend=memory为纯内存模式; Elasticsearch内置查询缓存; 无Redis等外部缓存依赖"
+      },
+      "data_scale": {
+        "estimated_total": "小规模10GB, 中规模100GB, 大规模1TB",
+        "per_user_avg": "约50-100MB/用户(含记忆块、向量、元数据)",
+        "evidence": "architecture.md成本估算表; 每次记忆操作产生500-5000 tokens的LLM调用"
+      },
+      "performance": {
+        "vector_search_latency": "1-5ms (sqlite-vec本地), 10-50ms (Elasticsearch)",
+        "qps_target": "64并发 (HTTP服务默认限制)",
+        "p95_latency": "<500ms (含LLM调用)",
+        "concurrent_connections": "64 (可配置)"
+      }
+    },
+    "compute_detail": {
+      "cpu": {
+        "min_vcpu": 2,
+        "recommended_vcpu": 4,
+        "workload_type": "I/O密集型(LLM API调用+向量检索)"
+      },
+      "memory": {
+        "min_gb": 4,
+        "recommended_gb": 8,
+        "memory_intensive_ops": [
+          "内存向量存储(backend=memory)",
+          "LLM上下文处理",
+          "transformers分词器"
+        ],
+        "oom_risk": "中-内存向量存储模式下大量记忆数据可能导致OOM"
+      },
+      "gpu": {
+        "required": false,
+        "recommended": false,
+        "use_case": "不需要",
+        "cuda_dependency": {
+          "has_direct_cuda": false,
+          "custom_cuda_kernels": false,
+          "gpu_libraries": [
+            "transformers(仅分词,不做推理)"
+          ],
+          "evidence": "代码中无torch.cuda调用; 依赖外部LLM API(OpenAI/Qwen/Claude); 嵌入通过API调用(text-embedding-v4)而非本地GPU; transformers仅用于分词(tiktoken)"
+        }
+      },
+      "scalability": {
+        "horizontal_scaling": false,
+        "stateless": false,
+        "auto_scaling_metrics": [
+          "CPU利用率",
+          "HTTP并发连接数",
+          "向量存储大小"
+        ]
+      },
+      "serverless": {
+        "suitable": false,
+        "cold_start_tolerance": "5-10秒",
+        "reasons": [
+          "有状态服务(SQLite本地存储)",
+          "需要持久化数据卷",
+          "长连接HTTP/MCP服务"
+        ]
+      },
+      "concurrency": {
+        "model": "异步IO + 线程池",
+        "async_framework": "asyncio + FastAPI + uvicorn",
+        "message_queue": {
+          "required": false,
+          "systems": []
+        },
+        "websocket": true,
+        "streaming": true
+      }
+    },
+    "ascend_npu": {
+      "compatibility_level": "不适用(无GPU需求)",
+      "framework_analysis": {
+        "framework": "FastAPI + 外部LLM API",
+        "framework_version": "FastAPI>=0.121.3",
+        "ascend_support": false,
+        "cann_version": "不适用"
+      },
+      "migration": {
+        "effort_level": "无需迁移",
+        "blockers": [],
+        "code_changes_required": []
+      },
+      "recommendation": "ReMe不在本地运行模型推理,所有LLM调用通过外部API完成,嵌入也通过API(text-embedding-v4)生成。因此完全不需要GPU/NPU。如果未来要支持本地嵌入模型推理,可通过litellm适配层接入昇腾NPU上部署的推理服务。"
+    },
+    "external_services": {
+      "llm": {
+        "providers": [
+          "OpenAI (GPT-4/GPT-3.5)",
+          "Qwen (通义千问)",
+          "Claude (Anthropic)",
+          "任何OpenAI兼容API"
+        ],
+        "embedding_models": [
+          "text-embedding-v4 (阿里通义, 1024维)",
+          "任何OpenAI兼容嵌入API"
+        ],
+        "local_model_support": false,
+        "cost_optimization": [
+          "记忆去重算子(MemoryDeduplicationOp)",
+          "工作记忆压缩(compact_ratio_threshold)",
+          "多阶段检索减少LLM重排序调用"
+        ]
+      }
+    },
+    "deployment_detail": {
+      "complexity": 5,
+      "docker": {
+        "available": false,
+        "image_size": "~500MB (Python 3.10-slim + 依赖)",
+        "multi_stage_build": false
+      },
+      "kubernetes": {
+        "required": false,
+        "recommended": false,
+        "helm_available": false
+      },
+      "configuration": {
+        "env_vars_count": 6,
+        "secrets_count": 4,
+        "complexity_level": "中等"
+      },
+      "observability": {
+        "metrics_export": false,
+        "structured_logging": true,
+        "health_checks": false
+      }
     }
   },
   "categories": {
@@ -198,5 +360,59 @@
       "name": "跨实体记忆共享与压缩",
       "description": "通过统一向量数据库后端实现跨用户、任务和代理的记忆共享和集体学习,采用LLM驱动的记忆操作(提取、摘要、检索)和工作记忆压缩避免token溢出,支持MCP协议、HTTP API和Python SDK多接口部署,实现长期交互的上下文延续。"
     }
-  ]
+  ],
+  "huawei_cloud": {
+    "overall_difficulty": "中等",
+    "recommended_services": {
+      "database": {
+        "primary": "华为云ECS本地SQLite (小规模) / 华为云RDS for PostgreSQL + pgvector (大规模)",
+        "vector_solution": "sqlite-vec(小规模) / 华为云CSS Elasticsearch(中大规模) / 华为云GaussDB pgvector(大规模)"
+      },
+      "cache": "无需外部缓存服务",
+      "compute": {
+        "primary": "华为云ECS (单实例) 或 CCE (多实例)",
+        "ai_acceleration": "不需要GPU/NPU"
+      },
+      "middleware": {
+        "load_balancer": "华为云ELB (多实例时)",
+        "secret_management": "华为云DEW"
+      }
+    },
+    "cost_estimation": {
+      "small_scale": {
+        "description": "100用户, 单实例+本地SQLite",
+        "monthly_cost": "¥300-500",
+        "breakdown": {
+          "compute_ecs": "¥150 (2vCPU/4GB)",
+          "storage": "¥20 (20GB SSD)",
+          "llm_api_qwen": "¥100-300 (通义千问API)",
+          "embedding_api": "¥10-30"
+        }
+      },
+      "medium_scale": {
+        "description": "1000用户, ECS+Elasticsearch",
+        "monthly_cost": "¥3,000-5,000",
+        "breakdown": {
+          "compute_ecs": "¥400 (4vCPU/8GB)",
+          "elasticsearch_css": "¥1,000 (2节点4GB集群)",
+          "storage": "¥100 (100GB)",
+          "llm_api_qwen": "¥1,500-3,000",
+          "elb": "¥200"
+        }
+      }
+    },
+    "special_requirements": [
+      "默认使用阿里通义千问API,在华为云上可替换为华为盘古大模型API",
+      "无官方Docker镜像,需自行构建",
+      "SQLite存储需要数据卷持久化",
+      "MCP协议支持需要考虑网络配置(stdio/sse传输模式)"
+    ],
+    "architecture_recommendations": [
+      "小规模: 单ECS实例 + 本地SQLite + 通义千问API",
+      "中规模: ECS + 华为云CSS Elasticsearch集群 + 盘古大模型API",
+      "使用华为云OBS存储工作记忆外部化数据",
+      "建议将LLM和嵌入API替换为华为云ModelArts部署的本地模型以降低延迟",
+      "通过华为云DMS Kafka实现异步记忆处理队列(大规模场景)"
+    ]
+  }
 }

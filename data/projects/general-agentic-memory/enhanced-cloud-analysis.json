@@ -1,249 +1,291 @@
 {
-  "project_name": "general-agentic-memory",
-  "analysis_version": "2.0",
-  "analysis_date": "2026-02-13",
   "storage": {
-    "vector_database": {
-      "type": "FAISS (IndexFlatIP)",
-      "provider": "Facebook FAISS (faiss-cpu)",
-      "embedding_dimensions": "1024 (BAAI/bge-m3默认)",
-      "estimated_storage_per_1m_vectors": "~4GB (1024-dim float32)",
-      "index_type": "IndexFlatIP (flat inner product, brute-force)",
-      "distance_metric": "inner product (with L2 normalization = cosine similarity)",
-      "code_evidence": {
-        "file": "gam/retriever/dense_retriever.py",
-        "details": "faiss.IndexFlatIP(dimension); faiss.normalize_L2(embeddings); 使用FAISS CPU版本进行暴力搜索"
-      }
+    "types": [
+      "向量数据库",
+      "BM25检索"
+    ],
+    "requirements": [
+      "FAISS",
+      "BM25",
+      "本地文件存储"
+    ],
+    "vector_storage": {
+      "solution": "专用向量DB",
+      "database": "FAISS (CPU) / Qdrant",
+      "vector_dimension": 1024,
+      "index_type": "HNSW / Flat",
+      "scale_requirement": "百万级"
     },
     "primary_database": {
-      "type": "文件系统 (JSON文件)",
-      "version": "N/A",
-      "usage": "记忆页面(Page)存储为JSON文件, InMemoryPageStore管理",
-      "connection_pattern": "文件I/O, 内存中加载",
-      "code_evidence": {
-        "file": "gam/schemas.py + gam/retriever/",
-        "details": "InMemoryPageStore管理Page对象,以JSON格式持久化到文件系统"
-      }
-    },
-    "graph_database": {
-      "type": "none",
-      "usage": "N/A"
+      "type": "本地文件存储",
+      "min_version": "N/A",
+      "required_extensions": [],
+      "schema_isolation": "单租户",
+      "connection_pool": false
     },
     "cache": {
-      "type": "内存索引缓存",
-      "usage": "FAISS索引和BM25索引加载到内存",
-      "ttl_strategy": "TTL时间管理支持长期运行应用"
+      "type": "内存缓存",
+      "required_modules": [],
+      "persistence_required": false
     },
     "object_storage": {
-      "type": "本地文件系统",
-      "usage": "FAISS索引文件, BM25索引文件, JSON记忆文件",
-      "paths": ["./index/dense", "./index/bm25", "./index/index"]
+      "required": true,
+      "use_case": [
+        "评估数据集",
+        "检索文档"
+      ],
+      "s3_compatible": true
     },
     "data_scale": {
-      "estimated_size": "取决于对话量和记忆页面数,索引文件MB-GB级别",
-      "growth_rate": "与输入对话量线性相关",
-      "retention_policy": "文件系统持久化,无自动过期"
+      "estimated_total": "10GB-100GB",
+      "per_user_avg": "100MB",
+      "growth_rate": "日增500MB",
+      "max_single_record": "10MB"
     },
     "performance": {
-      "read_latency": "1-10ms (FAISS brute-force, 小数据集) 到 100ms+ (大数据集)",
-      "write_latency": "50-200ms (嵌入计算 + 索引更新)",
-      "throughput": "受限于嵌入模型推理速度和LLM API调用"
+      "vector_search_latency": "<100ms",
+      "qps_target": "500-1000",
+      "p95_latency": "<200ms",
+      "concurrent_connections": 200
     }
   },
   "compute": {
+    "embedding": true,
+    "gpu_needed": false,
+    "estimated_requirements": "CPU推理为主，GPU可选加速",
     "cpu": {
-      "minimum": "4 vCPUs",
-      "recommended": "8-16 vCPUs",
-      "workload_type": "CPU密集(嵌入模型推理, FAISS计算, BM25索引) + I/O(LLM API, vLLM)",
-      "code_evidence": {
-        "file": "gam/config/retriever.py",
-        "details": "DenseRetrieverConfig: batch_size=32, max_length=512, BM25RetrieverConfig: threads=4"
-      }
+      "min_vcpu": 4,
+      "recommended_vcpu": 8,
+      "workload_type": "CPU密集型",
+      "instruction_set_requirements": [
+        "AVX2"
+      ]
     },
     "memory": {
-      "minimum": "4GB (bge-m3模型~1.5GB + FAISS索引)",
-      "recommended": "8-16GB",
-      "peak_usage_scenario": "bge-m3模型加载(~1.5GB) + FAISS索引(取决于数据量) + BM25索引 + vLLM推理"
+      "min_gb": 8,
+      "recommended_gb": 16,
+      "memory_intensive_ops": [
+        "FAISS索引",
+        "Embedding模型",
+        "BM25索引"
+      ],
+      "oom_risk": "中"
     },
     "gpu": {
       "required": false,
-      "usage": "可选 - 嵌入模型推理加速(BAAI/bge-m3)和vLLM本地模型推理",
-      "cuda_dependencies": [
-        "torch>=2.0.0 (requirements.txt)",
-        "CUDA通过FlagEmbedding间接依赖"
+      "recommended": true,
+      "gpu_models": [
+        "T4",
+        "L4"
       ],
-      "gpu_code_locations": [
-        "gam/config/retriever.py:15 - devices: List[str] = field(default_factory=lambda: ['cuda:0'])",
-        "gam/retriever/dense_retriever.py:80 - has_cuda = torch.cuda.is_available()",
-        "gam/retriever/dense_retriever.py:81 - default_device = 'cuda:0' if has_cuda else 'cpu'"
-      ],
-      "frameworks": ["PyTorch >=2.0.0", "FlagEmbedding >=1.2.0 (BAAI/bge-m3)", "transformers >=4.30.0"],
-      "code_evidence": {
-        "file": "gam/retriever/dense_retriever.py",
-        "details": "DenseRetriever使用FlagAutoModel加载bge-m3,自动检测CUDA可用性;默认device='cuda:0',CPU fallback支持。faiss-cpu不使用GPU。"
+      "use_case": "仅推理",
+      "vram_requirement": "8GB",
+      "cuda_dependency": {
+        "has_direct_cuda": false,
+        "cuda_version": null,
+        "cudnn_required": false,
+        "tensorrt_used": false,
+        "custom_cuda_kernels": false,
+        "gpu_libraries": []
       }
     },
     "ascend_npu": {
-      "compatibility": "partially_compatible",
-      "migration_effort": "medium_to_high",
-      "analysis": "项目核心GPU使用点为FlagEmbedding(bge-m3)嵌入模型推理和可选的vLLM本地模型推理。FAISS使用CPU版本(faiss-cpu)不受影响。",
-      "required_changes": [
-        "安装torch-npu替代标准PyTorch CUDA版本",
-        "修改gam/config/retriever.py中devices默认值从'cuda:0'改为'npu:0'",
-        "修改gam/retriever/dense_retriever.py中CUDA检测逻辑,添加NPU检测: torch.npu.is_available()",
-        "验证FlagEmbedding(FlagAutoModel)在torch_npu上的兼容性",
-        "验证BAAI/bge-m3模型在Ascend NPU上的推理正确性和性能",
-        "如使用vLLM: 需要Ascend版vLLM或替换为MindSpore推理框架",
-        "pyserini/Lucene(BM25)为Java依赖,不受GPU/NPU影响"
-      ],
-      "cann_toolkit_version": "CANN 8.0+ (对应PyTorch 2.x)",
-      "torch_ascend_support": "需要torch-npu >= 2.1.0; torch>=2.0.0要求与torch-npu版本对齐",
-      "alternative_solutions": [
-        "使用CPU运行bge-m3嵌入(性能可接受,batch_size调小)",
-        "将嵌入模型部署到华为云ModelArts,通过api_url远程调用",
-        "使用DenseRetrieverConfig.api_url指向华为云嵌入服务API",
-        "vLLM替换为华为云ModelArts推理服务",
-        "使用MindSpore框架替代PyTorch运行bge-m3",
-        "使用华为云MindIE推理引擎部署嵌入模型"
-      ]
+      "compatibility_level": "容易适配",
+      "framework_analysis": {
+        "framework": "PyTorch",
+        "framework_version": "2.x (via transformers)",
+        "ascend_support": true,
+        "ascend_version": "CANN 8.0"
+      },
+      "migration": {
+        "effort_level": "低(1-2天)",
+        "code_changes_required": [
+          "确保transformers使用torch_npu",
+          "FAISS可用CPU版本",
+          "验证embedding推理"
+        ],
+        "testing_effort": "基础推理和检索测试"
+      },
+      "blockers": [],
+      "performance_expectation": {
+        "expected_vs_gpu": "相当",
+        "bottlenecks": [
+          "FAISS检索在CPU上性能足够"
+        ]
+      },
+      "recommendation": "该项目依赖transformers做embedding，无复杂GPU依赖。迁移到昇腾NPU非常简单，使用ModelArts部署embedding模型即可。FAISS可用CPU版本，性能足够。"
     },
     "scalability": {
-      "horizontal": false,
-      "auto_scaling_support": false,
-      "scaling_strategy": "单实例设计(文件系统存储+内存索引);扩展需改造为分布式架构",
-      "code_evidence": {
-        "file": "gam/schemas.py",
-        "details": "InMemoryPageStore管理内存中的Page对象,FAISS索引为单进程"
+      "horizontal_scaling": true,
+      "stateless": false,
+      "session_persistence_required": true,
+      "auto_scaling": {
+        "supported": true,
+        "trigger_metrics": [
+          "CPU",
+          "Memory"
+        ],
+        "scale_down_safe": true
       }
     },
     "serverless": {
-      "compatible": false,
-      "limitations": "嵌入模型加载耗时, 内存索引状态, 文件系统依赖",
-      "recommended_services": ["ECS/CCE常驻容器"]
+      "suitable": false,
+      "cold_start_tolerance": "<5s",
+      "cold_start_actual": "5-10s (模型+索引加载)",
+      "state_management": "文件存储",
+      "reasons": [
+        "需要预加载FAISS索引",
+        "研究任务可能长时间运行"
+      ]
     },
     "concurrency": {
-      "model": "单进程多线程(BM25 threads=4)",
-      "estimated_concurrent_users": "1-5 (研究/评估工具,非高并发服务)",
-      "bottlenecks": "嵌入模型推理(单GPU/CPU), FAISS单实例, LLM API速率"
+      "model": "同步",
+      "async_framework": null,
+      "message_queue": {
+        "required": false
+      },
+      "long_connection": {
+        "websocket": false,
+        "sse": false,
+        "streaming": true
+      }
     }
   },
   "external_services": {
-    "llm_providers": [
-      {
-        "name": "OpenAI",
-        "usage": "LLM推理(GPT-4/GPT-4o-mini用于研究智能体)",
-        "required": false,
-        "api_compatible": true,
-        "alternatives": ["Qwen (dashscope)", "vLLM本地部署"]
+    "llm": {
+      "required_providers": [
+        "OpenAI",
+        "本地vllm"
+      ],
+      "optional_providers": [
+        "Qwen"
+      ],
+      "embedding_models": {
+        "default": "FlagEmbedding/bge-base-en-v1.5",
+        "alternatives": [
+          "OpenAI text-embedding-3"
+        ],
+        "local_option": true
       },
-      {
-        "name": "Qwen (通义千问)",
-        "usage": "可选LLM推理(qwen-plus, qwen3-max)",
-        "required": false,
-        "api_compatible": true,
-        "code_evidence": {
-          "file": "config.py.example",
-          "details": "OPENAI_BASE_URL支持dashscope.aliyuncs.com兼容接口"
-        }
+      "llm_models": {
+        "default": "gpt-4o-mini",
+        "alternatives": [
+          "Qwen2.5",
+          "本地vllm"
+        ],
+        "local_option": true
       },
-      {
-        "name": "vLLM",
-        "usage": "可选本地模型推理(Qwen2.5等)",
-        "required": false,
-        "api_compatible": true,
-        "code_evidence": {
-          "file": "requirements.txt",
-          "details": "vllm>=0.6.0 (可选依赖)"
-        }
-      }
-    ],
-    "other_apis": []
+      "cost_optimization": [
+        "本地embedding",
+        "本地vllm推理",
+        "检索缓存"
+      ]
+    },
+    "object_storage": {
+      "required": true,
+      "use_case": [
+        "数据集存储",
+        "评估数据"
+      ]
+    }
   },
   "deployment": {
+    "complexity": 6,
+    "containerized": true,
+    "orchestration": [
+      "Docker"
+    ],
     "docker": {
-      "has_dockerfile": false,
-      "base_image": "需自建 - Python 3.8+ 或 CUDA base image(GPU模式)",
-      "multi_stage": false,
-      "size_estimate": "~3-5GB (含bge-m3模型) 或 ~1GB (API嵌入模式)"
+      "available": false,
+      "image_size": "2GB",
+      "multi_stage_build": true,
+      "base_image": "python:3.11"
     },
     "kubernetes": {
-      "ready": false,
-      "helm_chart": false,
-      "resource_limits": {
-        "cpu": "8-16 cores",
-        "memory": "8-16Gi",
-        "gpu": "optional (NVIDIA T4/A10 for bge-m3 acceleration)"
-      },
-      "notes": "研究项目,非生产K8s部署;需要PersistentVolume for索引和记忆文件"
+      "required": false,
+      "recommended": false,
+      "helm_chart_available": false,
+      "manifests_available": false,
+      "operators_available": false
     },
     "configuration": {
-      "env_vars": ["OPENAI_API_KEY", "OPENAI_BASE_URL"],
-      "config_files": ["config.py (从config.py.example复制)"],
-      "secrets_management": "config.py文件(不提交版本控制)"
+      "env_vars_count": 10,
+      "secrets_count": 3,
+      "config_files": [
+        "config文件"
+      ],
+      "complexity_level": "中等"
     },
     "observability": {
-      "logging": "Python标准logging + tqdm进度条",
-      "metrics": "无内置指标",
-      "tracing": "无分布式追踪",
-      "health_checks": "无"
+      "metrics_export": false,
+      "structured_logging": false,
+      "tracing_support": false,
+      "health_checks": false
+    },
+    "upgrade": {
+      "rolling_update_support": true,
+      "blue_green_support": false,
+      "migration_scripts_available": false,
+      "backward_compatible": true
     }
   },
   "huawei_cloud": {
+    "overall_difficulty": "容易",
     "recommended_services": {
-      "compute": {
-        "service": "ECS (弹性云服务器) 或 ModelArts Notebook",
-        "spec": "通用计算型 8vCPU/16GB RAM (CPU模式) 或 GPU实例 pi2.xlarge (T4 GPU)",
-        "justification": "bge-m3嵌入模型推理需要较强计算能力;vLLM需要GPU",
-        "npu_option": "Ascend 310P推理实例 - 需验证FlagEmbedding兼容性"
-      },
       "database": {
-        "service": "SFS (弹性文件服务) 或 EVS SSD",
-        "spec": "EVS SSD 100GB+ for 索引和记忆文件",
-        "justification": "FAISS索引+BM25索引+JSON记忆文件需要高性能文件存储",
-        "alternatives": [
-          "将FAISS替换为CSS(云搜索服务)中的向量检索",
-          "将文件存储迁移到GaussDB(for PostgreSQL) + pgvector"
-        ]
+        "primary": "OBS + ECS本地存储",
+        "vector_solution": "FAISS (CPU版本)",
+        "graph": "不需要"
       },
-      "storage": {
-        "service": "OBS (对象存储)",
-        "justification": "模型文件(bge-m3 ~1.5GB)存储和备份"
+      "cache": "不需要",
+      "object_storage": "OBS对象存储",
+      "compute": {
+        "primary": "ECS通用型 (8核16G)",
+        "ai_acceleration": "ModelArts在线服务 (可选)",
+        "auto_scaling": "AS弹性伸缩"
       },
-      "networking": {
-        "service": "VPC + NAT Gateway",
-        "justification": "外部LLM API访问(OpenAI/dashscope)"
-      },
-      "ai_services": {
-        "service": "ModelArts推理服务",
-        "justification": "部署bge-m3嵌入模型,通过api_url配置远程调用;部署vLLM推理服务",
-        "spec": "ModelArts Ascend 310P推理实例 or GPU推理实例"
+      "network": {
+        "vpc": true,
+        "elb": true,
+        "nat": false
       }
     },
     "cost_estimation": {
-      "monthly": {
-        "small": "$100-200 (8vCPU ECS CPU模式 + EVS 100GB)",
-        "medium": "$400-800 (GPU实例T4 + EVS 200GB + NAT + ModelArts)",
-        "large": "$1500-3000 (多GPU/NPU实例 + vLLM + ModelArts集群)"
+      "small_scale": {
+        "description": "研究评估场景",
+        "monthly_cost": "¥2,000-4,000",
+        "breakdown": {
+          "ECS 8核16G": "¥1,200",
+          "OBS 100GB": "¥50",
+          "VPC/带宽": "¥300",
+          "LLM API (OpenAI/盘古)": "¥1,000-2,500"
+        }
       },
-      "notes": "GPU/NPU实例为主要成本;使用CPU+API嵌入模式可大幅降低成本;vLLM本地部署需要大量GPU资源"
+      "medium_scale": {
+        "description": "生产应用场景",
+        "monthly_cost": "¥8,000-12,000",
+        "breakdown": {
+          "ECS 16核32G x 2": "¥4,800",
+          "ModelArts推理": "¥1,500",
+          "OBS 500GB": "¥250",
+          "ELB": "¥500",
+          "VPC/带宽": "¥800",
+          "LLM API": "¥2,000-5,000"
+        }
+      }
     },
-    "special_requirements": {
-      "embedding_model": "BAAI/bge-m3模型(~1.5GB)需预下载;支持通过api_url远程调用",
-      "faiss": "仅使用faiss-cpu,无GPU依赖;但大规模数据需考虑性能",
-      "pyserini": "BM25检索依赖pyserini(Java/Lucene),需要JVM运行环境",
-      "vllm": "可选vLLM本地推理,需要GPU/NPU资源和大量显存",
-      "devices_config": "需修改devices配置从'cuda:0'为'npu:0'或'cpu'"
-    },
+    "special_requirements": [
+      "FAISS使用CPU版本即可，无需GPU",
+      "评估数据集建议存储到OBS",
+      "本地vllm推理可降低LLM成本"
+    ],
     "architecture_recommendations": [
-      "将bge-m3嵌入模型部署到ModelArts推理服务,通过api_url远程调用",
-      "使用ECS 8vCPU实例运行GAM主程序(CPU模式,无GPU)",
-      "配置DenseRetrieverConfig.api_url指向ModelArts嵌入服务",
-      "使用dashscope(通义千问)API替代OpenAI降低延迟和成本",
-      "FAISS索引和BM25索引存储在EVS SSD上",
-      "使用OBS存储模型文件和数据备份",
-      "如需本地vLLM: 使用ModelArts训练/推理实例(Ascend 910B)",
-      "考虑将FAISS替换为华为云CSS向量检索获得托管服务体验",
-      "pyserini(Java)需要在容器中安装JDK,建议使用包含JDK的基础镜像"
+      "适合研究和评估场景，部署简单",
+      "FAISS CPU版本性能足够，无需GPU加速",
+      "建议使用盘古大模型或本地vllm降低LLM成本",
+      "Embedding可部署到ModelArts昇腾服务加速",
+      "评估数据集通过OBS管理，支持版本控制",
+      "生产环境建议使用AS自动伸缩应对突发流量"
     ]
   }
 }

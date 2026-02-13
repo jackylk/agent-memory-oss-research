@@ -91,6 +91,243 @@
         "Docker",
         "MCP Server"
       ]
+    },
+    "storage_detail": {
+      "vector_storage": {
+        "solution": "专用向量DB",
+        "database": "LanceDB / Qdrant",
+        "vector_dimension": 768,
+        "index_type": "HNSW",
+        "scale_requirement": "百万级"
+      },
+      "primary_database": {
+        "type": "向量数据库(LanceDB)",
+        "min_version": "0.25+",
+        "required_extensions": [],
+        "schema_isolation": "单租户",
+        "connection_pool": false
+      },
+      "graph_database": {},
+      "cache": {
+        "type": "Redis",
+        "min_version": "6.0",
+        "required_modules": [],
+        "persistence_required": true,
+        "persistence_strategy": "RDB"
+      },
+      "data_scale": {
+        "estimated_total": "50GB-500GB",
+        "per_user_avg": "200MB",
+        "growth_rate": "日增1GB",
+        "max_single_record": "50MB"
+      },
+      "performance": {
+        "vector_search_latency": "<50ms",
+        "qps_target": "1000",
+        "p95_latency": "<100ms",
+        "concurrent_connections": 200
+      }
+    },
+    "compute_detail": {
+      "cpu": {
+        "min_vcpu": 4,
+        "recommended_vcpu": 8,
+        "workload_type": "CPU密集型",
+        "instruction_set_requirements": [
+          "AVX2",
+          "AVX-512"
+        ]
+      },
+      "memory": {
+        "min_gb": 8,
+        "recommended_gb": 16,
+        "memory_intensive_ops": [
+          "压缩模型加载",
+          "向量索引",
+          "Embedding缓存"
+        ],
+        "oom_risk": "高"
+      },
+      "gpu": {
+        "required": false,
+        "recommended": true,
+        "gpu_models": [
+          "T4",
+          "A100",
+          "L4"
+        ],
+        "use_case": "训练和推理",
+        "vram_requirement": "16GB",
+        "cuda_dependency": {
+          "has_direct_cuda": true,
+          "cuda_version": "12.8+",
+          "cudnn_required": true,
+          "tensorrt_used": false,
+          "custom_cuda_kernels": false,
+          "gpu_libraries": [
+            "torch",
+            "nvidia-cuda-runtime-cu12",
+            "nvidia-cudnn-cu12"
+          ]
+        }
+      },
+      "scalability": {
+        "horizontal_scaling": true,
+        "stateless": false,
+        "session_persistence_required": true,
+        "auto_scaling": {
+          "supported": true,
+          "trigger_metrics": [
+            "GPU利用率",
+            "Memory",
+            "QPS"
+          ],
+          "scale_down_safe": false
+        }
+      },
+      "serverless": {
+        "suitable": false,
+        "cold_start_tolerance": "<10s",
+        "cold_start_actual": "15-30s (模型加载)",
+        "state_management": "DB+向量库状态",
+        "reasons": [
+          "模型加载时间长",
+          "GPU资源需求",
+          "向量索引需要预热"
+        ]
+      },
+      "concurrency": {
+        "model": "异步",
+        "async_framework": "asyncio",
+        "message_queue": {
+          "required": true,
+          "systems": [
+            "Redis Streams",
+            "Celery"
+          ],
+          "use_case": "异步压缩任务"
+        },
+        "long_connection": {
+          "websocket": false,
+          "sse": true,
+          "streaming": true
+        }
+      }
+    },
+    "ascend_npu": {
+      "compatibility_level": "需要工作量",
+      "framework_analysis": {
+        "framework": "PyTorch",
+        "framework_version": "2.8.0",
+        "ascend_support": true,
+        "ascend_version": "CANN 8.0 (支持PyTorch 2.x)"
+      },
+      "migration": {
+        "effort_level": "中(1-2周)",
+        "code_changes_required": [
+          "将torch.cuda替换为torch_npu",
+          "验证FlagEmbedding、transformers在NPU上运行",
+          "CUDA特定优化需要改为NPU优化",
+          "调整batch size和内存管理"
+        ],
+        "testing_effort": "需要完整的推理和压缩测试"
+      },
+      "blockers": [
+        "requirements-gpu.txt中大量CUDA依赖需要替换",
+        "triton依赖可能不兼容NPU"
+      ],
+      "performance_expectation": {
+        "expected_vs_gpu": "略低",
+        "bottlenecks": [
+          "Transformer推理速度",
+          "向量检索性能"
+        ]
+      },
+      "recommendation": "该项目有明确GPU依赖(requirements-gpu.txt)。迁移到昇腾NPU需要替换所有CUDA库为torch_npu，测试FlagEmbedding和transformers兼容性。建议使用ModelArts + 昇腾910B部署，预计1-2周适配工作。"
+    },
+    "external_services": {
+      "llm": {
+        "required_providers": [
+          "OpenAI",
+          "Anthropic",
+          "本地模型"
+        ],
+        "optional_providers": [
+          "LM Studio"
+        ],
+        "embedding_models": {
+          "default": "FlagEmbedding/bge-large-zh-v1.5",
+          "alternatives": [
+            "OpenAI text-embedding-3"
+          ],
+          "local_option": true
+        },
+        "llm_models": {
+          "default": "claude-3.5-sonnet",
+          "alternatives": [
+            "gpt-4",
+            "本地vllm"
+          ],
+          "local_option": true
+        },
+        "cost_optimization": [
+          "本地embedding",
+          "压缩减少token",
+          "MCP复用"
+        ]
+      },
+      "object_storage": {
+        "required": true,
+        "use_case": [
+          "PDF存储",
+          "原始记忆备份"
+        ]
+      },
+      "search_service": {
+        "type": "Tantivy (全文检索)",
+        "required": true
+      }
+    },
+    "deployment_detail": {
+      "complexity": 7,
+      "containerized": true,
+      "orchestration": [
+        "Kubernetes"
+      ],
+      "docker": {
+        "available": false,
+        "image_size": "3GB",
+        "multi_stage_build": true,
+        "base_image": "nvidia/cuda:12.8-cudnn9-runtime"
+      },
+      "kubernetes": {
+        "required": false,
+        "recommended": true,
+        "helm_chart_available": false,
+        "manifests_available": false,
+        "operators_available": false,
+        "min_k8s_version": "1.26"
+      },
+      "configuration": {
+        "env_vars_count": 15,
+        "secrets_count": 5,
+        "config_files": [
+          "config.py.example"
+        ],
+        "complexity_level": "复杂"
+      },
+      "observability": {
+        "metrics_export": false,
+        "structured_logging": false,
+        "tracing_support": false,
+        "health_checks": true
+      },
+      "upgrade": {
+        "rolling_update_support": true,
+        "blue_green_support": true,
+        "migration_scripts_available": false,
+        "backward_compatible": true
+      }
     }
   },
   "categories": {
@@ -114,5 +351,72 @@
       "name": "多视图索引检索系统",
       "description": "采用多视图索引架构(语义向量+词汇BM25+符号元数据)和在线语义合成机制,实现实时整合相关上下文为统一抽象表示,支持跨会话记忆持久化,与Claude、Cursor、LM Studio无缝集成。"
     }
-  ]
+  ],
+  "huawei_cloud": {
+    "overall_difficulty": "困难",
+    "recommended_services": {
+      "database": {
+        "primary": "自建LanceDB on ECS (SSD)",
+        "vector_solution": "自建Qdrant on ECS 或 LanceDB",
+        "graph": "不需要"
+      },
+      "cache": "DCS Redis 6.0 (持久化)",
+      "object_storage": "OBS对象存储",
+      "compute": {
+        "primary": "ModelArts训练/推理 (昇腾910B)",
+        "ai_acceleration": "昇腾910B NPU (需适配)",
+        "auto_scaling": "弹性推理服务"
+      },
+      "middleware": {
+        "message_queue": "DMS RabbitMQ (异步任务)"
+      },
+      "network": {
+        "vpc": true,
+        "elb": true,
+        "nat": false
+      }
+    },
+    "cost_estimation": {
+      "small_scale": {
+        "description": "100用户，压缩任务",
+        "monthly_cost": "¥6,000-10,000",
+        "breakdown": {
+          "ECS 8核16G (GPU g6.xlarge.4)": "¥3,500",
+          "自建Qdrant on ECS 4核8G": "¥800",
+          "DCS Redis 4GB": "¥400",
+          "OBS 100GB": "¥50",
+          "VPC/ELB": "¥500",
+          "LLM API": "¥1,000-3,000"
+        }
+      },
+      "medium_scale": {
+        "description": "1000用户，高频压缩",
+        "monthly_cost": "¥18,000-28,000",
+        "breakdown": {
+          "ModelArts 昇腾910B x 2": "¥8,000",
+          "ECS 16核32G (向量库)": "¥2,500",
+          "DCS Redis 16GB": "¥1,200",
+          "OBS 1TB": "¥500",
+          "DMS RabbitMQ": "¥800",
+          "ELB (性能型)": "¥800",
+          "VPC/带宽": "¥1,200",
+          "LLM API": "¥5,000-12,000"
+        }
+      }
+    },
+    "special_requirements": [
+      "需要GPU/NPU支持，需适配昇腾NPU (1-2周工作量)",
+      "LanceDB和Qdrant需要自建部署",
+      "大量CUDA依赖需要替换为torch_npu",
+      "建议使用ModelArts + 昇腾910B进行模型推理"
+    ],
+    "architecture_recommendations": [
+      "GPU密集型应用，建议使用ModelArts昇腾910B替代GPU降低成本",
+      "向量数据库LanceDB/Qdrant需自建，部署到SSD ECS实例",
+      "使用OBS存储原始PDF和备份数据",
+      "异步压缩任务通过DMS消息队列解耦",
+      "需要1-2周适配torch_npu，替换CUDA依赖",
+      "生产环境建议使用盘古大模型降低LLM成本"
+    ]
+  }
 }

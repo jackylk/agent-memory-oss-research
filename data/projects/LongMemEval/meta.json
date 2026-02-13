@@ -548,6 +548,179 @@
         "estimated_cost": "~$540/月",
         "advantages": "无承诺, 按需扩展, 最小出站费用"
       }
+    },
+    "storage_detail": {
+      "vector_storage": {
+        "solution": "内存向量检索(sentence-transformers + 自定义索引)",
+        "database": "内存(无外部向量DB)",
+        "vector_dimension": 4096,
+        "index_type": "Flat/线性扫描 (内存计算)",
+        "evidence": "requirements-full.txt: sentence-transformers==2.2.2; 支持GTE-Qwen2-7B(4096维), Stella V5(1024维), Contriever(768维); run_retrieval.py实现DenseRetrievalMaster类"
+      },
+      "primary_database": {
+        "type": "JSON文件存储",
+        "min_version": "不适用",
+        "required_extensions": [],
+        "connection_pooling": {},
+        "evidence": "数据集和结果均以JSON文件存储; 无数据库依赖; meta.json提到PostgreSQL仅用于可选的实验结果存储"
+      },
+      "graph_database": {
+        "required": false,
+        "type": "无",
+        "evidence": "纯检索+生成+评估流程,不涉及图数据库"
+      },
+      "cache": {
+        "type": "无",
+        "min_version": "不适用",
+        "required_modules": [],
+        "evidence": "无缓存机制; 每次运行重新计算"
+      },
+      "data_scale": {
+        "estimated_total": "LongMemEval_S: 115k tokens (~40会话); LongMemEval_M: ~500会话; 模型缓存100-500GB",
+        "per_user_avg": "不适用(研究基准测试)",
+        "evidence": "meta.json cloud_needs详细描述; 数据集本身较小但模型权重(Llama 70B ~140GB, GTE-7B ~14GB)占主要存储"
+      },
+      "performance": {
+        "vector_search_latency": "10-100ms (取决于检索器和数据规模)",
+        "qps_target": "不适用(批处理模式)",
+        "p95_latency": "不适用",
+        "concurrent_connections": "不适用"
+      }
+    },
+    "compute_detail": {
+      "cpu": {
+        "min_vcpu": 16,
+        "recommended_vcpu": 32,
+        "workload_type": "GPU密集型(模型推理) + CPU密集型(BM25检索)"
+      },
+      "memory": {
+        "min_gb": 32,
+        "recommended_gb": 64,
+        "memory_intensive_ops": [
+          "模型加载(Llama 70B ~140GB显存)",
+          "向量索引构建",
+          "BM25稀疏检索(10进程并行)"
+        ],
+        "oom_risk": "高-大型模型推理需要大量GPU显存和系统内存"
+      },
+      "gpu": {
+        "required": true,
+        "recommended": true,
+        "use_case": "训练和推理",
+        "cuda_dependency": {
+          "has_direct_cuda": true,
+          "custom_cuda_kernels": true,
+          "gpu_libraries": [
+            "torch (PyTorch 2.x)",
+            "flash-attn==2.6.3",
+            "vllm==0.5.3.post1",
+            "vllm-flash-attn==2.5.9.post1",
+            "sentence-transformers==2.2.2",
+            "transformers==4.43.3"
+          ],
+          "evidence": "requirements-full.txt: flash-attn==2.6.3, vllm==0.5.3.post1; run_retrieval.py: torch.device('cuda', gpu_id), torch.cuda.device_count(); serve_vllm.sh使用vLLM OpenAI兼容服务器; 需要A100 40/80GB GPU"
+        }
+      },
+      "scalability": {
+        "horizontal_scaling": true,
+        "stateless": true,
+        "auto_scaling_metrics": [
+          "GPU利用率",
+          "推理队列深度"
+        ]
+      },
+      "serverless": {
+        "suitable": false,
+        "cold_start_tolerance": "不可接受",
+        "reasons": [
+          "需要GPU常驻(模型加载时间分钟级)",
+          "大型模型权重(数十GB)",
+          "批处理任务运行数小时"
+        ]
+      },
+      "concurrency": {
+        "model": "多进程并行",
+        "async_framework": "multiprocessing (BM25) + vLLM异步推理",
+        "message_queue": {
+          "required": false,
+          "systems": []
+        },
+        "websocket": false,
+        "streaming": false
+      }
+    },
+    "ascend_npu": {
+      "compatibility_level": "困难",
+      "framework_analysis": {
+        "framework": "PyTorch + vLLM + FlashAttention",
+        "framework_version": "PyTorch 2.x, vLLM 0.5.3, flash-attn 2.6.3",
+        "ascend_support": false,
+        "cann_version": "CANN 8.0+ (PyTorch适配需要)"
+      },
+      "migration": {
+        "effort_level": "重大工作量",
+        "blockers": [
+          "vLLM不原生支持昇腾NPU (需要vLLM-ascend分支)",
+          "FlashAttention 2.6.3依赖CUDA自定义内核,无法直接运行在NPU上",
+          "vllm-flash-attn是CUDA专用库",
+          "sentence-transformers在NPU上需要MindSpore后端替代",
+          "多GPU tensor parallel推理需要适配昇腾HCCL通信库"
+        ],
+        "code_changes_required": [
+          "替换vLLM为vLLM-ascend或MindSpore Serving推理框架",
+          "替换FlashAttention为昇腾原生注意力优化(CANN FlashAttention)",
+          "修改run_retrieval.py中torch.cuda调用为torch_npu",
+          "调整tensor_parallel配置使用昇腾多卡通信",
+          "嵌入模型需迁移至MindSpore版本或使用ONNX中间格式"
+        ]
+      },
+      "recommendation": "该项目重度依赖CUDA生态(vLLM+FlashAttention+多GPU推理),迁移到昇腾NPU需要大量工作。建议: 1) 使用华为ModelArts MindIE作为推理引擎替代vLLM; 2) 对于GTE-Qwen2-7B等阿里模型,可尝试昇腾原生优化版本; 3) BM25和评估部分纯CPU运行,无需迁移; 4) 考虑混合方案: CPU/简单GPU任务在昇腾上运行, 重度推理任务仍使用NVIDIA GPU。"
+    },
+    "external_services": {
+      "llm": {
+        "providers": [
+          "OpenAI GPT-4o/GPT-4o-mini (评估)",
+          "自托管vLLM (Llama 3.1 8B/70B, Phi-3, Mistral)",
+          "Anthropic Claude (可选)",
+          "Google Gemini 1.5 Pro (可选)"
+        ],
+        "embedding_models": [
+          "BM25 (稀疏,rank-bm25)",
+          "Contriever (Facebook, 768维)",
+          "Stella V5 1.5B (1024维)",
+          "GTE-Qwen2-7B (阿里, 4096维, SOTA)"
+        ],
+        "local_model_support": true,
+        "cost_optimization": [
+          "自托管vLLM节省57%API成本",
+          "Spot/Preemptible GPU节省60-90%",
+          "INT8量化节省50% GPU",
+          "BM25零GPU成本稀疏检索"
+        ]
+      }
+    },
+    "deployment_detail": {
+      "complexity": 7,
+      "docker": {
+        "available": false,
+        "image_size": "~15GB+ (含CUDA运行时+模型依赖)",
+        "multi_stage_build": false
+      },
+      "kubernetes": {
+        "required": false,
+        "recommended": true,
+        "helm_available": false
+      },
+      "configuration": {
+        "env_vars_count": 3,
+        "secrets_count": 1,
+        "complexity_level": "复杂(需配置GPU环境+模型下载+vLLM服务)"
+      },
+      "observability": {
+        "metrics_export": false,
+        "structured_logging": false,
+        "health_checks": false
+      }
     }
   },
   "categories": {
@@ -589,5 +762,59 @@
       "name": "Chain-of-Notes优化方法",
       "description": "创新的两阶段生成方法(先为每个检索会话生成阅读笔记,再基于笔记回答),在LongMemEval_S上准确率提升6.7%(vs CoT),通过索引扩展机制(会话摘要、关键短语提取、用户事实提取、时间事件)实现Recall@5提升5-6%,为长上下文处理提供新思路。"
     }
-  ]
+  ],
+  "huawei_cloud": {
+    "overall_difficulty": "困难",
+    "recommended_services": {
+      "database": {
+        "primary": "华为云OBS (对象存储,数据集+模型权重+结果)",
+        "vector_solution": "内存检索(无需外部向量DB)"
+      },
+      "cache": "不需要",
+      "compute": {
+        "primary": "华为云ECS GPU实例 (昇腾910B或NVIDIA A100/V100)",
+        "ai_acceleration": "华为云ModelArts推理服务 (替代vLLM)"
+      },
+      "middleware": {}
+    },
+    "cost_estimation": {
+      "small_scale": {
+        "description": "研究实验(LongMemEval_S, 单次运行)",
+        "monthly_cost": "¥5,000-8,000",
+        "breakdown": {
+          "gpu_ecs": "¥3,000 (昇腾910B 32GB * 100小时)",
+          "cpu_ecs": "¥500 (32vCPU/64GB BM25检索)",
+          "storage_obs": "¥200 (500GB模型+数据)",
+          "openai_api": "¥500-2,000 (GPT-4o评估)",
+          "network": "¥200 (模型下载)"
+        }
+      },
+      "medium_scale": {
+        "description": "持续评估(每周运行, 多模型对比)",
+        "monthly_cost": "¥30,000-60,000",
+        "breakdown": {
+          "gpu_ecs": "¥20,000 (4x昇腾910B, 持续运行)",
+          "modelarts": "¥5,000 (推理服务)",
+          "storage_obs": "¥500 (2TB)",
+          "openai_api": "¥3,000-8,000",
+          "network": "¥500"
+        }
+      }
+    },
+    "special_requirements": [
+      "vLLM不原生支持昇腾NPU,需要使用vLLM-ascend分支或华为MindIE",
+      "FlashAttention需要替换为昇腾CANN原生实现",
+      "大型模型(Llama 70B)需要多卡昇腾910B并行推理",
+      "模型下载需要配置华为云ECS访问HuggingFace(可能需要代理)",
+      "建议使用华为云SWR(容器镜像服务)预构建GPU环境镜像"
+    ],
+    "architecture_recommendations": [
+      "CPU任务(BM25检索/评估)使用ECS通用实例, GPU推理使用昇腾910B实例,分离部署",
+      "使用华为云ModelArts Training Job管理GPU资源,按需申请释放",
+      "模型权重存储在华为云OBS,通过SFS Turbo高速文件系统挂载到计算节点",
+      "对于GTE-Qwen2-7B模型(阿里系),昇腾适配可能更好,优先尝试",
+      "评估部分(GPT-4o API调用)纯CPU运行,可使用华为云FunctionGraph Serverless",
+      "考虑使用华为盘古大模型API替代部分自托管LLM推理以简化部署"
+    ]
+  }
 }
