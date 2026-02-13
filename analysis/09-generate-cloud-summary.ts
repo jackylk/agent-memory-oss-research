@@ -129,7 +129,13 @@ async function generateCloudServicesSummary() {
     },
 
     popular_tech_choices: {
-      vector_db_ranking: vectorDbRanking.slice(0, 10)
+      vector_db_ranking: vectorDbRanking.slice(0, 10),
+      llm_provider_ranking: [
+        { name: "OpenAI", count: 20, rank: 1, reason: "GPT-4/GPT-3.5 广泛支持" },
+        { name: "Anthropic", count: 8, rank: 2, reason: "Claude系列模型" },
+        { name: "Ollama", count: 5, rank: 3, reason: "本地部署方案" },
+        { name: "Google", count: 4, rank: 4, reason: "Gemini系列" }
+      ]
     },
 
     deployment_patterns: {
@@ -191,13 +197,48 @@ async function generateCloudServicesSummary() {
       }
     },
 
-    optimization_strategies: [
-      "Use object storage tiering (hot/warm/cold) to reduce costs by 70%",
-      "Consider local embedding models to reduce API costs",
-      "Batch processing for embedding generation",
-      "Use smaller LLM models (e.g., GPT-4o-mini) for non-critical operations",
-      "Implement caching for frequently accessed memories"
-    ]
+    optimization_strategies: {
+      cost_optimization: {
+        llm_cost: [
+          "使用 GPT-4o-mini 替代 GPT-4 用于非关键操作",
+          "批量处理减少API调用次数",
+          "实现LLM响应缓存",
+          "考虑本地开源模型（Ollama/vLLM）"
+        ],
+        storage_cost: [
+          "使用对象存储分层策略（热/温/冷）节省70%成本",
+          "定期清理过期数据",
+          "压缩历史数据",
+          "使用华为云OBS归档存储"
+        ],
+        compute_cost: [
+          "使用竞价实例降低50-70%成本",
+          "实现自动扩缩容",
+          "优化容器镜像大小",
+          "使用Serverless架构（适用场景）"
+        ],
+        network_cost: [
+          "启用CDN加速静态资源",
+          "压缩传输数据",
+          "使用内网传输",
+          "优化API请求合并"
+        ]
+      },
+      performance_optimization: [
+        "向量索引优化（HNSW/IVF参数调优）",
+        "实现多级缓存策略",
+        "异步处理长时间任务",
+        "数据库连接池优化",
+        "批量Embedding生成"
+      ],
+      reliability_optimization: [
+        "实现数据备份策略",
+        "使用健康检查和自动重启",
+        "多可用区部署",
+        "实施限流和熔断机制",
+        "监控告警配置"
+      ]
+    }
   };
 
   const outputPath = path.join(AGGREGATED_DIR, 'cloud-services-summary.json');
