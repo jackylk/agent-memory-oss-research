@@ -1,0 +1,118 @@
+{
+  "name": "beads",
+  "repository_url": "https://github.com/steveyegge/beads",
+  "stars": 15900,
+  "primary_language": "Go",
+  "description": "分布式Git支持的图形问题追踪工具，为AI代理提供编码任务的持久化结构化记忆",
+  "last_updated": "2026-02-08",
+  "paper": {
+    "exists": false,
+    "title": "",
+    "venue": "",
+    "year": 0,
+    "url": ""
+  },
+  "benchmarks": {},
+  "tech_stack": {
+    "storage": [
+      "Dolt Database",
+      "Git",
+      "JSONL",
+      "Knowledge Graph"
+    ],
+    "frameworks": [
+      "Go",
+      "Version Control",
+      "Messaging"
+    ],
+    "languages": [
+      "Go"
+    ],
+    "embedding_models": []
+  },
+  "cloud_needs": {
+    "storage": {
+      "types": [
+        "Git-backed DB",
+        "JSONL",
+        "Graph"
+      ],
+      "requirements": [
+        "Version control",
+        "Cell-level merge",
+        "Native branching"
+      ]
+    },
+    "compute": {
+      "embedding": false,
+      "gpu_needed": false,
+      "estimated_requirements": "4-8 vCPUs for Go runtime"
+    },
+    "deployment": {
+      "complexity": 6,
+      "containerized": true,
+      "orchestration": [
+        "Docker",
+        "Git infrastructure"
+      ]
+    }
+  },
+  "categories": {
+    "tech_approach": [
+      "Git-native",
+      "Version Control",
+      "Coding Agents"
+    ],
+    "use_case": [
+      "Issue Tracking",
+      "Coding Tasks",
+      "Distributed Memory"
+    ]
+  },
+  "innovations": [
+    "Hash-based ID system preventing merge conflicts in distributed workflows",
+    "Version-controlled database (Dolt) enabling time-travel queries and branching",
+    "Git-native distribution eliminating need for central servers",
+    "Dependency-aware graph for multi-agent coordination",
+    "Semantic memory compression using LLMs (Claude Haiku) for closed issues",
+    "JSONL-based synchronization compatible with line-level Git merge strategies"
+  ],
+  "use_cases": [
+    {
+      "name": "AI Coding Agent Memory",
+      "description": "Persistent structured memory for long-running coding agents to maintain context across sessions without losing task dependencies",
+      "key_features": [
+        "Distributed state management",
+        "Dependency tracking",
+        "Version history for task auditing"
+      ]
+    },
+    {
+      "name": "Distributed Team Task Management",
+      "description": "Decentralized issue tracking for teams across multiple locations with automatic conflict resolution via Git",
+      "key_features": [
+        "Zero-conflict merge design",
+        "Offline-first capability",
+        "Branch-aware workflows"
+      ]
+    },
+    {
+      "name": "Long-term Project Planning",
+      "description": "Maintain project memory and knowledge graphs without data loss, supporting complex dependency relationships",
+      "key_features": [
+        "Full audit trails",
+        "Dependency visualization",
+        "Semantic compression of historical data"
+      ]
+    },
+    {
+      "name": "Multi-Agent Coordination",
+      "description": "Enable multiple AI agents to work on the same project with automatic dependency discovery and task decomposition",
+      "key_features": [
+        "Concurrent-safe ID generation",
+        "Dependency-aware scheduling",
+        "Conflict-free merging"
+      ]
+    }
+  ]
+}

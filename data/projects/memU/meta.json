@@ -1,0 +1,168 @@
+{
+  "name": "memU",
+  "repository_url": "https://github.com/NevaMind-AI/memU",
+  "stars": 8900,
+  "primary_language": "Python",
+  "description": "为24/7智能体设计的记忆系统，用于持续运行的AI代理，可不断学习并预见用户需求",
+  "last_updated": "2026-02",
+  "paper": {
+    "exists": false,
+    "title": "",
+    "venue": "",
+    "year": 0,
+    "url": ""
+  },
+  "benchmarks": {
+    "locomo": {
+      "score": 92.09,
+      "details": "92.09% average accuracy on Locomo benchmark across all reasoning tasks"
+    }
+  },
+  "tech_stack": {
+    "storage": [
+      "Hierarchical Memory",
+      "File System Metaphor"
+    ],
+    "frameworks": [
+      "Python",
+      "Proactive Workflows"
+    ],
+    "languages": [
+      "Python"
+    ],
+    "embedding_models": [
+      "OpenAI",
+      "Qwen",
+      "Voyage AI",
+      "OpenRouter"
+    ]
+  },
+  "cloud_needs": {
+    "storage": {
+      "types": [
+        "Hierarchical Database",
+        "Caching Layer"
+      ],
+      "requirements": [
+        "24/7 availability",
+        "Auto-organization"
+      ]
+    },
+    "compute": {
+      "embedding": true,
+      "gpu_needed": false,
+      "estimated_requirements": "Always-on compute, 4-8 vCPUs"
+    },
+    "deployment": {
+      "complexity": 7,
+      "containerized": true,
+      "orchestration": [
+        "24/7 Uptime",
+        "Kubernetes"
+      ]
+    }
+  },
+  "categories": {
+    "tech_approach": [
+      "24/7 Proactive",
+      "Hierarchical",
+      "Auto-organized"
+    ],
+    "use_case": [
+      "Proactive Agents",
+      "Information Recommendation",
+      "Email",
+      "Finance"
+    ]
+  },
+  "innovations": [
+    {
+      "name": "24/7 Proactive Monitoring",
+      "description": "Continuously monitors user interactions asynchronously, extracting knowledge and predicting user needs without blocking primary flows"
+    },
+    {
+      "name": "Hierarchical File System Memory",
+      "description": "Organizes memory as a distributed directory structure with cross-references and symbolic links, enabling intuitive multi-level knowledge organization"
+    },
+    {
+      "name": "Dual-Modal Hybrid Retrieval",
+      "description": "Combines fast vector embedding search (RAG) with LLM-based deep reasoning for balanced cost-accuracy tradeoffs"
+    },
+    {
+      "name": "Zero-Latency Memory Availability",
+      "description": "New memories are immediately queryable, supporting real-time context injection into agent responses without indexing delays"
+    },
+    {
+      "name": "Multi-Provider LLM Compatibility",
+      "description": "Seamless switching between OpenAI, Grok, Qwen, Doubao, and OpenRouter for flexible cost optimization and model selection"
+    },
+    {
+      "name": "Proactive Learning Pipeline",
+      "description": "Automatically extracts and categorizes knowledge, skills, behavioral patterns, and tool usage from continuous interaction streams"
+    },
+    {
+      "name": "Multi-Modal Resource Support",
+      "description": "Handles text conversations, documents, images, audio, and video in unified framework with modal-specific processing"
+    },
+    {
+      "name": "Workflow-Driven Architecture",
+      "description": "Customizable execution pipelines with step-level interceptors, enabling deep integration with external systems and business logic"
+    }
+  ],
+  "use_cases": [
+    {
+      "category": "Personal Assistants",
+      "examples": [
+        "Email management and smart replies",
+        "Calendar optimization with context-aware scheduling",
+        "Meeting preparation with historical context injection",
+        "Document summarization and knowledge synthesis"
+      ]
+    },
+    {
+      "category": "Business Intelligence",
+      "examples": [
+        "Continuous financial data monitoring and alerts",
+        "Trend analysis with multi-week historical context",
+        "Anomaly detection in metrics and KPIs",
+        "Competitive intelligence gathering"
+      ]
+    },
+    {
+      "category": "Customer Service",
+      "examples": [
+        "Proactive support recommendations",
+        "Customer lifetime value tracking",
+        "Churn prediction and retention intervention",
+        "Knowledge base auto-update from interactions"
+      ]
+    },
+    {
+      "category": "Research and Learning",
+      "examples": [
+        "Research paper analysis and cross-reference tracking",
+        "Topic evolution monitoring",
+        "Citation pattern learning",
+        "Knowledge graph building from unstructured data"
+      ]
+    },
+    {
+      "category": "Content Creation",
+      "examples": [
+        "Author style learning and consistency enforcement",
+        "Topic expertise development tracking",
+        "Audience preference pattern recognition",
+        "Editorial workflow optimization"
+      ]
+    },
+    {
+      "category": "Health and Wellness",
+      "examples": [
+        "Habit tracking with contextual recommendations",
+        "Health goal progress monitoring",
+        "Medication and appointment reminders",
+        "Personalized wellness insights"
+      ]
+    }
+  ]
+}

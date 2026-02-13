@@ -1,0 +1,33 @@
+{
+  "name": "agent-memory-analysis",
+  "version": "1.0.0",
+  "description": "Automated analysis scripts for Agent Memory projects",
+  "type": "module",
+  "scripts": {
+    "type-check": "tsc --noEmit",
+    "clone-projects": "tsx 01-clone-projects.ts",
+    "download-papers": "tsx 02-download-papers.ts",
+    "analyze-architecture": "tsx 03-analyze-architecture.ts",
+    "analyze-papers": "tsx 04-analyze-papers.ts",
+    "extract-cloud-needs": "tsx 05-extract-cloud-needs.ts",
+    "extract-pain-points": "tsx 06-extract-pain-points.ts",
+    "generate-aggregations": "tsx 07-generate-aggregations.ts",
+    "analyze-all": "tsx run-all.ts",
+    "test": "vitest",
+    "test:integration": "vitest run --config vitest.integration.config.ts"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.27.0",
+    "@octokit/rest": "^20.0.0",
+    "dotenv": "^16.3.0",
+    "pdf-parse": "^1.1.1",
+    "zod": "^3.22.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "@types/pdf-parse": "^1.1.4",
+    "tsx": "^4.7.0",
+    "typescript": "^5.3.3",
+    "vitest": "^1.1.0"
+  }
+}

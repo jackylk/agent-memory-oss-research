@@ -1,0 +1,733 @@
+{
+  "metadata": {
+    "collection_date": "2026-02-11",
+    "total_projects": 24,
+    "sources": [
+      "GitHub Topics",
+      "Medium Articles",
+      "Awesome-RAG Lists",
+      "Official Documentation"
+    ],
+    "search_keywords": [
+      "RAG framework",
+      "retrieval augmented generation",
+      "knowledge base for AI agents",
+      "document Q&A framework",
+      "semantic search framework"
+    ]
+  },
+  "projects": [
+    {
+      "name": "LangChain",
+      "repository_url": "https://github.com/langchain-ai/langchain",
+      "stars": 125000,
+      "forks": null,
+      "watchers": null,
+      "primary_language": "Python",
+      "description": "The platform for reliable agents. Comprehensive LLM application framework with interfaces for models, embeddings, and vector stores.",
+      "last_updated": "2026-01",
+      "vector_databases_supported": [
+        "Chroma",
+        "Pinecone",
+        "Qdrant",
+        "Weaviate",
+        "FAISS",
+        "Milvus",
+        "PGVector"
+      ],
+      "key_features": [
+        "Ecosystem & flexibility",
+        "Agent capabilities",
+        "Model flexibility",
+        "Integration options",
+        "Retrieval components",
+        "Evaluation tools",
+        "Chain composition"
+      ],
+      "suitable_for_agents": true,
+      "active_maintenance": true,
+      "multimodal_support": true,
+      "innovation_score": "high",
+      "category": "general_framework"
+    },
+    {
+      "name": "Dify",
+      "repository_url": "https://github.com/langgenius/dify",
+      "stars": 114000,
+      "forks": null,
+      "watchers": null,
+      "primary_language": "Python",
+      "description": "Production-ready platform for agentic workflow development. Open-source LLM app development platform with visual workflow builder and RAG pipeline.",
+      "last_updated": "2026-01",
+      "vector_databases_supported": [
+        "Multiple vector stores"
+      ],
+      "key_features": [
+        "No-code visual builder",
+        "Agentic RAG",
+        "Workflow orchestration",
+        "Model management",
+        "Observability features",
+        "Plugin marketplace",
+        "Fast growing community"
+      ],
+      "suitable_for_agents": true,
+      "active_maintenance": true,
+      "multimodal_support": true,
+      "innovation_score": "very_high",
+      "category": "visual_platform"
+    },
+    {
+      "name": "RAGFlow",
+      "repository_url": "https://github.com/infiniflow/ragflow",
+      "stars": 70000,
+      "forks": null,
+      "watchers": null,
+      "primary_language": "Python",
+      "description": "Leading open-source RAG engine that fuses cutting-edge RAG with Agent capabilities. Based on deep document understanding.",
+      "last_updated": "2026-01",
+      "vector_databases_supported": [
+        "Built-in vector store"
+      ],
+      "key_features": [
+        "Deep document understanding",
+        "Multimodal document support (Word, Excel, PDF, images, scanned copies)",
+        "Visual text chunking",
+        "Table extraction",
+        "Image extraction from Docx",
+        "Markdown and Docx in Q&A parsing",
+        "Grounded answers with citations"
+      ],
+      "suitable_for_agents": true,
+      "active_maintenance": true,
+      "multimodal_support": true,
+      "innovation_score": "high",
+      "category": "document_focused"
+    },
+    {
+      "name": "Pathway",
+      "repository_url": "https://github.com/pathwaycom/pathway",
+      "stars": 50000,
+      "forks": null,
+      "watchers": null,
+      "primary_language": "Python",
+      "description": "Python ETL framework for stream processing, real-time analytics, LLM pipelines, and RAG with differential dataflow.",
+      "last_updated": "2026-01",
+      "vector_databases_supported": [
+        "In-memory real-time Vector Index",
+        "Integration with external vector stores"
+      ],
+      "key_features": [
+        "Real-time data processing",
+        "60,000 messages per second",
+        "Sub-second latency",
+        "Differential Dataflow engine in Rust",
+        "Incremental computation",
+        "Auto-updates on document changes",
+        "Integrations with Sharepoint, Google Drive, S3, Kafka, PostgreSQL"
+      ],
+      "suitable_for_agents": true,
+      "active_maintenance": true,
+      "multimodal_support": false,
+      "innovation_score": "very_high",
+      "category": "real_time"
+    },
+    {
+      "name": "LlamaIndex",
+      "repository_url": "https://github.com/run-llama/llama_index",
+      "stars": 46500,
+      "forks": null,
+      "watchers": null,
+      "primary_language": "Python",
+      "description": "Leading framework for building LLM-powered agents over your data. Data connectivity and indexing framework.",
+      "last_updated": "2026-01",
+      "vector_databases_supported": [
+        "300+ integration packages",
+        "All major vector stores"
+      ],
+      "key_features": [
+        "Data connectors (APIs, PDFs, docs, SQL)",
+        "Data structure (indices, graphs)",
+        "Advanced retrieval/query interface",
+        "Framework integration",
+        "300+ LlamaIndex integration packages",
+        "High-level and low-level APIs",
+        "Module customization"
+      ],
+      "suitable_for_agents": true,
+      "active_maintenance": true,
+      "multimodal_support": true,
+      "innovation_score": "high",
+      "category": "general_framework"
+    },
+    {
+      "name": "Flowise",
+      "repository_url": "https://github.com/FlowiseAI/Flowise",
+      "stars": 39000,
+      "forks": null,
+      "watchers": null,
+      "primary_language": "TypeScript",
+      "description": "Build AI Agents, Visually. Low-code/no-code drag-and-drop tool for building LLM apps on LangChain.",
+      "last_updated": "2026-01",
+      "vector_databases_supported": [
+        "All LangChain-supported vector stores"
+      ],
+      "key_features": [
+        "Visual LangChain builder",
+        "Drag-and-drop interface",
+        "No-code development",
+        "Visual flow design",
+        "Component marketplace",
+        "Easy prototyping"
+      ],
+      "suitable_for_agents": true,
+      "active_maintenance": true,
+      "multimodal_support": true,
+      "innovation_score": "medium",
+      "category": "visual_platform"
+    },
+    {
+      "name": "Quivr",
+      "repository_url": "https://github.com/QuivrHQ/quivr",
+      "stars": 28000,
+      "forks": null,
+      "watchers": null,
+      "primary_language": "Python",
+      "description": "Opiniated RAG for integrating GenAI in your apps. Your GenAI Second Brain - personal productivity assistant.",
+      "last_updated": "2026-01",
+      "vector_databases_supported": [
+        "PGVector",
+        "Faiss"
+      ],
+      "key_features": [
+        "Second brain concept",
+        "Personal productivity assistant",
+        "Multi-file support (Text, Markdown, PDF, Powerpoint, Excel, CSV, Word, Audio, Video)",
+        "Flexible LLM support (GPT4, Groq, Llama)",
+        "API integration (Anthropic, OpenAI, Mistral)",
+        "Local model support via Ollama",
+        "User sharing capabilities"
+      ],
+      "suitable_for_agents": true,
+      "active_maintenance": true,
+      "multimodal_support": true,
+      "innovation_score": "high",
+      "category": "personal_assistant"
+    },
+    {
+      "name": "LightRAG",
+      "repository_url": "https://github.com/HKUDS/LightRAG",
+      "stars": 27000,
+      "forks": null,
+      "watchers": null,
+      "primary_language": "Python",
+      "description": "Simple and Fast Retrieval-Augmented Generation with graph-based text indexing and dual-level retrieval.",
+      "last_updated": "2025-12",
+      "vector_databases_supported": [
+        "Vector database",
+        "Graph database (Neo4j)"
+      ],
+      "key_features": [
+        "Graph-based retrieval",
+        "Dual-level retrieval framework",
+        "Low-level and high-level information capture",
+        "Multi-hop subgraph extraction",
+        "Key-value data structures",
+        "Fast and precise retrieval",
+        "Cost-effective"
+      ],
+      "suitable_for_agents": true,
+      "active_maintenance": true,
+      "multimodal_support": false,
+      "innovation_score": "very_high",
+      "category": "graph_rag"
+    },
+    {
+      "name": "Haystack",
+      "repository_url": "https://github.com/deepset-ai/haystack",
+      "stars": 24000,
+      "forks": null,
+      "watchers": null,
+      "primary_language": "Python",
+      "description": "AI orchestration framework to build customizable, production-ready LLM applications. Best suited for RAG and question answering.",
+      "last_updated": "2026-01",
+      "vector_databases_supported": [
+        "All major vector databases",
+        "Modular design for any vector DB"
+      ],
+      "key_features": [
+        "Enterprise maturity",
+        "Modular component architecture",
+        "Production-ready",
+        "Pipeline orchestration",
+        "Model, vector DB, and file converter connections",
+        "Advanced retrieval methods",
+        "Extensive documentation"
+      ],
+      "suitable_for_agents": true,
+      "active_maintenance": true,
+      "multimodal_support": true,
+      "innovation_score": "high",
+      "category": "general_framework"
+    },
+    {
+      "name": "Mem0",
+      "repository_url": "https://github.com/mem0ai/mem0",
+      "stars": 21000,
+      "forks": null,
+      "watchers": null,
+      "primary_language": "Python",
+      "description": "Universal memory layer for AI Agents. Enhances AI assistants with intelligent memory for personalized interactions.",
+      "last_updated": "2026-01",
+      "vector_databases_supported": [
+        "Multiple vector stores"
+      ],
+      "key_features": [
+        "Long-term memory",
+        "Short-term memory",
+        "Semantic memory",
+        "Episodic memory",
+        "Single-line integration",
+        "Support for OpenAI, LangGraph, CrewAI",
+        "Python and JS SDKs",
+        "Persistent memory across sessions"
+      ],
+      "suitable_for_agents": true,
+      "active_maintenance": true,
+      "multimodal_support": false,
+      "innovation_score": "very_high",
+      "category": "memory_layer"
+    },
+    {
+      "name": "txtai",
+      "repository_url": "https://github.com/neuml/txtai",
+      "stars": 10000,
+      "forks": null,
+      "watchers": null,
+      "primary_language": "Python",
+      "description": "All-in-one AI framework for semantic search, LLM orchestration and language model workflows.",
+      "last_updated": "2026-01",
+      "vector_databases_supported": [
+        "Built-in embeddings database (sparse and dense vectors)",
+        "Graph networks",
+        "Relational databases"
+      ],
+      "key_features": [
+        "All-in-one simplicity",
+        "Vector search with SQL",
+        "Object storage",
+        "Topic modeling",
+        "Graph analysis",
+        "Multimodal indexing (text, documents, audio, images, video)",
+        "Natural language queries",
+        "LLM pipelines",
+        "Agents"
+      ],
+      "suitable_for_agents": true,
+      "active_maintenance": true,
+      "multimodal_support": true,
+      "innovation_score": "high",
+      "category": "all_in_one"
+    },
+    {
+      "name": "Cognita",
+      "repository_url": "https://github.com/truefoundry/cognita",
+      "stars": 8000,
+      "forks": null,
+      "watchers": null,
+      "primary_language": "Python",
+      "description": "RAG Framework for building modular, open source applications for production by TrueFoundry with MLOps focus.",
+      "last_updated": "2026-01",
+      "vector_databases_supported": [
+        "Multiple vector stores"
+      ],
+      "key_features": [
+        "MLOps integration",
+        "Modular architecture",
+        "Host multiple RAG systems",
+        "Central reusable repository of components",
+        "UI for non-technical users",
+        "Fully API-driven design",
+        "Incremental indexing",
+        "Production-ready deployment"
+      ],
+      "suitable_for_agents": true,
+      "active_maintenance": true,
+      "multimodal_support": false,
+      "innovation_score": "high",
+      "category": "mlops_focused"
+    },
+    {
+      "name": "Verba",
+      "repository_url": "https://github.com/weaviate/Verba",
+      "stars": 5000,
+      "forks": null,
+      "watchers": null,
+      "primary_language": "Python",
+      "description": "Retrieval Augmented Generation chatbot powered by Weaviate. End-to-end RAG interface.",
+      "last_updated": "2025-12",
+      "vector_databases_supported": [
+        "Weaviate"
+      ],
+      "key_features": [
+        "Community-driven",
+        "Seamless data import (.txt, .md, .pdf)",
+        "Chunking and vectorization",
+        "Hybrid search",
+        "Weaviate's Generative Search",
+        "Semantic caching",
+        "Local, Docker, and Cloud deployment options"
+      ],
+      "suitable_for_agents": true,
+      "active_maintenance": true,
+      "multimodal_support": false,
+      "innovation_score": "medium",
+      "category": "weaviate_focused"
+    },
+    {
+      "name": "R2R",
+      "repository_url": "https://github.com/SciPhi-AI/R2R",
+      "stars": 4000,
+      "forks": null,
+      "watchers": null,
+      "primary_language": "Python",
+      "description": "SoTA production-ready AI retrieval system. Agentic RAG with a RESTful API.",
+      "last_updated": "2026-01",
+      "vector_databases_supported": [
+        "Multiple vector stores"
+      ],
+      "key_features": [
+        "Production-ready",
+        "RESTful API",
+        "Multimodal ingestion (.txt, .pdf, .json, .png, .mp3)",
+        "Hybrid search with reciprocal rank fusion",
+        "Knowledge graphs",
+        "Deep Research API",
+        "Multi-step reasoning",
+        "Comprehensive document management"
+      ],
+      "suitable_for_agents": true,
+      "active_maintenance": true,
+      "multimodal_support": true,
+      "innovation_score": "high",
+      "category": "production_rag"
+    },
+    {
+      "name": "PrivateGPT",
+      "repository_url": "https://github.com/zylon-ai/private-gpt",
+      "stars": 3500,
+      "forks": null,
+      "watchers": null,
+      "primary_language": "Python",
+      "description": "Interact with your documents using GPT, 100% privately, no data leaks. Local RAG system.",
+      "last_updated": "2026-01",
+      "vector_databases_supported": [
+        "Local vector stores"
+      ],
+      "key_features": [
+        "100% private",
+        "No data leaks",
+        "Local execution",
+        "FastAPI-based API",
+        "OpenAI API scheme compatible",
+        "LlamaIndex-based RAG pipeline",
+        "Local document ingestion",
+        "Ollama integration"
+      ],
+      "suitable_for_agents": true,
+      "active_maintenance": true,
+      "multimodal_support": false,
+      "innovation_score": "medium",
+      "category": "privacy_focused"
+    },
+    {
+      "name": "Onyx (formerly Danswer)",
+      "repository_url": "https://github.com/onyx-dot-app/onyx",
+      "stars": 3000,
+      "forks": null,
+      "watchers": null,
+      "primary_language": "Python",
+      "description": "Open Source AI Platform - AI Chat with advanced features. Enterprise search and AI assistant connected to company's docs, apps, and people.",
+      "last_updated": "2026-01",
+      "vector_databases_supported": [
+        "Advanced vector search"
+      ],
+      "key_features": [
+        "Enterprise search",
+        "Connectors to 40+ knowledge sources",
+        "SSO (OIDC/SAML/OAuth2)",
+        "RBAC",
+        "Document permissioning",
+        "Agents",
+        "Web Search",
+        "MCP",
+        "Deep Research",
+        "Scales to tens of millions of documents"
+      ],
+      "suitable_for_agents": true,
+      "active_maintenance": true,
+      "multimodal_support": true,
+      "innovation_score": "high",
+      "category": "enterprise"
+    },
+    {
+      "name": "AutoRAG",
+      "repository_url": "https://github.com/Marker-Inc-Korea/AutoRAG",
+      "stars": 2000,
+      "forks": null,
+      "watchers": null,
+      "primary_language": "Python",
+      "description": "Open-Source Framework for RAG Evaluation & Optimization with AutoML-Style Automation.",
+      "last_updated": "2025-12",
+      "vector_databases_supported": [
+        "Multiple vector stores"
+      ],
+      "key_features": [
+        "Auto optimization",
+        "AutoML-style automation",
+        "Greedy algorithm for pipeline search",
+        "Modular node architecture",
+        "Evaluation framework",
+        "Dynamic node selection",
+        "Optimal pipeline discovery",
+        "Automatic evaluation with own data"
+      ],
+      "suitable_for_agents": true,
+      "active_maintenance": true,
+      "multimodal_support": false,
+      "innovation_score": "very_high",
+      "category": "optimization"
+    },
+    {
+      "name": "FastRAG",
+      "repository_url": "https://github.com/IntelLabs/fastRAG",
+      "stars": 1500,
+      "forks": null,
+      "watchers": null,
+      "primary_language": "Python",
+      "description": "Efficient Retrieval Augmentation and Generation Framework by Intel Labs. Optimized for Intel hardware.",
+      "last_updated": "2025-10",
+      "vector_databases_supported": [
+        "Multiple vector stores"
+      ],
+      "key_features": [
+        "Intel hardware optimization",
+        "IPEX integration",
+        "Optimum Intel and Optimum-Habana",
+        "Fast lexical retrieval with BM25",
+        "Late-interaction dense retrieval with PLAID",
+        "ColBERT ranking",
+        "Quantized re-rankers",
+        "100% Haystack compatible"
+      ],
+      "suitable_for_agents": true,
+      "active_maintenance": false,
+      "multimodal_support": false,
+      "innovation_score": "high",
+      "category": "optimization"
+    },
+    {
+      "name": "RAG-Anything",
+      "repository_url": "https://github.com/HKUDS/RAG-Anything",
+      "stars": 1200,
+      "forks": null,
+      "watchers": null,
+      "primary_language": "Python",
+      "description": "All-in-One RAG Framework with comprehensive multimodal document processing capabilities.",
+      "last_updated": "2025-12",
+      "vector_databases_supported": [
+        "Multiple vector stores"
+      ],
+      "key_features": [
+        "All-in-One approach",
+        "Multimodal document processing",
+        "Advanced parsing",
+        "Comprehensive RAG system",
+        "Integration with LightRAG"
+      ],
+      "suitable_for_agents": true,
+      "active_maintenance": true,
+      "multimodal_support": true,
+      "innovation_score": "high",
+      "category": "multimodal"
+    },
+    {
+      "name": "localGPT",
+      "repository_url": "https://github.com/PromtEngineer/localGPT",
+      "stars": 1000,
+      "forks": null,
+      "watchers": null,
+      "primary_language": "Python",
+      "description": "Chat with your documents on your local device using GPT models. No data leaves your device and 100% private.",
+      "last_updated": "2025-12",
+      "vector_databases_supported": [
+        "Local FAISS"
+      ],
+      "key_features": [
+        "100% local execution",
+        "Hybrid search engine",
+        "Semantic similarity",
+        "Keyword matching",
+        "Late Chunking",
+        "Long-context precision",
+        "Privacy-focused"
+      ],
+      "suitable_for_agents": true,
+      "active_maintenance": true,
+      "multimodal_support": false,
+      "innovation_score": "medium",
+      "category": "privacy_focused"
+    },
+    {
+      "name": "RAG Techniques",
+      "repository_url": "https://github.com/NirDiamant/RAG_Techniques",
+      "stars": 8000,
+      "forks": null,
+      "watchers": null,
+      "primary_language": "Python",
+      "description": "Repository showcasing various advanced techniques for RAG systems. Combines information retrieval with generative models.",
+      "last_updated": "2026-01",
+      "vector_databases_supported": [
+        "Educational - various examples"
+      ],
+      "key_features": [
+        "Advanced RAG techniques",
+        "Educational resource",
+        "Multiple implementation examples",
+        "Best practices",
+        "Technique comparison"
+      ],
+      "suitable_for_agents": true,
+      "active_maintenance": true,
+      "multimodal_support": false,
+      "innovation_score": "medium",
+      "category": "educational"
+    },
+    {
+      "name": "Awesome-RAG (Danielskry)",
+      "repository_url": "https://github.com/Danielskry/Awesome-RAG",
+      "stars": 5000,
+      "forks": null,
+      "watchers": null,
+      "primary_language": "Markdown",
+      "description": "Awesome list of Retrieval-Augmented Generation applications in Generative AI. Curated resource map.",
+      "last_updated": "2026-01",
+      "vector_databases_supported": [
+        "List of resources"
+      ],
+      "key_features": [
+        "Comprehensive curated list",
+        "Tools and frameworks catalog",
+        "Techniques documentation",
+        "Learning materials",
+        "Community resource"
+      ],
+      "suitable_for_agents": false,
+      "active_maintenance": true,
+      "multimodal_support": false,
+      "innovation_score": "low",
+      "category": "resource_list"
+    },
+    {
+      "name": "Awesome-GraphRAG",
+      "repository_url": "https://github.com/DEEP-PolyU/Awesome-GraphRAG",
+      "stars": 2000,
+      "forks": null,
+      "watchers": null,
+      "primary_language": "Markdown",
+      "description": "Curated list of resources on graph-based retrieval-augmented generation including surveys, papers, and benchmarks.",
+      "last_updated": "2025-12",
+      "vector_databases_supported": [
+        "List of resources"
+      ],
+      "key_features": [
+        "Graph-based RAG focus",
+        "Academic resources",
+        "Benchmarks",
+        "Open source projects catalog",
+        "Research papers"
+      ],
+      "suitable_for_agents": false,
+      "active_maintenance": true,
+      "multimodal_support": false,
+      "innovation_score": "low",
+      "category": "resource_list"
+    },
+    {
+      "name": "Awesome-RAG-Tools",
+      "repository_url": "https://github.com/hasura/awesome-RAG-tools",
+      "stars": 1500,
+      "forks": null,
+      "watchers": null,
+      "primary_language": "Markdown",
+      "description": "Community curated list of awesome tools that let you do RAG in your AI application.",
+      "last_updated": "2025-12",
+      "vector_databases_supported": [
+        "List of resources"
+      ],
+      "key_features": [
+        "Community-driven",
+        "Tool catalog",
+        "Implementation guides",
+        "Integration examples"
+      ],
+      "suitable_for_agents": false,
+      "active_maintenance": true,
+      "multimodal_support": false,
+      "innovation_score": "low",
+      "category": "resource_list"
+    }
+  ],
+  "analysis_summary": {
+    "top_frameworks_by_stars": [
+      "LangChain (125K)",
+      "Dify (114K)",
+      "RAGFlow (70K)",
+      "Pathway (50K)",
+      "LlamaIndex (46.5K)"
+    ],
+    "most_innovative": [
+      "Pathway - Real-time differential dataflow",
+      "LightRAG - Graph-based dual-level retrieval",
+      "Mem0 - Universal memory layer for agents",
+      "AutoRAG - Auto optimization framework",
+      "Dify - Fast-growing visual platform"
+    ],
+    "best_for_agents": [
+      "LangChain - Most comprehensive agent toolkit",
+      "Mem0 - Specialized memory layer",
+      "LlamaIndex - Data connectivity focus",
+      "Pathway - Real-time processing",
+      "RAGFlow - Deep document understanding"
+    ],
+    "multimodal_leaders": [
+      "RAGFlow - Comprehensive document types",
+      "Quivr - Text, Audio, Video support",
+      "txtai - All content types",
+      "RAG-Anything - Multimodal processing",
+      "R2R - Multimodal ingestion"
+    ],
+    "enterprise_ready": [
+      "Haystack - Mature and production-ready",
+      "Onyx/Danswer - Enterprise search with RBAC",
+      "R2R - Production-ready with REST API",
+      "Cognita - MLOps integration",
+      "LangChain - Battle-tested in production"
+    ],
+    "privacy_focused": [
+      "PrivateGPT - 100% local",
+      "localGPT - No data leaves device",
+      "Ollama-based solutions"
+    ],
+    "trends_2026": [
+      "Visual/no-code platforms gaining traction (Dify, Flowise)",
+      "Graph-based retrieval emerging (LightRAG, GraphRAG)",
+      "Real-time processing becoming critical (Pathway)",
+      "Memory layers for agents (Mem0)",
+      "Auto-optimization frameworks (AutoRAG)",
+      "Multimodal document understanding (RAGFlow, RAG-Anything)",
+      "Enterprise features (RBAC, SSO, permissioning)",
+      "Privacy and local execution options"
+    ]
+  }
+}

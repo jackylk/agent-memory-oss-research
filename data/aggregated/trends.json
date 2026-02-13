@@ -1,0 +1,74 @@
+[
+  {
+    "name": "Total Agent Memory Projects",
+    "growth_rate": 0,
+    "project_count": 25,
+    "description": "Total number of analyzed agent memory projects in the ecosystem"
+  },
+  {
+    "name": "Production-Ready Platforms Growing",
+    "growth_rate": 85,
+    "project_count": 7,
+    "description": "Mature platforms (mem0, letta, graphiti) showing strong adoption with 10K+ stars"
+  },
+  {
+    "name": "Explosive New Entrants (2026)",
+    "growth_rate": 150,
+    "project_count": 5,
+    "description": "Recent projects (claude-mem 27K stars in 2 days, SimpleMem, memtrace, easymemory) showing explosive growth"
+  },
+  {
+    "name": "Benchmark Standardization",
+    "growth_rate": 50,
+    "project_count": 5,
+    "description": "LoCoMo (ACL 2024) and LongMemEval (ICLR 2025) becoming standard evaluation benchmarks"
+  },
+  {
+    "name": "Academic Research Activity",
+    "growth_rate": 40,
+    "project_count": 8,
+    "description": "Growing academic interest with NeurIPS 2025, ICLR 2026, ACL 2024 acceptances"
+  },
+  {
+    "name": "Vector Search Dominance",
+    "growth_rate": 60,
+    "project_count": 18,
+    "description": "72% of projects use vector databases, indicating semantic search as primary approach"
+  },
+  {
+    "name": "Knowledge Graph Hybrid Approach",
+    "growth_rate": 45,
+    "project_count": 8,
+    "description": "32% combining knowledge graphs with vectors for enhanced reasoning capabilities"
+  },
+  {
+    "name": "Privacy-Focused Local Deployment",
+    "growth_rate": 70,
+    "project_count": 3,
+    "description": "Emerging trend toward 100% local deployment (easymemory, claude-mem) for data privacy"
+  },
+  {
+    "name": "Compression & Efficiency",
+    "growth_rate": 55,
+    "project_count": 4,
+    "description": "Focus on token reduction (90% with mem0) and semantic compression (SimpleMem)"
+  },
+  {
+    "name": "Framework Integration Ecosystem",
+    "growth_rate": 50,
+    "project_count": 8,
+    "description": "Deep integration with LangChain, CrewAI, MCP protocol becoming standard"
+  },
+  {
+    "name": "Multi-Agent Memory Sharing",
+    "growth_rate": 42,
+    "project_count": 6,
+    "description": "Growing support for collaborative memory across multiple agents"
+  },
+  {
+    "name": "Temporal Modeling Innovation",
+    "growth_rate": 38,
+    "project_count": 3,
+    "description": "Bi-temporal approaches (graphiti) and time-series focus (memtrace) emerging"
+  }
+]

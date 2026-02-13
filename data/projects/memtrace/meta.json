@@ -1,0 +1,241 @@
+{
+  "name": "memtrace",
+  "repository_url": "https://github.com/Basekick-Labs/memtrace",
+  "stars": 5,
+  "primary_language": "Go",
+  "description": "LLM不可知的AI代理记忆层，无需嵌入或向量数据库 - 仅提供快速、结构化、时间序列记忆，可作为纯文本使用",
+  "last_updated": "2026-02-07",
+  "paper": {
+    "exists": false,
+    "title": "",
+    "venue": "",
+    "year": 0,
+    "url": ""
+  },
+  "benchmarks": {},
+  "tech_stack": {
+    "storage": [
+      "Arc Database",
+      "Time-series"
+    ],
+    "frameworks": [
+      "Go",
+      "Python SDK",
+      "TypeScript SDK",
+      "MCP Server"
+    ],
+    "languages": [
+      "Go"
+    ],
+    "embedding_models": []
+  },
+  "cloud_needs": {
+    "storage": {
+      "types": [
+        "Arc Time-Series Database",
+        "SQLite Metadata",
+        "Block Storage (SSD)"
+      ],
+      "requirements": [
+        "Temporal queries",
+        "Session context",
+        "No vector DB",
+        "Persistent volumes for SQLite",
+        "Parquet columnar storage"
+      ],
+      "estimated_size": {
+        "small": "< 1GB (1K memories/day)",
+        "medium": "10-100GB (100K memories/day)",
+        "large": "100GB-1TB (1M+ memories/day)"
+      },
+      "compression": "5-10x via Parquet",
+      "backup_strategy": "Daily SQLite backup + Arc Parquet file backup to S3/GCS"
+    },
+    "compute": {
+      "embedding": false,
+      "gpu_needed": false,
+      "cpu_requirements": {
+        "small": "2 vCPUs",
+        "medium": "4-8 vCPUs",
+        "large": "16-32 vCPUs"
+      },
+      "memory_requirements": {
+        "minimum": "512MB RAM",
+        "recommended": "2-4GB RAM",
+        "peak_buffer": "100MB (10K record write buffer)"
+      },
+      "justification": "Go runtime efficiency, no ML workloads, write batching parallelism",
+      "scaling": "Horizontal (stateless) + vertical (write throughput)"
+    },
+    "network": {
+      "bandwidth": {
+        "small": "< 100 Kbps (1-10 writes/sec)",
+        "medium": "1-5 Mbps (10-100 writes/sec)",
+        "large": "10-50 Mbps (100-1000 writes/sec)"
+      },
+      "latency_requirements": {
+        "write": "< 100ms (buffered)",
+        "query": "10-200ms (Arc SQL)",
+        "session_context": "50-500ms (aggregation)"
+      },
+      "ports": {
+        "api": "9100 (HTTP/HTTPS)",
+        "arc_internal": "8000 (HTTP to Arc DB)"
+      },
+      "tls": "Recommended via reverse proxy (Nginx, Caddy)"
+    },
+    "database": {
+      "primary": {
+        "type": "Arc Time-Series Database",
+        "deployment": "Self-hosted Docker or VM",
+        "connection": "HTTP API with API key auth",
+        "concurrency": "10 idle connections per instance",
+        "alternatives": [
+          "InfluxDB Cloud (adapter required)",
+          "TimescaleDB (SQL adapter required)",
+          "ClickHouse (medium effort)",
+          "QuestDB (medium effort)"
+        ]
+      },
+      "metadata": {
+        "type": "SQLite",
+        "size": "< 10MB",
+        "persistence": "File-based, requires persistent volume",
+        "ha_limitation": "Single-file, not HA-compatible",
+        "ha_solution": "Migrate to PostgreSQL or MySQL (requires code changes)"
+      }
+    },
+    "deployment": {
+      "complexity": 4,
+      "containerized": true,
+      "orchestration": [
+        "Docker",
+        "Kubernetes",
+        "Docker Compose (dev)"
+      ],
+      "deployment_models": {
+        "single_vm": {
+          "use_case": "Development, small teams",
+          "cost": "$20-50/month",
+          "specs": "4 vCPU, 4GB RAM"
+        },
+        "kubernetes": {
+          "use_case": "Production, high availability",
+          "cost": "$500-2000/month",
+          "features": "Auto-scaling, rolling updates, health checks"
+        },
+        "hybrid_cloud": {
+          "use_case": "Data sovereignty, compliance",
+          "setup": "Memtrace in cloud + Arc on-premises via VPN"
+        }
+      },
+      "not_recommended": [
+        "Serverless/FaaS (Lambda, Cloud Functions) - requires persistent state",
+        "Managed vector databases - unnecessary"
+      ]
+    },
+    "cost_analysis": {
+      "small_deployment": {
+        "workload": "1-5 agents, 1K memories/day",
+        "monthly_cost": "$16 (AWS t3.small + 10GB EBS)"
+      },
+      "medium_deployment": {
+        "workload": "10-50 agents, 100K memories/day",
+        "monthly_cost": "$153 (2x t3.medium + t3.large Arc + ALB)"
+      },
+      "large_deployment": {
+        "workload": "100+ agents, 1M memories/day",
+        "monthly_cost": "$1,326 (5x t3.xlarge + 3x r6g.xlarge Arc cluster)"
+      },
+      "comparison_vs_vector_solutions": {
+        "memtrace": "$153/month (100K memories/day)",
+        "pinecone": "$120-480/month (infra + embedding API)",
+        "weaviate_cloud": "$150-600/month (infra + embedding API)",
+        "savings": "50-70% cheaper than vector solutions"
+      },
+      "cost_drivers": [
+        "No embedding API costs",
+        "No vector storage overhead (10-50x smaller)",
+        "Simple architecture = lower ops overhead"
+      ]
+    },
+    "operational_requirements": {
+      "monitoring": {
+        "health_endpoints": ["/health (liveness)", "/ready (Arc connectivity)"],
+        "recommended_metrics": [
+          "memtrace_writes_total",
+          "memtrace_queries_total",
+          "memtrace_buffer_size",
+          "memtrace_arc_latency_seconds"
+        ],
+        "logging": "Structured JSON to stdout (ELK, Datadog, CloudWatch)"
+      },
+      "backup_recovery": {
+        "rto": "< 15 minutes (container restart + volume mount)",
+        "rpo": "1 second (flush interval) to 24 hours (backup interval)",
+        "sqlite_backup": "Daily file copy",
+        "arc_backup": "Parquet files to S3/GCS"
+      },
+      "configuration": {
+        "method": "TOML file + environment variables",
+        "secrets": "AWS Secrets Manager, GCP Secret Manager, Vault",
+        "hot_reload": "Not supported - requires restart"
+      }
+    },
+    "security_compliance": {
+      "encryption": {
+        "at_rest": "Not built-in - use encrypted EBS/GCE volumes",
+        "in_transit": "TLS termination at load balancer",
+        "arc_connection": "Configure HTTPS for Arc endpoint"
+      },
+      "authentication": "API key-based (bcrypt hashed, mtk_ prefix)",
+      "authorization": "Organization-level isolation, no RBAC",
+      "compliance": {
+        "gdpr": "API supports export, deletion requires custom implementation",
+        "hipaa": "Not certified - requires custom hardening",
+        "soc2": "API key baseline, structured logs, gaps in access review"
+      }
+    },
+    "scalability": {
+      "horizontal_scaling": {
+        "design": "Stateless, load-balanced",
+        "write_throughput": {
+          "1_instance": "500-1000 writes/sec",
+          "3_instances": "1500-3000 writes/sec",
+          "10_instances": "5000-10000 writes/sec (requires Arc cluster)"
+        }
+      },
+      "data_volume_scaling": {
+        "< 1M_memories": "< 50ms query latency, single Arc node",
+        "1M-10M_memories": "50-200ms latency, SSD storage",
+        "10M-100M_memories": "100-500ms latency, Arc cluster + partitioning",
+        "> 100M_memories": "500ms+ latency, time-based partitioning + archival"
+      },
+      "limitations": [
+        "SQLite single-file limits HA (migrate to PostgreSQL for HA)",
+        "Arc dependency (tight coupling, consider adapter layer)"
+      ]
+    },
+    "key_differentiators": [
+      "No GPU required (zero ML workloads)",
+      "No embedding infrastructure (no OpenAI/Cohere API dependency)",
+      "No vector database (simpler architecture, lower costs)",
+      "LLM-agnostic (works with any model without re-indexing)",
+      "Temporal-first (time-series DB optimized for 'what happened when')",
+      "50-70% cheaper than vector solutions"
+    ]
+  },
+  "categories": {
+    "tech_approach": [
+      "No Embeddings",
+      "Time-series",
+      "Plain Text"
+    ],
+    "use_case": [
+      "Claude Code",
+      "Cursor",
+      "Windsurf",
+      "Temporal Queries"
+    ]
+  }
+}

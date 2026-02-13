@@ -1,0 +1,98 @@
+{
+  "name": "MemoryAgentBench",
+  "repository_url": "https://github.com/HUST-AI-HYZ/MemoryAgentBench",
+  "stars": 223,
+  "primary_language": "Python",
+  "description": "通过增量多轮交互评估LLM代理记忆能力的基准测试（ICLR 2026）",
+  "last_updated": "2026-01-26",
+  "paper": {
+    "exists": true,
+    "title": "MemoryAgentBench: Evaluating Memory in LLM Agents",
+    "venue": "ICLR",
+    "year": 2026,
+    "url": "https://arxiv.org/abs/2507.05257"
+  },
+  "innovations": [
+    "增量多轮交互评估范式（Incremental Multi-Turn Interactions）：模拟真实对话场景而非一次性长文本评估",
+    "四大核心能力维度：准确检索（AR）、测试时学习（TTL）、长程理解（LRU）、冲突解决（CR）",
+    "注入一次查询多次设计哲学：显著提升评估效率和实用性",
+    "两个新构建数据集：EventQA（事件时序记忆）和 FactConsolidation（冲突信息整合）",
+    "统一代理接口（AgentWrapper）：支持15+种记忆方法的一致性评估框架",
+    "多层次记忆架构比较：长上下文代理、RAG检索、知识图谱、代理式记忆",
+    "基于 GPT-4o 的 LLM 判断器：自动化评估开放式生成任务",
+    "完整的端到端评估流程：从数据加载、记忆构建、查询执行到指标计算的全流程自动化",
+    "灵活的配置驱动架构：通过 YAML 配置文件轻松组合实验",
+    "全面的性能指标体系：准确性、效率、token成本、时间开销的多维度评估"
+  ],
+  "use_cases": [
+    "LLM代理记忆能力基准测试：系统性评估不同记忆架构的性能表现",
+    "记忆方法研究与开发：为新型记忆机制提供标准化评估平台",
+    "长文本理解能力评估：测试模型在超长上下文（最长800K tokens）下的表现",
+    "检索增强生成（RAG）系统优化：比较BM25、密集检索、图检索等不同检索策略",
+    "知识图谱记忆系统评测：评估HippoRAG、GraphRAG、Cognee等图增强方法",
+    "代理式记忆框架比较：对比Letta、Mem0、Zep等专用记忆系统",
+    "多跳推理能力测试：通过RULER、EventQA等数据集评估复杂推理链",
+    "冲突信息处理研究：使用FactConsolidation数据集测试矛盾信息整合能力",
+    "测试时学习（ICL）评估：通过few-shot分类任务评估上下文学习能力",
+    "对话推荐系统评测：使用ReDial数据集测试长对话记忆和推荐能力",
+    "学术论文实验平台：为ICLR等顶会论文提供可复现的实验基础设施",
+    "工业界记忆系统选型：帮助企业选择最适合特定场景的记忆架构",
+    "成本效益分析：比较不同方法的准确性与API成本、计算资源的权衡",
+    "教学与培训：作为LLM代理记忆机制的教学案例和实践平台",
+    "持续基准测试：随着新模型和方法出现，提供持续的性能追踪"
+  ],
+  "benchmarks": {},
+  "tech_stack": {
+    "storage": [
+      "Benchmark Dataset",
+      "EventQA",
+      "FactConsolidation"
+    ],
+    "frameworks": [
+      "Python",
+      "GPT-4o Judge"
+    ],
+    "languages": [
+      "Python"
+    ],
+    "embedding_models": [
+      "LLM-based evaluation"
+    ]
+  },
+  "cloud_needs": {
+    "storage": {
+      "types": [
+        "Dataset Storage",
+        "Evaluation Results"
+      ],
+      "requirements": [
+        "Multi-turn interactions",
+        "Framework evaluation"
+      ]
+    },
+    "compute": {
+      "embedding": true,
+      "gpu_needed": false,
+      "estimated_requirements": "4-8 vCPUs for evaluation"
+    },
+    "deployment": {
+      "complexity": 5,
+      "containerized": true,
+      "orchestration": [
+        "Docker",
+        "Research infrastructure"
+      ]
+    }
+  },
+  "categories": {
+    "tech_approach": [
+      "Benchmark",
+      "ICLR 2026",
+      "Multi-turn"
+    ],
+    "use_case": [
+      "Memory Evaluation",
+      "Framework Comparison"
+    ]
+  }
+}

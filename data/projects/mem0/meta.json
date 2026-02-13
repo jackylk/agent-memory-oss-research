@@ -1,0 +1,83 @@
+{
+  "name": "mem0",
+  "repository_url": "https://github.com/mem0ai/mem0",
+  "website_url": "https://mem0.ai",
+  "stars": 47100,
+  "primary_language": "Python",
+  "description": "为 AI 代理提供通用记忆层，通过智能记忆能力增强 AI 助手的个性化交互",
+  "last_updated": "2026-02-03",
+  "paper": {
+    "exists": true,
+    "title": "Mem0: Building Production-Ready AI Agents with Scalable Long-Term Memory",
+    "venue": "arXiv",
+    "year": 2025,
+    "url": "https://arxiv.org/abs/2504.19413"
+  },
+  "innovations": {
+    "key_features": [
+      "多层级记忆管理（用户、会话、AI 代理三层）",
+      "动态记忆提取、整合和检索机制",
+      "可选的图增强记忆表示（捕获复杂关系结构）",
+      "生产就绪的可扩展架构"
+    ],
+    "improvements": [
+      "相比 OpenAI 在 LOCOMO 基准上提升 26% 相对准确率",
+      "p95 延迟降低 91%",
+      "Token 成本节省 90%+"
+    ],
+    "user_value": [
+      "长期对话的连贯性和个性化",
+      "显著降低 LLM API 成本",
+      "亚秒级记忆检索性能",
+      "支持 26+ 向量数据库和多种 LLM 提供商"
+    ]
+  },
+  "use_cases": {
+    "scenarios": [
+      "客户支持：记住客户历史交互和偏好",
+      "医疗保健：跨会话的患者信息追踪",
+      "个人助手：用户习惯和偏好学习",
+      "生产力工具：项目上下文和决策历史"
+    ],
+    "companies": [
+      "多个 AI 初创公司在生产环境中使用",
+      "被 CrewAI、Langgraph 等 Agent 框架集成"
+    ]
+  },
+  "benchmarks": {
+    "locomo": {
+      "score": 26,
+      "details": "26% relative accuracy gains over OpenAI on the LOCOMO benchmark, with 91% lower p95 latency and 90% fewer tokens"
+    }
+  },
+  "tech_stack": {
+    "storage": ["Vector Database", "Relational Database", "Object Storage"],
+    "frameworks": ["Python SDK", "JavaScript SDK", "CrewAI", "Langgraph"],
+    "languages": ["Python"],
+    "embedding_models": ["OpenAI", "Custom Models"]
+  },
+  "cloud_needs": {
+    "storage": {
+      "types": ["Vector Database", "PostgreSQL/MongoDB", "S3"],
+      "requirements": [
+        "Sub-100ms vector retrieval",
+        "ACID compliance for metadata",
+        "Scalable object storage"
+      ]
+    },
+    "compute": {
+      "embedding": true,
+      "gpu_needed": false,
+      "estimated_requirements": "2-32 vCPUs depending on scale, optional GPU for self-hosted embeddings"
+    },
+    "deployment": {
+      "complexity": 7,
+      "containerized": true,
+      "orchestration": ["Kubernetes", "Docker Compose"]
+    }
+  },
+  "categories": {
+    "tech_approach": ["Vector Search", "Multi-level Memory", "Production-Ready"],
+    "use_case": ["Customer Support", "Healthcare", "Productivity", "Personalization"]
+  }
+}

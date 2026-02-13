@@ -1,0 +1,124 @@
+{
+  "name": "Memori",
+  "repository_url": "https://github.com/MemoriLabs/Memori",
+  "stars": 12100,
+  "primary_language": "Python",
+  "description": "面向LLM、AI代理和多代理系统的SQL原生记忆层 - 企业级AI记忆基础设施",
+  "last_updated": "2026-01-28",
+  "paper": {
+    "exists": false,
+    "title": "",
+    "venue": "",
+    "year": 0,
+    "url": ""
+  },
+  "benchmarks": {},
+  "tech_stack": {
+    "storage": [
+      "SQL Database",
+      "Third Normal Form",
+      "Knowledge Graph"
+    ],
+    "frameworks": [
+      "LangChain",
+      "Agno",
+      "Django ORM",
+      "SQLAlchemy"
+    ],
+    "languages": [
+      "Python"
+    ],
+    "embedding_models": [
+      "Anthropic",
+      "Bedrock",
+      "Gemini",
+      "Grok",
+      "OpenAI"
+    ]
+  },
+  "cloud_needs": {
+    "storage": {
+      "types": [
+        "SQL Database",
+        "Vector Store",
+        "Knowledge Graph"
+      ],
+      "requirements": [
+        "ACID compliance",
+        "Third normal form",
+        "Multi-level tracking"
+      ]
+    },
+    "compute": {
+      "embedding": true,
+      "gpu_needed": false,
+      "estimated_requirements": "4-16 vCPUs with DB optimization"
+    },
+    "deployment": {
+      "complexity": 6,
+      "containerized": true,
+      "orchestration": [
+        "Docker",
+        "Traditional DB deployment"
+      ]
+    }
+  },
+  "categories": {
+    "tech_approach": [
+      "SQL-native",
+      "Enterprise",
+      "Traditional DB"
+    ],
+    "use_case": [
+      "Enterprise AI",
+      "Multi-agent Systems",
+      "Database Integration"
+    ]
+  },
+  "innovations": {
+    "key_features": [
+      "单行代码集成LLM提供商",
+      "Advanced Augmentation异步引擎自动提取事实和语义三元组",
+      "Entity-Process-Session三层灵活归属系统",
+      "支持10+数据库的适配器模式(SQL/NoSQL)",
+      "FAISS本地向量索引实现零延迟语义搜索",
+      "完全LLM无关设计支持6+提供商",
+      "流式/非流式/同步/异步四种调用模式",
+      "知识图谱存储和多跳推理能力"
+    ],
+    "improvements": [
+      "相比Mem0无需SDK编排,单行代码注册即可集成",
+      "相比Graphiti不依赖Neo4j,支持任意SQL/NoSQL数据库",
+      "相比Letta完全框架无关,不替代现有AI框架",
+      "异步后台处理实现真正的零延迟增强",
+      "利用企业现有数据库基础设施,无需新增中间件",
+      "本地向量索引降低向量数据库托管成本"
+    ],
+    "user_value": [
+      "零集成成本:一行代码即可为现有LLM应用添加持久化记忆",
+      "无性能损耗:异步Advanced Augmentation不影响主流程响应时间",
+      "技术栈灵活:兼容现有数据库和AI框架,降低迁移风险",
+      "生产就绪:完整的错误处理、监控、测试覆盖和多数据库HA方案",
+      "语义智能:自动提取事实、偏好、关系并支持上下文感知召回",
+      "企业友好:支持多租户隔离、GDPR合规、数据驻留控制"
+    ]
+  },
+  "use_cases": {
+    "scenarios": [
+      "企业AI聊天机器人的用户偏好学习和多轮对话上下文保持",
+      "客服AI代理的客户历史记录和问题追踪",
+      "多代理系统中的共享记忆层和协作知识管理",
+      "AI分析助手的数据洞察积累和推荐优化",
+      "教育领域的个性化学习路径和知识图谱构建",
+      "医疗AI助手的患者病史管理和诊疗建议(需PII脱敏)"
+    ],
+    "companies": [
+      "需要AI记忆持久化的SaaS平台",
+      "使用LangChain/Pydantic AI构建AI应用的开发团队",
+      "已有PostgreSQL/MySQL基础设施的企业",
+      "需要多LLM提供商切换能力的AI产品",
+      "对数据主权和驻留有严格要求的金融/医疗机构",
+      "构建多租户AI服务的云平台提供商"
+    ]
+  }
+}

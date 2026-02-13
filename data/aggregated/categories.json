@@ -1,0 +1,62 @@
+[
+  {
+    "name": "Vector Search & Embeddings",
+    "count": 15,
+    "projects": ["mem0", "MemOS", "SimpleMem", "cognee", "supermemory", "hindsight", "A-MEM", "ReMe", "Memori", "general-agentic-memory", "LightMem", "Memary", "easymemory", "memory-agent", "langgraph-redis"],
+    "description": "Projects using vector databases and semantic embeddings for memory retrieval"
+  },
+  {
+    "name": "Knowledge Graph",
+    "count": 8,
+    "projects": ["graphiti", "cognee", "Memori", "Memary", "beads", "hindsight", "A-MEM", "ReMe"],
+    "description": "Projects leveraging knowledge graphs for structured memory representation"
+  },
+  {
+    "name": "Temporal & Time-series",
+    "count": 3,
+    "projects": ["graphiti", "memtrace", "hindsight"],
+    "description": "Projects with explicit temporal modeling and time-series memory"
+  },
+  {
+    "name": "Compression & Optimization",
+    "count": 4,
+    "projects": ["SimpleMem", "claude-mem", "LightMem", "memU"],
+    "description": "Projects focused on memory compression and token optimization"
+  },
+  {
+    "name": "Production-Ready Platforms",
+    "count": 7,
+    "projects": ["mem0", "letta", "graphiti", "cognee", "MemOS", "Memori", "supermemory"],
+    "description": "Battle-tested frameworks with high adoption and production deployments"
+  },
+  {
+    "name": "Local-First & Privacy",
+    "count": 3,
+    "projects": ["claude-mem", "easymemory", "memtrace"],
+    "description": "Projects emphasizing local deployment and data privacy"
+  },
+  {
+    "name": "Research & Benchmarks",
+    "count": 5,
+    "projects": ["LongMemEval", "locomo", "MemoryAgentBench", "Backboard-Locomo-Benchmark", "A-MEM"],
+    "description": "Academic benchmarks and research-focused projects"
+  },
+  {
+    "name": "Multi-Agent & Collaborative",
+    "count": 6,
+    "projects": ["MemOS", "ReMe", "Memori", "Memary", "memU", "beads"],
+    "description": "Projects supporting multi-agent memory sharing and collaboration"
+  },
+  {
+    "name": "Learning & Self-Improvement",
+    "count": 4,
+    "projects": ["letta", "hindsight", "memU", "general-agentic-memory"],
+    "description": "Systems focused on continual learning and agent improvement"
+  },
+  {
+    "name": "Framework Integration",
+    "count": 8,
+    "projects": ["mem0", "letta", "cognee", "ReMe", "Memori", "memory-agent", "langgraph-redis", "Memary"],
+    "description": "Projects with deep integration into agent frameworks (LangChain, CrewAI, etc.)"
+  }
+]

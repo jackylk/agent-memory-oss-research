@@ -1,0 +1,126 @@
+{
+  "name": "letta",
+  "repository_url": "https://github.com/letta-ai/letta",
+  "stars": 21000,
+  "primary_language": "Python",
+  "description": "用于构建有状态智能体的平台，具有先进记忆能力，可随时间学习和自我改进（前身为MemGPT）",
+  "last_updated": "2026-01-29",
+  "paper": {
+    "exists": true,
+    "title": "MemGPT: Towards LLMs as Operating Systems",
+    "venue": "arXiv",
+    "year": 2023,
+    "url": "https://arxiv.org/abs/2310.08560"
+  },
+  "benchmarks": {},
+  "tech_stack": {
+    "storage": [
+      "Database Persistence",
+      "Memory Store"
+    ],
+    "frameworks": [
+      "Python SDK",
+      "TypeScript SDK",
+      "Agent Framework"
+    ],
+    "languages": [
+      "Python"
+    ],
+    "embedding_models": [
+      "Model-agnostic"
+    ]
+  },
+  "cloud_needs": {
+    "storage": {
+      "types": [
+        "Database",
+        "File Storage"
+      ],
+      "requirements": [
+        "Persistent state management",
+        "Agent history storage"
+      ]
+    },
+    "compute": {
+      "embedding": true,
+      "gpu_needed": false,
+      "estimated_requirements": "4-16 vCPUs for API server"
+    },
+    "deployment": {
+      "complexity": 6,
+      "containerized": true,
+      "orchestration": [
+        "Docker",
+        "Kubernetes"
+      ]
+    }
+  },
+  "categories": {
+    "tech_approach": [
+      "Stateful Agents",
+      "Continual Learning",
+      "Self-Improvement"
+    ],
+    "use_case": [
+      "Chatbots",
+      "Virtual Assistants",
+      "Research Agents"
+    ]
+  },
+  "innovations": {
+    "key_features": [
+      "操作系统式内存管理：借鉴 OS 的虚拟内存机制，将大量对话历史存储在外部内存，动态加载到有限的上下文窗口",
+      "三层内存架构：Core Memory（当前状态）、Recall Memory（最近对话）、Archival Memory（长期知识），实现不同时间粒度的记忆管理",
+      "Agent 自主记忆编辑：通过 core_memory_append/replace 等工具，Agent 可主动修改自己的内存，实现真正的自学习和自我改进",
+      "完全模型无关：支持 OpenAI、Anthropic、Google、Groq、Ollama 等 20+ LLM 提供商，统一的 API 接口",
+      "企业级 Agent 平台：提供完整的 REST API、Python/TypeScript SDK、用户管理、组织隔离、审计日志",
+      "无缝会话连续性：Agent 在多个会话中保持一致的状态和记忆，支持长期关系建立",
+      "工具生态系统：支持自定义工具、MCP（Model Context Protocol）集成、Composio 平台工具",
+      "流式响应和实时交互：支持 SSE 流式输出，实时工具调用和结果展示",
+      "多模态 Agent 支持：结合 Letta Code CLI，支持代码执行、文件操作、浏览器自动化等高级能力",
+      "本地和云端灵活部署：支持 Docker Compose 本地开发、Kubernetes 生产部署、Letta Cloud 托管服务"
+    ],
+    "improvements": [
+      "突破上下文窗口限制：通过虚拟上下文管理，Agent 可以处理远超 LLM 上下文窗口的对话长度（理论上无限）",
+      "降低 Token 成本：只将相关记忆加载到上下文中，通过智能汇总和压缩，减少 50-70% 的 token 使用量",
+      "提升 Agent 记忆准确性：三层内存架构确保关键信息不会丢失，向量检索确保相关历史能被精准召回",
+      "增强 Agent 自主性：Agent 可以主动决定何时更新记忆、删除过时信息、汇总长期经验，而非被动接受人类指令",
+      "改进多租户隔离：Organization 级别的数据隔离，确保不同用户/团队的 Agent 数据完全独立",
+      "优化开发者体验：直观的 SDK 设计、丰富的示例代码、活跃的社区支持，降低 Agent 开发门槛",
+      "提高系统可维护性：标准化的 Agent 配置管理、版本控制、A/B 测试能力，便于迭代和优化",
+      "扩展性和性能：支持水平扩展、异步任务处理、连接池管理，可支撑大规模并发 Agent",
+      "安全和合规：API Key 认证、RBAC 权限控制、审计日志、数据加密，满足企业安全要求",
+      "降低运维复杂度：托管向量数据库集成、自动备份恢复、健康检查和监控，简化生产部署"
+    ],
+    "user_value": [
+      "构建真正有记忆的 AI 助手：用户可以与 Agent 建立长期关系，Agent 记得所有历史对话和偏好",
+      "降低开发成本和时间：开箱即用的 Agent 框架，无需从零实现内存管理和状态持久化，加速产品上线",
+      "提升用户体验：Agent 能够提供个性化、上下文相关的回复，避免重复提问，增强用户满意度",
+      "支持复杂业务场景：长期客户关系管理、个性化推荐、知识库问答、代码助手等需要记忆的应用",
+      "灵活的技术选型：不锁定特定 LLM 提供商或向量数据库，可根据成本、性能、合规要求自由选择",
+      "透明的成本控制：通过记忆压缩和智能加载，显著降低 LLM API 调用成本，适合大规模部署",
+      "企业级可靠性：高可用架构、数据备份、故障恢复、监控告警，保障业务连续性",
+      "社区和生态支持：活跃的开源社区、丰富的插件和工具、定期更新和 bug 修复",
+      "隐私和数据主权：支持本地部署和私有化方案，数据完全掌控在用户手中",
+      "未来可扩展性：随着业务增长，可无缝升级到更强的模型、更大的存储、更多的并发，无需重构架构"
+    ]
+  },
+  "use_cases": {
+    "scenarios": [
+      "长期对话型 AI 助手：个人助理、虚拟伴侣、心理咨询机器人，需要记住用户偏好和历史对话",
+      "企业级智能客服：记录客户历史问题、偏好、投诉记录，提供个性化和连续的服务体验",
+      "个性化推荐系统：根据用户长期行为和反馈，持续学习和优化推荐结果（内容、产品、服务）",
+      "AI 代码助手集成：如 Letta Code CLI，记住项目上下文、代码风格、用户习惯，提供更精准的代码建议",
+      "教育和培训 Agent：追踪学生学习进度、知识掌握情况、学习习惯，提供个性化辅导",
+      "游戏 NPC 记忆系统：游戏角色记住玩家的选择、对话、关系，创造沉浸式的故事体验",
+      "医疗健康助手：记录患者病史、用药记录、生活习惯，辅助医生诊断和健康管理（需符合 HIPAA）",
+      "销售和 CRM Agent：记录客户互动历史、购买偏好、谈判要点，辅助销售人员跟进",
+      "研究和知识管理：持续积累领域知识、实验结果、文献笔记，辅助研究人员探索",
+      "多轮复杂任务执行：如旅行规划、项目管理、事件组织，需要跨多个会话持续推进和记忆上下文"
+    ],
+    "companies": [
+      "Letta AI（开发团队自身）：提供 Letta Cloud 托管服务和企业支持",
+      "开源社区贡献者：来自全球的 100+ 开发者为 Letta 项目贡献代码和插件"
+    ]
+  }
+}

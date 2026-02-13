@@ -1,0 +1,610 @@
+{
+  "metadata": {
+    "generated_at": "2026-02-12",
+    "total_projects_analyzed": 25,
+    "analysis_scope": "云服务需求、成本分析、技术栈统计",
+    "currency": "USD (美元)",
+    "note": "成本估算基于2025-2026年市场价格"
+  },
+  "cloud_service_usage_statistics": {
+    "compute": {
+      "category_name": "计算服务",
+      "total_projects_using": 25,
+      "usage_percentage": 100.0,
+      "subcategories": {
+        "traditional_vms": {
+          "count": 20,
+          "percentage": 80.0,
+          "examples": ["AWS EC2", "GCP Compute Engine", "Azure VM"],
+          "typical_config": "4-16 vCPU, 8-32GB RAM",
+          "avg_monthly_cost_range": "$50-500"
+        },
+        "serverless": {
+          "count": 5,
+          "percentage": 20.0,
+          "examples": ["Cloudflare Workers", "AWS Lambda", "Cloud Run"],
+          "typical_config": "按需分配",
+          "avg_monthly_cost_range": "$5-200"
+        },
+        "kubernetes": {
+          "count": 12,
+          "percentage": 48.0,
+          "examples": ["EKS", "GKE", "AKS"],
+          "typical_config": "3-10节点集群",
+          "avg_monthly_cost_range": "$200-2000"
+        },
+        "gpu_compute": {
+          "count": 8,
+          "percentage": 32.0,
+          "examples": ["g4dn.xlarge (T4)", "A10G", "V100"],
+          "typical_config": "1-4 GPU, 16-80GB VRAM",
+          "avg_monthly_cost_range": "$300-2200"
+        }
+      }
+    },
+    "database": {
+      "category_name": "数据库服务",
+      "total_projects_using": 25,
+      "usage_percentage": 100.0,
+      "subcategories": {
+        "relational_db": {
+          "count": 22,
+          "percentage": 88.0,
+          "popular_choices": [
+            {"name": "PostgreSQL", "count": 20, "avg_cost": "$50-500/月"},
+            {"name": "SQLite", "count": 8, "avg_cost": "$0 (本地)"},
+            {"name": "MySQL", "count": 2, "avg_cost": "$40-400/月"}
+          ],
+          "managed_services": ["AWS RDS", "GCP Cloud SQL", "Azure Database", "Supabase", "Neon"]
+        },
+        "graph_db": {
+          "count": 10,
+          "percentage": 40.0,
+          "popular_choices": [
+            {"name": "Neo4j", "count": 8, "avg_cost": "$65-3000/月"},
+            {"name": "FalkorDB", "count": 3, "avg_cost": "$20-100/月"},
+            {"name": "AWS Neptune", "count": 2, "avg_cost": "$250-500/月"}
+          ]
+        },
+        "document_db": {
+          "count": 5,
+          "percentage": 20.0,
+          "popular_choices": [
+            {"name": "MongoDB", "count": 4, "avg_cost": "$50-300/月"},
+            {"name": "DynamoDB", "count": 2, "avg_cost": "按需计费"}
+          ]
+        }
+      }
+    },
+    "vector_database": {
+      "category_name": "向量数据库",
+      "total_projects_using": 23,
+      "usage_percentage": 92.0,
+      "popular_choices": [
+        {
+          "name": "Qdrant",
+          "count": 12,
+          "percentage": 48.0,
+          "deployment": "自托管/Qdrant Cloud",
+          "avg_cost": "$0-500/月",
+          "pros": "高性能Rust实现，开源，丰富过滤"
+        },
+        {
+          "name": "Pinecone",
+          "count": 10,
+          "percentage": 40.0,
+          "deployment": "全托管SaaS",
+          "avg_cost": "$70-960/月",
+          "pros": "零运维，全球分布，快速上手"
+        },
+        {
+          "name": "Chroma",
+          "count": 9,
+          "percentage": 36.0,
+          "deployment": "嵌入式/服务器",
+          "avg_cost": "$0-100/月",
+          "pros": "简单易用，本地部署，活跃社区"
+        },
+        {
+          "name": "PGVector",
+          "count": 15,
+          "percentage": 60.0,
+          "deployment": "PostgreSQL扩展",
+          "avg_cost": "$0 (包含在PG中)",
+          "pros": "统一架构，SQL查询，事务支持"
+        },
+        {
+          "name": "LanceDB",
+          "count": 4,
+          "percentage": 16.0,
+          "deployment": "嵌入式",
+          "avg_cost": "$0-100/月",
+          "pros": "零配置，本地存储，Apache Arrow"
+        },
+        {
+          "name": "Weaviate",
+          "count": 6,
+          "percentage": 24.0,
+          "deployment": "开源/托管",
+          "avg_cost": "$25-500/月",
+          "pros": "GraphQL API，混合搜索，多模态"
+        },
+        {
+          "name": "Milvus",
+          "count": 5,
+          "percentage": 20.0,
+          "deployment": "云原生开源",
+          "avg_cost": "$200-500/月",
+          "pros": "大规模向量搜索，分布式"
+        }
+      ],
+      "vector_dimensions": {
+        "common_sizes": [384, 768, 1024, 1536, 3072],
+        "most_popular": "1536 (OpenAI text-embedding-3)",
+        "storage_estimation": "1M向量×1536维 ≈ 6GB原始数据 + 12-18GB索引"
+      }
+    },
+    "object_storage": {
+      "category_name": "对象存储",
+      "total_projects_using": 22,
+      "usage_percentage": 88.0,
+      "popular_choices": [
+        {
+          "name": "AWS S3",
+          "count": 18,
+          "percentage": 72.0,
+          "pricing": "$0.023/GB-月 (Standard)",
+          "use_cases": ["备份", "文档存储", "数据归档"]
+        },
+        {
+          "name": "Cloudflare R2",
+          "count": 3,
+          "percentage": 12.0,
+          "pricing": "$0.015/GB-月，零出口费用",
+          "use_cases": ["零出口费用场景"]
+        },
+        {
+          "name": "GCP Cloud Storage",
+          "count": 8,
+          "percentage": 32.0,
+          "pricing": "$0.020/GB-月",
+          "use_cases": ["GCP生态集成"]
+        },
+        {
+          "name": "Azure Blob Storage",
+          "count": 5,
+          "percentage": 20.0,
+          "pricing": "$0.018/GB-月",
+          "use_cases": ["Azure生态集成"]
+        }
+      ]
+    },
+    "ai_ml_services": {
+      "category_name": "AI/ML服务",
+      "llm_providers": {
+        "openai": {
+          "count": 22,
+          "percentage": 88.0,
+          "popular_models": [
+            {"name": "gpt-4.1-mini", "pricing": "$0.15/$0.60 per 1M tokens (in/out)"},
+            {"name": "gpt-4.1", "pricing": "$2.50/$10.00 per 1M tokens"},
+            {"name": "text-embedding-3-small", "pricing": "$0.02 per 1M tokens"}
+          ]
+        },
+        "anthropic": {
+          "count": 18,
+          "percentage": 72.0,
+          "popular_models": [
+            {"name": "Claude 4.5 Sonnet", "pricing": "$3.00/$15.00 per 1M tokens"},
+            {"name": "Claude 4.5 Haiku", "pricing": "$0.25/$1.25 per 1M tokens"}
+          ]
+        },
+        "google": {
+          "count": 12,
+          "percentage": 48.0,
+          "popular_models": [
+            {"name": "Gemini 2.5 Flash", "pricing": "$0.075/$0.30 per 1M tokens"},
+            {"name": "Gemini 2.5 Pro", "pricing": "$1.25/$5.00 per 1M tokens"}
+          ]
+        },
+        "groq": {
+          "count": 8,
+          "percentage": 32.0,
+          "popular_models": [
+            {"name": "llama-3.3-70b", "pricing": "$0.59/$0.79 per 1M tokens"},
+            {"name": "mixtral-8x7b", "pricing": "$0.24/$0.24 per 1M tokens"}
+          ]
+        },
+        "self_hosted": {
+          "count": 10,
+          "percentage": 40.0,
+          "popular_models": [
+            {"name": "Llama 3.3 70B", "deployment": "vLLM/Ollama", "cost": "$300-5760/月 (GPU)"},
+            {"name": "Llama 3 8B", "deployment": "Ollama", "cost": "$0-400/月"}
+          ]
+        }
+      },
+      "embedding_providers": {
+        "openai": {"count": 20, "model": "text-embedding-3-small/large"},
+        "cohere": {"count": 5, "model": "embed-multilingual-v3.0"},
+        "voyage_ai": {"count": 6, "model": "voyage-3/voyage-3-lite"},
+        "self_hosted": {"count": 12, "models": ["sentence-transformers", "bge-large", "e5-large"]}
+      }
+    },
+    "caching": {
+      "category_name": "缓存服务",
+      "total_projects_using": 18,
+      "usage_percentage": 72.0,
+      "popular_choices": [
+        {
+          "name": "Redis",
+          "count": 15,
+          "percentage": 60.0,
+          "managed_services": ["Redis Cloud", "AWS ElastiCache", "GCP Memorystore"],
+          "avg_cost": "$10-500/月"
+        },
+        {
+          "name": "Cloudflare KV",
+          "count": 2,
+          "percentage": 8.0,
+          "pricing": "$0.50/GB-月",
+          "use_cases": ["边缘缓存"]
+        }
+      ]
+    },
+    "monitoring": {
+      "category_name": "监控和日志",
+      "total_projects_using": 22,
+      "usage_percentage": 88.0,
+      "popular_choices": [
+        {
+          "name": "Prometheus + Grafana",
+          "count": 12,
+          "percentage": 48.0,
+          "deployment": "自建",
+          "avg_cost": "$60-200/月"
+        },
+        {
+          "name": "Datadog",
+          "count": 8,
+          "percentage": 32.0,
+          "deployment": "SaaS",
+          "avg_cost": "$15-500/月"
+        },
+        {
+          "name": "AWS CloudWatch",
+          "count": 10,
+          "percentage": 40.0,
+          "deployment": "托管",
+          "avg_cost": "$5-100/月"
+        },
+        {
+          "name": "Sentry",
+          "count": 6,
+          "percentage": 24.0,
+          "deployment": "SaaS",
+          "avg_cost": "$0-80/月"
+        }
+      ]
+    },
+    "network": {
+      "category_name": "网络服务",
+      "cdn": {
+        "count": 15,
+        "popular_choices": [
+          {"name": "Cloudflare", "count": 10, "avg_cost": "$0-200/月"},
+          {"name": "AWS CloudFront", "count": 8, "avg_cost": "$40-500/月"}
+        ]
+      },
+      "load_balancer": {
+        "count": 18,
+        "popular_choices": [
+          {"name": "AWS ALB", "count": 10, "avg_cost": "$16-200/月"},
+          {"name": "Nginx", "count": 8, "avg_cost": "$0-100/月 (自建)"}
+        ]
+      }
+    }
+  },
+  "cost_analysis": {
+    "deployment_size_ranges": {
+      "small": {
+        "description": "小型部署 (100-1K用户, <10K会话/月)",
+        "total_monthly_cost_range": "$50-300",
+        "breakdown": {
+          "compute": "$15-80 (单机或2-3小实例)",
+          "database": "$20-100 (托管小实例或本地)",
+          "vector_db": "$0-70 (PGVector或Pinecone Starter)",
+          "llm_api": "$5-50 (低流量)",
+          "storage": "$1-10",
+          "monitoring": "$0-20 (免费层)",
+          "network": "$5-20"
+        },
+        "recommended_stack": [
+          "计算: t3.medium (AWS) 或 e2-medium (GCP)",
+          "数据库: Neon Free/Pro 或 Supabase",
+          "向量DB: PGVector (内置) 或 Qdrant Cloud 免费层",
+          "LLM: OpenAI gpt-4.1-mini 或 Claude Haiku",
+          "监控: Grafana Cloud 免费层"
+        ]
+      },
+      "medium": {
+        "description": "中型部署 (1K-10K用户, 10K-100K会话/月)",
+        "total_monthly_cost_range": "$500-2000",
+        "breakdown": {
+          "compute": "$200-600 (Kubernetes 3-5节点)",
+          "database": "$100-400 (托管中型实例)",
+          "vector_db": "$70-300 (Pinecone或自托管Qdrant)",
+          "llm_api": "$100-500 (中等流量，启用缓存)",
+          "storage": "$10-50",
+          "caching": "$30-100 (Redis)",
+          "monitoring": "$30-150",
+          "network": "$20-100"
+        },
+        "recommended_stack": [
+          "计算: EKS/GKE 集群 (3-5节点 m5.large)",
+          "数据库: AWS RDS r5.large 或 Cloud SQL",
+          "向量DB: Pinecone Standard 或 Qdrant Cloud",
+          "LLM: OpenAI + Prompt Caching 或混合使用",
+          "缓存: ElastiCache Redis",
+          "监控: Datadog 或 New Relic"
+        ]
+      },
+      "large": {
+        "description": "大型部署 (10K-100K用户, 100K-1M会话/月)",
+        "total_monthly_cost_range": "$3000-12000",
+        "breakdown": {
+          "compute": "$1000-4000 (Kubernetes 多节点+GPU)",
+          "database": "$500-2500 (高可用集群)",
+          "vector_db": "$250-1000 (专用集群)",
+          "llm_api": "$500-3000 (大流量，自托管混合)",
+          "storage": "$50-300",
+          "caching": "$100-500 (Redis Cluster)",
+          "monitoring": "$100-500",
+          "network": "$100-500 (多区域)"
+        },
+        "recommended_stack": [
+          "计算: EKS/GKE 多区域集群 + GPU节点池",
+          "数据库: 自托管PostgreSQL集群 或 RDS Multi-AZ",
+          "向量DB: 自托管Qdrant集群 或 Milvus",
+          "LLM: 自托管Llama 70B (GPU集群) + 云端降级",
+          "缓存: ElastiCache Redis Cluster",
+          "监控: 自建Prometheus+Grafana 或 Datadog Enterprise"
+        ]
+      }
+    },
+    "cost_breakdown_by_category": {
+      "avg_percentages": {
+        "llm_api": "30-50% (最大成本项)",
+        "compute": "20-35%",
+        "database": "15-25%",
+        "vector_db": "5-15%",
+        "storage": "2-5%",
+        "monitoring_and_logs": "3-8%",
+        "network": "5-10%"
+      }
+    }
+  },
+  "popular_tech_choices": {
+    "vector_db_ranking": [
+      {"rank": 1, "name": "PGVector", "count": 15, "reason": "零额外成本，统一架构，适合中小规模"},
+      {"rank": 2, "name": "Qdrant", "count": 12, "reason": "高性能，开源，自托管灵活"},
+      {"rank": 3, "name": "Pinecone", "count": 10, "reason": "全托管，零运维，快速上手"},
+      {"rank": 4, "name": "Chroma", "count": 9, "reason": "嵌入式，开发测试友好"},
+      {"rank": 5, "name": "Weaviate", "count": 6, "reason": "GraphQL API，混合搜索"}
+    ],
+    "llm_provider_ranking": [
+      {"rank": 1, "name": "OpenAI", "count": 22, "popular_model": "gpt-4.1-mini", "reason": "生态成熟，性价比高"},
+      {"rank": 2, "name": "Anthropic", "count": 18, "popular_model": "Claude 4.5 Haiku", "reason": "长上下文，Prompt Caching"},
+      {"rank": 3, "name": "Google", "count": 12, "popular_model": "Gemini 2.5 Flash", "reason": "最低成本，长上下文"},
+      {"rank": 4, "name": "Self-hosted (Ollama)", "count": 10, "popular_model": "Llama 3.3 70B", "reason": "隐私保护，固定成本"},
+      {"rank": 5, "name": "Groq", "count": 8, "popular_model": "mixtral-8x7b", "reason": "极快推理速度"}
+    ],
+    "database_ranking": [
+      {"rank": 1, "name": "PostgreSQL", "count": 20, "reason": "生产就绪，PGVector支持，成熟生态"},
+      {"rank": 2, "name": "SQLite", "count": 8, "reason": "零配置，本地优先，边缘计算"},
+      {"rank": 3, "name": "Neo4j", "count": 8, "reason": "企业级图数据库，复杂关系查询"},
+      {"rank": 4, "name": "MongoDB", "count": 4, "reason": "文档数据库，灵活Schema"},
+      {"rank": 5, "name": "FalkorDB", "count": 3, "reason": "Redis兼容，多图隔离"}
+    ],
+    "cloud_provider_preferences": {
+      "aws": {
+        "count": 20,
+        "percentage": 80.0,
+        "strengths": ["生态完整", "服务丰富", "企业级支持"],
+        "popular_services": ["EC2", "RDS", "S3", "EKS", "Lambda"]
+      },
+      "gcp": {
+        "count": 15,
+        "percentage": 60.0,
+        "strengths": ["AI/ML友好", "价格优势", "BigQuery"],
+        "popular_services": ["Compute Engine", "Cloud SQL", "GKE", "Cloud Run"]
+      },
+      "azure": {
+        "count": 10,
+        "percentage": 40.0,
+        "strengths": ["企业集成", "Microsoft生态", "Azure OpenAI"],
+        "popular_services": ["VM", "Azure Database", "AKS", "Blob Storage"]
+      },
+      "cloudflare": {
+        "count": 5,
+        "percentage": 20.0,
+        "strengths": ["边缘计算", "零出口费用", "DDoS防护"],
+        "popular_services": ["Workers", "R2", "KV", "Pages"]
+      },
+      "multi_cloud_hybrid": {
+        "count": 12,
+        "percentage": 48.0,
+        "strengths": ["避免锁定", "性价比", "最佳专用服务"],
+        "typical_combo": "Cloudflare (前端) + AWS/GCP (后端) + 托管DB (Pinecone/Neo4j Aura)"
+      }
+    }
+  },
+  "deployment_patterns": {
+    "containerization": {
+      "docker": {"count": 24, "percentage": 96.0},
+      "docker_compose": {"count": 20, "percentage": 80.0, "use_case": "小型生产，开发测试"},
+      "kubernetes": {"count": 12, "percentage": 48.0, "use_case": "中大型生产，自动扩展"}
+    },
+    "serverless": {
+      "count": 5,
+      "percentage": 20.0,
+      "platforms": ["Cloudflare Workers", "AWS Lambda", "Cloud Run"],
+      "pros": ["按需付费", "零运维", "自动扩展"],
+      "cons": ["冷启动", "状态管理复杂", "供应商锁定"]
+    },
+    "local_first": {
+      "count": 8,
+      "percentage": 32.0,
+      "examples": ["Claude-Mem", "SimpleMem", "Memary"],
+      "benefits": ["隐私保护", "零云成本", "离线工作"],
+      "challenges": ["扩展性受限", "无高可用", "备份需自管理"]
+    },
+    "hybrid": {
+      "count": 15,
+      "percentage": 60.0,
+      "pattern": "本地计算 + 云存储/API",
+      "examples": ["本地Ollama + 云端降级", "本地向量DB + 托管图DB"],
+      "benefits": ["成本优化", "灵活性", "渐进迁移"]
+    }
+  },
+  "optimization_strategies": {
+    "cost_optimization": {
+      "llm_cost": [
+        "使用更小模型 (gpt-4.1-mini vs gpt-4.1, 节省80%)",
+        "启用Prompt Caching (Anthropic, 节省50-90%)",
+        "批量处理 (减少API调用次数)",
+        "自托管开源模型 (大流量时更划算)",
+        "缓存LLM响应 (Redis, 避免重复调用)"
+      ],
+      "storage_cost": [
+        "向量压缩/量化 (节省50-75%)",
+        "分层存储 (热数据SSD, 冷数据S3 Glacier)",
+        "定期清理过期数据",
+        "使用Cloudflare R2 (零出口费用)",
+        "启用数据库压缩"
+      ],
+      "compute_cost": [
+        "Spot/抢占式实例 (节省60-90%)",
+        "预留实例 (1年期节省30-40%)",
+        "自动扩缩容 (非峰值缩减)",
+        "使用Graviton实例 (AWS ARM, 性价比提升20-40%)",
+        "按需启动GPU (仅在使用时运行)"
+      ],
+      "network_cost": [
+        "使用CDN缓存 (Cloudflare免费层)",
+        "启用数据压缩 (Gzip, 节省60-80%)",
+        "同区域部署 (减少跨区流量费)",
+        "VPC Endpoints (AWS, 免费数据传输)"
+      ]
+    },
+    "performance_optimization": [
+      "连接池 (Hyperdrive, PgBouncer)",
+      "查询结果缓存 (Redis, 5-60分钟TTL)",
+      "异步处理 (消息队列)",
+      "批量操作 (减少网络往返)",
+      "索引优化 (HNSW向量索引, B-tree关系索引)",
+      "CDN静态资源缓存",
+      "数据库读写分离 (只读副本)"
+    ],
+    "reliability_optimization": [
+      "多可用区部署 (Multi-AZ)",
+      "自动备份 (每日全量 + 增量)",
+      "健康检查和自动重启",
+      "负载均衡和故障转移",
+      "限流和熔断",
+      "灾难恢复计划 (RPO<4h, RTO<1h)"
+    ]
+  },
+  "recommended_stacks": {
+    "starter_stack": {
+      "name": "入门栈 (个人开发者/MVP)",
+      "monthly_cost": "$50-150",
+      "components": {
+        "compute": "单机 (t3.medium)",
+        "database": "Neon Free/Pro 或 Supabase",
+        "vector_db": "PGVector (内置) 或 Chroma (本地)",
+        "llm": "OpenAI gpt-4.1-mini",
+        "storage": "本地文件系统 或 S3",
+        "monitoring": "Grafana Cloud 免费层"
+      },
+      "pros": ["快速上线", "成本低", "简单运维"],
+      "cons": ["扩展性受限", "单点故障"]
+    },
+    "growth_stack": {
+      "name": "成长栈 (初创公司/中型团队)",
+      "monthly_cost": "$500-1500",
+      "components": {
+        "compute": "Kubernetes (3-5节点)",
+        "database": "AWS RDS 或 Cloud SQL (托管)",
+        "vector_db": "Pinecone Standard 或 Qdrant Cloud",
+        "llm": "Claude Haiku + Prompt Caching",
+        "storage": "S3 + CloudFront CDN",
+        "caching": "ElastiCache Redis",
+        "monitoring": "Datadog 或 New Relic"
+      },
+      "pros": ["高可用", "自动扩展", "生产就绪"],
+      "cons": ["成本较高", "需运维团队"]
+    },
+    "enterprise_stack": {
+      "name": "企业栈 (大型企业)",
+      "monthly_cost": "$3000-12000+",
+      "components": {
+        "compute": "多区域Kubernetes + GPU节点池",
+        "database": "自托管PostgreSQL集群 或 RDS Multi-AZ",
+        "vector_db": "自托管Qdrant/Milvus集群",
+        "llm": "自托管Llama 70B + 云端降级",
+        "storage": "S3 + 多区域复制",
+        "caching": "Redis Cluster",
+        "monitoring": "Prometheus + Grafana + Datadog",
+        "security": "WAF + DDoS防护 + Vault"
+      },
+      "pros": ["极高可用", "全球分布", "企业级安全"],
+      "cons": ["复杂度高", "需专业团队"]
+    },
+    "cost_optimized_stack": {
+      "name": "成本优化栈 (混合部署)",
+      "monthly_cost": "$200-800",
+      "components": {
+        "compute": "按需GPU (8h/天) + Spot实例",
+        "database": "Supabase Pro 或 自托管PostgreSQL",
+        "vector_db": "PGVector 或 Qdrant Cloud (小容量)",
+        "llm": "本地Ollama (主) + OpenAI (降级)",
+        "storage": "Cloudflare R2 (零出口费用)",
+        "caching": "Upstash Redis (按请求计费)",
+        "monitoring": "Grafana Cloud 或 自建Prometheus"
+      },
+      "pros": ["性价比最高", "灵活性强", "避免锁定"],
+      "cons": ["需技术能力", "混合架构复杂"]
+    }
+  },
+  "key_insights": {
+    "cost_drivers": [
+      "LLM API调用是最大成本项 (30-50%)",
+      "计算资源次之 (20-35%), GPU成本尤其高",
+      "托管服务虽贵但降低运维成本，小团队更划算",
+      "数据传输费用常被忽视，多区域部署需重点关注",
+      "向量数据库成本差异巨大 (PGVector $0 vs Pinecone $70-960/月)"
+    ],
+    "best_practices": [
+      "从简单开始: PGVector + OpenAI API, 快速验证",
+      "渐进式优化: 根据实际数据逐步优化架构",
+      "监控优先: 无监控就无法优化",
+      "避免过早优化: 不要在验证产品前投入大量基础设施",
+      "保留灵活性: 避免供应商锁定，保持多云能力"
+    ],
+    "common_pitfalls": [
+      "忽视数据传输成本 (可占总成本10-20%)",
+      "过度依赖单一LLM提供商",
+      "缺乏容量规划导致紧急扩容",
+      "未启用缓存和Prompt Caching (浪费50%+成本)",
+      "未考虑备份和灾难恢复"
+    ],
+    "future_trends": [
+      "边缘计算普及 (Cloudflare Workers, Deno Deploy)",
+      "向量数据库标准化 (更多PostgreSQL集成)",
+      "自托管开源LLM成熟 (Llama 4, Mixtral)",
+      "Prompt Caching成为标配",
+      "多模态Agent增多 (视觉、音频集成)"
+    ]
+  }
+}

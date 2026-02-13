@@ -1,0 +1,168 @@
+{
+  "name": "ReMe",
+  "repository_url": "https://github.com/agentscope-ai/ReMe",
+  "stars": 965,
+  "primary_language": "Python",
+  "description": "智能体记忆管理工具包，提供模块化能力来跨用户、任务和代理提取、复用和共享记忆",
+  "last_updated": "2025-12",
+  "paper": {
+    "exists": true,
+    "title": "Procedural Memory for Agent Systems",
+    "venue": "Research Paper",
+    "year": 2025,
+    "url": "https://github.com/agentscope-ai/ReMe"
+  },
+  "benchmarks": {
+    "appworld": {
+      "score": 0,
+      "details": "Validated on appworld benchmark"
+    },
+    "bfcl": {
+      "score": 0,
+      "details": "Validated on bfcl(v3) benchmark"
+    },
+    "frozenlake": {
+      "score": 0,
+      "details": "Validated on frozenlake benchmark"
+    }
+  },
+  "tech_stack": {
+    "storage": [
+      "Elasticsearch",
+      "ChromaDB"
+    ],
+    "frameworks": [
+      "Python",
+      "MCP Protocol",
+      "AgentScope"
+    ],
+    "languages": [
+      "Python"
+    ],
+    "embedding_models": [
+      "Vector storage backends"
+    ]
+  },
+  "cloud_needs": {
+    "storage": {
+      "types": [
+        "Vector Database",
+        "Search Engine"
+      ],
+      "requirements": [
+        "Elasticsearch cluster",
+        "ChromaDB instances"
+      ]
+    },
+    "compute": {
+      "embedding": true,
+      "gpu_needed": false,
+      "estimated_requirements": "4-8 vCPUs for agent operations"
+    },
+    "deployment": {
+      "complexity": 6,
+      "containerized": true,
+      "orchestration": [
+        "Docker",
+        "Kubernetes"
+      ]
+    }
+  },
+  "categories": {
+    "tech_approach": [
+      "Modular Memory",
+      "Multi-type Memory",
+      "MCP Protocol"
+    ],
+    "use_case": [
+      "Task Memory",
+      "Personal Memory",
+      "Tool Memory",
+      "Working Memory"
+    ]
+  },
+  "innovations": [
+    {
+      "title": "Modular Memory Architecture",
+      "description": "Provides pluggable memory components supporting personal, task, tool, and working memory types, enabling flexible memory management for different agent scenarios"
+    },
+    {
+      "title": "Cross-entity Memory Sharing",
+      "description": "Enables memory sharing across users, tasks, and agents through a unified vector database backend, allowing knowledge reuse and collective learning"
+    },
+    {
+      "title": "Multi-backend Vector Storage",
+      "description": "Supports 5 different vector database backends (SQLite, Elasticsearch, ChromaDB, Qdrant, PostgreSQL) with unified interface, providing flexibility from small deployments to enterprise scale"
+    },
+    {
+      "title": "Multi-interface Deployment",
+      "description": "Offers HTTP API, MCP (Model Context Protocol), and Python SDK interfaces, enabling seamless integration with different agent frameworks and clients"
+    },
+    {
+      "title": "LLM-driven Memory Operations",
+      "description": "Leverages LLMs for intelligent memory extraction, summarization, and retrieval through specialized agents, improving memory quality and relevance"
+    },
+    {
+      "title": "Working Memory Compression",
+      "description": "Automatically compresses long-running agent contexts to avoid token overflow, enabling extended interactions with limited context windows"
+    }
+  ],
+  "use_cases": [
+    {
+      "title": "Personal AI Assistant",
+      "description": "Build long-term user companions that remember preferences, context, and personal history. ReMe's personal memory enables context-aware responses and personalized recommendations.",
+      "deployment_scale": "small",
+      "memory_types": ["personal_memory", "working_memory"],
+      "estimated_cost": "$41/month"
+    },
+    {
+      "title": "Enterprise Task Automation",
+      "description": "Enable agents to learn from task execution history and apply patterns to new tasks. Task memory captures success/failure patterns and comparative analysis for continuous improvement.",
+      "deployment_scale": "medium",
+      "memory_types": ["task_memory", "working_memory"],
+      "estimated_cost": "$430/month"
+    },
+    {
+      "title": "Multi-tool Agent Optimization",
+      "description": "Optimize tool selection and parameter usage through memory of historical performance. Tool memory enables data-driven decisions for complex multi-tool workflows.",
+      "deployment_scale": "medium",
+      "memory_types": ["tool_memory"],
+      "estimated_cost": "$200-400/month"
+    },
+    {
+      "title": "Long-context Conversational AI",
+      "description": "Support extended conversations and interactions beyond context window limits. Working memory compression enables seamless multi-turn dialogues with large language models.",
+      "deployment_scale": "small",
+      "memory_types": ["working_memory"],
+      "estimated_cost": "$100-200/month"
+    },
+    {
+      "title": "Multi-agent Collaborative Systems",
+      "description": "Enable knowledge sharing between agents through centralized memory. ReMe's memory sharing allows agents to leverage collective experience and reduce individual training requirements.",
+      "deployment_scale": "large",
+      "memory_types": ["personal_memory", "task_memory", "tool_memory"],
+      "estimated_cost": "$3700+/month"
+    },
+    {
+      "title": "Specialized Agent Swarms",
+      "description": "Create task-specific agent teams that share specialized knowledge through ReMe. Each agent team can maintain domain-specific memory while benefiting from cross-team insights.",
+      "deployment_scale": "large",
+      "memory_types": ["task_memory", "working_memory"],
+      "estimated_cost": "$2000-5000/month"
+    },
+    {
+      "title": "SaaS Agent Platform",
+      "description": "Build AI-powered SaaS services with per-user memory isolation. ReMe's multi-tenant capabilities enable building scalable platforms where each customer has isolated memory spaces.",
+      "deployment_scale": "large",
+      "memory_types": ["personal_memory", "task_memory", "tool_memory", "working_memory"],
+      "estimated_cost": "$5000+/month"
+    },
+    {
+      "title": "Benchmark Improvement",
+      "description": "Demonstrated performance improvements on standard benchmarks: AppWorld (+3.46%), BFCL-V3 (+6.22%), FrozenLake (+6%), Tool Memory (+14.88%). ReMe memory significantly enhances agent capabilities.",
+      "deployment_scale": "any",
+      "memory_types": ["all"],
+      "estimated_cost": "depends_on_scale"
+    }
+  ]
+}

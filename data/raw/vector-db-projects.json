@@ -1,0 +1,928 @@
+{
+  "metadata": {
+    "collection_date": "2026-02-11",
+    "description": "Comprehensive analysis of vector databases and infrastructure projects",
+    "source": "Web search and GitHub analysis",
+    "categories": [
+      "Full Vector Databases",
+      "Database Extensions",
+      "Vector Index Libraries",
+      "Search Engines with Vector Support"
+    ]
+  },
+  "projects": [
+    {
+      "name": "Milvus",
+      "category": "Full Vector Database",
+      "url": "https://github.com/milvus-io/milvus",
+      "website": "https://milvus.io/",
+      "github_stars": "35000+",
+      "language": "Go, Python, C++",
+      "license": "Apache 2.0",
+      "description": "High-performance, cloud-native vector database built for scalable vector ANN search",
+      "technical_features": {
+        "indexing_algorithms": ["HNSW", "IVF", "Product Quantization (PQ)", "DiskANN"],
+        "distributed_capability": true,
+        "gpu_support": true,
+        "hybrid_search": true,
+        "quantization": true,
+        "scalability": "Billions of vectors"
+      },
+      "performance": {
+        "notes": "Excellent performance with GPU acceleration, distributed querying, and efficient indexing",
+        "scale": "Designed for massive scale from the ground up",
+        "highlights": "Lightning-fast query processing, advanced indexing features"
+      },
+      "agent_memory_features": {
+        "long_term_memory": true,
+        "metadata_filtering": true,
+        "multi_tenancy": true,
+        "partitioning": true
+      },
+      "cloud_service": {
+        "available": true,
+        "provider": "Zilliz Cloud",
+        "features": [
+          "Fully managed Milvus service",
+          "One-click horizontal scaling",
+          "Automatic scaling and resource management",
+          "Advanced security features",
+          "SLA-backed reliability",
+          "Migration support from multiple sources"
+        ],
+        "pricing": "Usage-based, enterprise pricing available"
+      },
+      "use_cases": [
+        "Large-scale similarity search",
+        "RAG (Retrieval Augmented Generation)",
+        "GenAI applications",
+        "Recommendation systems",
+        "Image/video search"
+      ],
+      "community": {
+        "organization": "LF AI & Data Foundation",
+        "activity": "Very active",
+        "first_released": "2019"
+      }
+    },
+    {
+      "name": "Weaviate",
+      "category": "Full Vector Database",
+      "url": "https://github.com/weaviate/weaviate",
+      "website": "https://weaviate.io/",
+      "github_stars": "8000+",
+      "language": "Go",
+      "license": "BSD-3-Clause",
+      "description": "Cloud-native vector database that stores both objects and vectors, combining vector search with structured filtering",
+      "technical_features": {
+        "indexing_algorithms": ["HNSW"],
+        "distributed_capability": true,
+        "gpu_support": false,
+        "hybrid_search": true,
+        "quantization": true,
+        "knowledge_graph": true,
+        "graphql_api": true
+      },
+      "performance": {
+        "notes": "Strong hybrid search capabilities, combines vector search with keyword matching and metadata filtering",
+        "highlights": "Best-in-class hybrid search, modular ML models"
+      },
+      "agent_memory_features": {
+        "long_term_memory": true,
+        "metadata_filtering": true,
+        "semantic_search": true,
+        "contextual_enrichment": true
+      },
+      "cloud_service": {
+        "available": true,
+        "provider": "Weaviate Cloud",
+        "features": [
+          "Fully managed service",
+          "14-day free trial",
+          "Pay-as-you-go pricing",
+          "Eliminates administration overhead",
+          "Auto-scaling"
+        ],
+        "pricing": "Free tier available, then pay-as-you-go"
+      },
+      "use_cases": [
+        "Enterprise search",
+        "Question answering",
+        "Semantic search",
+        "Hybrid search applications",
+        "Knowledge management"
+      ],
+      "community": {
+        "activity": "Very active",
+        "focus": "Enterprise and production use cases"
+      }
+    },
+    {
+      "name": "Qdrant",
+      "category": "Full Vector Database",
+      "url": "https://github.com/qdrant/qdrant",
+      "website": "https://qdrant.tech/",
+      "github_stars": "9000+",
+      "language": "Rust",
+      "license": "Apache 2.0",
+      "description": "High-performance, massive-scale vector database and search engine designed for production",
+      "technical_features": {
+        "indexing_algorithms": ["HNSW"],
+        "distributed_capability": true,
+        "gpu_support": false,
+        "hybrid_search": true,
+        "quantization": true,
+        "payload_indexing": true
+      },
+      "performance": {
+        "notes": "Written in Rust for speed and reliability under high load",
+        "highlights": "Up to 4x RPS, 97% RAM reduction with quantization",
+        "benchmarks": "Maintains dedicated benchmarking framework (vector-db-benchmark)"
+      },
+      "agent_memory_features": {
+        "long_term_memory": true,
+        "metadata_filtering": true,
+        "payload_storage": true,
+        "filtered_search": true
+      },
+      "cloud_service": {
+        "available": true,
+        "provider": "Qdrant Cloud",
+        "features": [
+          "Managed service available",
+          "Requires more hands-on management",
+          "Horizontal scaling with pre-planning"
+        ],
+        "pricing": "Open-source free, cloud pricing available"
+      },
+      "use_cases": [
+        "High-performance search",
+        "Real-time applications",
+        "Production workloads",
+        "Semantic search",
+        "Recommendation engines"
+      ],
+      "community": {
+        "activity": "Active",
+        "focus": "Performance and production reliability"
+      }
+    },
+    {
+      "name": "Chroma",
+      "category": "Full Vector Database",
+      "url": "https://github.com/chroma-core/chroma",
+      "website": "https://www.trychroma.com/",
+      "github_stars": "6000+",
+      "language": "Python",
+      "license": "Apache 2.0",
+      "description": "Open-source search and retrieval database for AI applications, AI-native embedded vector database",
+      "technical_features": {
+        "indexing_algorithms": ["HNSW"],
+        "distributed_capability": false,
+        "gpu_support": false,
+        "hybrid_search": true,
+        "auto_embedding": true,
+        "built_in_embeddings": true
+      },
+      "performance": {
+        "notes": "Optimized for ease of use and development speed over raw performance",
+        "highlights": "Automatic tokenization, embedding, and indexing"
+      },
+      "agent_memory_features": {
+        "long_term_memory": true,
+        "semantic_similarity": true,
+        "autogen_integration": true,
+        "mcp_server": true,
+        "context_retrieval": true
+      },
+      "cloud_service": {
+        "available": false,
+        "notes": "Primarily self-hosted, in-memory with optional persistence"
+      },
+      "use_cases": [
+        "LLM applications",
+        "RAG pipelines",
+        "Agent memory",
+        "Proof-of-concept systems",
+        "Internal tools",
+        "Research projects"
+      ],
+      "community": {
+        "activity": "Very active",
+        "focus": "Developer experience and simplicity",
+        "target_users": "Startups, individual developers, research teams"
+      },
+      "integrations": {
+        "frameworks": ["AutoGen", "LangChain", "LlamaIndex"],
+        "mcp": true
+      }
+    },
+    {
+      "name": "Pinecone",
+      "category": "Full Vector Database (Cloud-Only)",
+      "url": "N/A (proprietary)",
+      "website": "https://www.pinecone.io/",
+      "github_stars": "N/A",
+      "language": "Proprietary",
+      "license": "Proprietary",
+      "description": "Developer-favorite vector database that's fast and easy to use at any scale",
+      "technical_features": {
+        "indexing_algorithms": ["HNSW", "Proprietary"],
+        "distributed_capability": true,
+        "gpu_support": true,
+        "hybrid_search": true,
+        "serverless": true
+      },
+      "performance": {
+        "notes": "Exceptional query speed and low-latency search",
+        "highlights": "Enterprise-grade workloads with configurable recall/performance trade-offs"
+      },
+      "agent_memory_features": {
+        "long_term_memory": true,
+        "metadata_filtering": true,
+        "namespaces": true,
+        "context_windows": true
+      },
+      "cloud_service": {
+        "available": true,
+        "provider": "Pinecone (cloud-only)",
+        "features": [
+          "Serverless vector database",
+          "Auto-scaling",
+          "Multiple deployment options",
+          "AWS and Azure marketplace availability"
+        ],
+        "pricing": {
+          "starter": "Free - 2GB storage, 2M write units/month, 1M read units/month",
+          "standard": "$50/month minimum, then pay-as-you-go",
+          "enterprise": "$500/month minimum",
+          "dedicated_byoc": "Custom pricing",
+          "serverless_rates": "$0.33/GB/month storage, $8.25/M read units, $2/M write units",
+          "support": {
+            "developer": "$29/month",
+            "pro": "$499/month"
+          }
+        }
+      },
+      "use_cases": [
+        "Production AI applications",
+        "Enterprise search",
+        "Recommendation systems",
+        "RAG applications"
+      ],
+      "community": {
+        "type": "Commercial",
+        "support": "Professional support available"
+      }
+    },
+    {
+      "name": "pgvector",
+      "category": "Database Extension",
+      "url": "https://github.com/pgvector/pgvector",
+      "website": "https://github.com/pgvector",
+      "github_stars": "19800+",
+      "language": "C",
+      "license": "PostgreSQL",
+      "description": "Open-source vector similarity search extension for PostgreSQL",
+      "technical_features": {
+        "indexing_algorithms": ["HNSW", "IVF"],
+        "distributed_capability": "Via PostgreSQL clustering",
+        "gpu_support": false,
+        "hybrid_search": true,
+        "native_sql": true
+      },
+      "performance": {
+        "notes": "Seamlessly integrates with existing PostgreSQL infrastructure",
+        "highlights": "Excellent for applications already using PostgreSQL",
+        "benchmarks": "pgvector 0.8.0 delivers up to 5.7x improvement in query performance"
+      },
+      "agent_memory_features": {
+        "long_term_memory": true,
+        "metadata_filtering": true,
+        "sql_queries": true,
+        "acid_compliance": true
+      },
+      "cloud_service": {
+        "available": true,
+        "providers": [
+          "AWS RDS PostgreSQL",
+          "Azure Database for PostgreSQL",
+          "Google Cloud SQL for PostgreSQL",
+          "Supabase",
+          "Neon",
+          "Timescale"
+        ]
+      },
+      "use_cases": [
+        "Adding vector search to existing PostgreSQL apps",
+        "Hybrid search with relational data",
+        "Recommendation systems",
+        "Content-based filtering"
+      ],
+      "community": {
+        "activity": "Very active",
+        "ecosystem": "Large PostgreSQL ecosystem"
+      },
+      "related_projects": [
+        "pgvectorscale (Timescale)",
+        "pgvecto.rs (TensorChord)"
+      ]
+    },
+    {
+      "name": "pgvectorscale",
+      "category": "Database Extension",
+      "url": "https://github.com/timescale/pgvectorscale",
+      "website": "https://www.timescale.com/",
+      "github_stars": "2100+",
+      "language": "Rust, C",
+      "license": "PostgreSQL",
+      "description": "Postgres extension for vector search using DiskANN, complements pgvector for performance and scale",
+      "technical_features": {
+        "indexing_algorithms": ["DiskANN", "HNSW"],
+        "distributed_capability": "Via PostgreSQL/TimescaleDB",
+        "gpu_support": false,
+        "hybrid_search": true,
+        "disk_based": true
+      },
+      "performance": {
+        "notes": "Optimized for large-scale vector search",
+        "benchmarks": "471 QPS at 99% recall on 50M vectors (11.4x better than Qdrant)"
+      },
+      "agent_memory_features": {
+        "long_term_memory": true,
+        "metadata_filtering": true,
+        "time_series_integration": true
+      },
+      "cloud_service": {
+        "available": true,
+        "provider": "Timescale Cloud"
+      },
+      "use_cases": [
+        "Large-scale vector search on PostgreSQL",
+        "Time-series + vector data",
+        "Cost-effective scaling"
+      ]
+    },
+    {
+      "name": "RediSearch",
+      "category": "Database Extension",
+      "url": "https://github.com/RediSearch/RediSearch",
+      "website": "https://redis.io/",
+      "github_stars": "5400+",
+      "language": "C",
+      "license": "Dual (SSPL/Redis Source Available)",
+      "description": "Query and indexing engine for Redis, providing secondary indexing, full-text search, vector similarity search and aggregations",
+      "technical_features": {
+        "indexing_algorithms": ["HNSW", "Brute Force"],
+        "distributed_capability": true,
+        "gpu_support": false,
+        "hybrid_search": true,
+        "in_memory": true,
+        "real_time": true
+      },
+      "performance": {
+        "notes": "In-memory performance with Redis",
+        "benchmarks": "Up to 9.5x higher QPS and 9.7x lower latencies vs Amazon Aurora PostgreSQL",
+        "highlights": "Fast access but expensive at scale"
+      },
+      "agent_memory_features": {
+        "long_term_memory": true,
+        "real_time_updates": true,
+        "metadata_filtering": true
+      },
+      "cloud_service": {
+        "available": true,
+        "provider": "Redis Cloud, Redis Stack"
+      },
+      "use_cases": [
+        "Real-time search",
+        "Session storage with vector search",
+        "High-performance caching + search",
+        "Low-latency applications"
+      ],
+      "community": {
+        "activity": "Active",
+        "organization": "Redis Ltd"
+      }
+    },
+    {
+      "name": "FAISS",
+      "category": "Vector Index Library",
+      "url": "https://github.com/facebookresearch/faiss",
+      "website": "https://engineering.fb.com/2017/03/29/data-infrastructure/faiss-a-library-for-efficient-similarity-search/",
+      "github_stars": "30000+",
+      "language": "C++, Python",
+      "license": "MIT",
+      "description": "Facebook AI Similarity Search - library for efficient similarity search and clustering of dense vectors",
+      "technical_features": {
+        "indexing_algorithms": ["IVF", "Product Quantization (PQ)", "HNSW", "LSH"],
+        "distributed_capability": false,
+        "gpu_support": true,
+        "hybrid_search": false,
+        "quantization": true,
+        "in_memory": true
+      },
+      "performance": {
+        "notes": "Excels in GPU-accelerated large-scale scenarios",
+        "highlights": "Fast index building, billions of vectors with GPU acceleration",
+        "optimization": "Optimized algorithms including IVF indexing and PQ compression"
+      },
+      "agent_memory_features": {
+        "long_term_memory": "Limited (library only)",
+        "metadata_filtering": false,
+        "notes": "Building block, not a full database"
+      },
+      "cloud_service": {
+        "available": false,
+        "notes": "Library only, can be deployed on any infrastructure"
+      },
+      "use_cases": [
+        "Large-scale similarity search",
+        "Low-latency applications",
+        "GPU-accelerated search",
+        "Research and prototyping",
+        "Embedding within larger systems"
+      ],
+      "community": {
+        "organization": "Meta AI Research",
+        "activity": "Active",
+        "focus": "Performance and research"
+      }
+    },
+    {
+      "name": "Annoy",
+      "category": "Vector Index Library",
+      "url": "https://github.com/spotify/annoy",
+      "website": "https://github.com/spotify/annoy",
+      "github_stars": "13000+",
+      "language": "C++, Python",
+      "license": "Apache 2.0",
+      "description": "Approximate Nearest Neighbors Oh Yeah - library for approximate nearest neighbor search using random projection trees",
+      "technical_features": {
+        "indexing_algorithms": ["Random Projection Trees"],
+        "distributed_capability": false,
+        "gpu_support": false,
+        "hybrid_search": false,
+        "file_based": true,
+        "mmap_support": true
+      },
+      "performance": {
+        "notes": "Lightweight and simple deployment",
+        "highlights": "File-based indexes, read-only after building",
+        "limitations": "Lacks GPU support, less suitable for very large datasets"
+      },
+      "agent_memory_features": {
+        "long_term_memory": "Limited (library only)",
+        "file_persistence": true,
+        "notes": "Good for static datasets"
+      },
+      "cloud_service": {
+        "available": false,
+        "notes": "Library only"
+      },
+      "use_cases": [
+        "Static datasets",
+        "Constrained memory environments",
+        "File-based deployment",
+        "Music recommendation (Spotify)",
+        "Small to medium-scale search"
+      ],
+      "community": {
+        "organization": "Spotify",
+        "activity": "Maintained",
+        "maturity": "Mature, stable"
+      }
+    },
+    {
+      "name": "ScaNN",
+      "category": "Vector Index Library",
+      "url": "https://github.com/google-research/google-research/tree/master/scann",
+      "website": "https://github.com/google-research/google-research",
+      "github_stars": "Part of google-research repo (34000+)",
+      "language": "C++, Python",
+      "license": "Apache 2.0",
+      "description": "Scalable Nearest Neighbors - Google's library optimized for high accuracy in inner-product similarity",
+      "technical_features": {
+        "indexing_algorithms": ["Anisotropic Vector Quantization", "SOAR"],
+        "distributed_capability": false,
+        "gpu_support": false,
+        "hybrid_search": false,
+        "quantization": true,
+        "optimization": "Inner-product (MIPS)"
+      },
+      "performance": {
+        "notes": "Optimizes for high accuracy in inner-product similarity",
+        "highlights": "Reduces approximation errors better than isotropic approaches like PQ",
+        "use_case": "Common in NLP and recommendation systems"
+      },
+      "agent_memory_features": {
+        "long_term_memory": "Limited (library only)",
+        "semantic_embeddings": true,
+        "notes": "Excellent for text embeddings with cosine similarity"
+      },
+      "cloud_service": {
+        "available": false,
+        "notes": "Library only"
+      },
+      "use_cases": [
+        "Semantic embeddings",
+        "Deep learning pipelines",
+        "NLP applications",
+        "Text similarity search",
+        "Maximum inner product search (MIPS)"
+      ],
+      "community": {
+        "organization": "Google Research",
+        "activity": "Active research project"
+      }
+    },
+    {
+      "name": "HNSW (hnswlib)",
+      "category": "Vector Index Library",
+      "url": "https://github.com/nmslib/hnswlib",
+      "website": "https://github.com/nmslib/hnswlib",
+      "github_stars": "4200+",
+      "language": "C++, Python",
+      "license": "Apache 2.0",
+      "description": "Header-only C++ HNSW implementation with Python bindings",
+      "technical_features": {
+        "indexing_algorithms": ["HNSW"],
+        "distributed_capability": false,
+        "gpu_support": false,
+        "hybrid_search": false,
+        "incremental_updates": true,
+        "header_only": true
+      },
+      "performance": {
+        "notes": "Fast and memory-efficient HNSW implementation",
+        "highlights": "State-of-the-art performance, efficient inserts/deletes"
+      },
+      "agent_memory_features": {
+        "long_term_memory": "Limited (library only)",
+        "incremental_updates": true
+      },
+      "cloud_service": {
+        "available": false,
+        "notes": "Library only"
+      },
+      "use_cases": [
+        "Embedding HNSW in applications",
+        "Research and prototyping",
+        "Building custom vector search systems"
+      ],
+      "community": {
+        "organization": "NMSLIB",
+        "activity": "Maintained"
+      }
+    },
+    {
+      "name": "LanceDB",
+      "category": "Full Vector Database",
+      "url": "https://github.com/lancedb/lancedb",
+      "website": "https://lancedb.com/",
+      "github_stars": "4500+",
+      "language": "Rust, Python",
+      "license": "Apache 2.0",
+      "description": "Developer-friendly OSS embedded retrieval library for multimodal AI - serverless vector database",
+      "technical_features": {
+        "indexing_algorithms": ["DiskANN", "IVF-PQ"],
+        "distributed_capability": false,
+        "gpu_support": false,
+        "hybrid_search": true,
+        "multimodal": true,
+        "columnar_format": "Lance",
+        "serverless": true
+      },
+      "performance": {
+        "notes": "Built on Lance columnar format for efficient storage and analytics",
+        "highlights": "Zero setup, embedded deployment"
+      },
+      "agent_memory_features": {
+        "long_term_memory": true,
+        "multimodal_support": true,
+        "rag_optimized": true
+      },
+      "cloud_service": {
+        "available": true,
+        "provider": "LanceDB Cloud",
+        "features": ["Serverless", "No setup required"]
+      },
+      "use_cases": [
+        "RAG applications",
+        "Agent memory",
+        "Multimodal AI",
+        "Embedded applications",
+        "Chatbots with context"
+      ],
+      "community": {
+        "activity": "Very active",
+        "focus": "Developer experience",
+        "integrations": ["LangChain", "LlamaIndex", "Apache Arrow", "Pandas", "Polars", "DuckDB"]
+      }
+    },
+    {
+      "name": "Vespa",
+      "category": "Search Engine with Vector Support",
+      "url": "https://github.com/vespa-engine/vespa",
+      "website": "https://vespa.ai/",
+      "github_stars": "5600+",
+      "language": "Java, C++",
+      "license": "Apache 2.0",
+      "description": "AI Search Platform for fast, accurate large-scale RAG, personalization, and recommendation",
+      "technical_features": {
+        "indexing_algorithms": ["HNSW"],
+        "distributed_capability": true,
+        "gpu_support": false,
+        "hybrid_search": true,
+        "structured_data": true,
+        "real_time": true,
+        "horizontal_scaling": true
+      },
+      "performance": {
+        "notes": "Built for horizontal scalability and fault tolerance",
+        "highlights": "Billion-scale vector search, automatic sharding and load balancing",
+        "scale": "Trillions of vectors with distributed architecture"
+      },
+      "agent_memory_features": {
+        "long_term_memory": true,
+        "metadata_filtering": true,
+        "structured_data_integration": true,
+        "real_time_updates": true
+      },
+      "cloud_service": {
+        "available": true,
+        "provider": "Vespa Cloud"
+      },
+      "use_cases": [
+        "E-commerce recommendations",
+        "Multi-modal search engines",
+        "Real-time analytics",
+        "Large-scale RAG",
+        "Personalization at scale"
+      ],
+      "community": {
+        "organization": "Vespa",
+        "activity": "Active",
+        "maturity": "Enterprise-grade"
+      }
+    },
+    {
+      "name": "Elasticsearch",
+      "category": "Search Engine with Vector Support",
+      "url": "https://github.com/elastic/elasticsearch",
+      "website": "https://www.elastic.co/",
+      "github_stars": "69000+",
+      "language": "Java",
+      "license": "SSPL / Elastic License",
+      "description": "Distributed search and analytics engine with vector search capabilities",
+      "technical_features": {
+        "indexing_algorithms": ["HNSW"],
+        "distributed_capability": true,
+        "gpu_support": true,
+        "hybrid_search": true,
+        "full_text_search": true,
+        "quantization": "Better Binary Quantization (BBQ)"
+      },
+      "performance": {
+        "notes": "World's most downloaded vector database",
+        "highlights": "GPU-accelerated indexing (planned 9.3), 95% memory reduction with BBQ",
+        "optimization": "semantic_text field for automatic embeddings and chunking"
+      },
+      "agent_memory_features": {
+        "long_term_memory": true,
+        "metadata_filtering": true,
+        "full_text_hybrid": true,
+        "semantic_search": true
+      },
+      "cloud_service": {
+        "available": true,
+        "provider": "Elastic Cloud",
+        "features": [
+          "Elasticsearch Relevance Engine (ESRE)",
+          "Managed service",
+          "Integration with GenAI and LLMs"
+        ]
+      },
+      "use_cases": [
+        "Enterprise search",
+        "Log analytics with vector search",
+        "Hybrid search applications",
+        "RAG with existing Elasticsearch deployments",
+        "Observability + AI"
+      ],
+      "community": {
+        "organization": "Elastic",
+        "activity": "Very active",
+        "maturity": "Enterprise-grade"
+      }
+    },
+    {
+      "name": "Typesense",
+      "category": "Search Engine with Vector Support",
+      "url": "https://github.com/typesense/typesense",
+      "website": "https://typesense.org/",
+      "github_stars": "20000+",
+      "language": "C++",
+      "license": "GPL-3.0",
+      "description": "Open-source alternative to Algolia + Pinecone - fast, typo-tolerant search engine with vector search",
+      "technical_features": {
+        "indexing_algorithms": ["HNSW"],
+        "distributed_capability": true,
+        "gpu_support": false,
+        "hybrid_search": true,
+        "typo_tolerance": true,
+        "auto_embedding": true
+      },
+      "performance": {
+        "notes": "Lightning-fast search with instant results",
+        "highlights": "Typo-tolerant, in-memory, automatic embedding generation"
+      },
+      "agent_memory_features": {
+        "long_term_memory": true,
+        "semantic_search": true,
+        "auto_vectorization": true
+      },
+      "cloud_service": {
+        "available": true,
+        "provider": "Typesense Cloud"
+      },
+      "use_cases": [
+        "Site search",
+        "E-commerce search",
+        "Semantic search",
+        "Hybrid search",
+        "Algolia alternative"
+      ],
+      "community": {
+        "activity": "Active",
+        "focus": "Developer experience and ease of use"
+      }
+    },
+    {
+      "name": "Epsilla",
+      "category": "Full Vector Database",
+      "url": "https://github.com/epsilla-cloud/vectordb",
+      "website": "https://www.epsilla.com/",
+      "github_stars": "1500+",
+      "language": "C++, Python",
+      "license": "Apache 2.0",
+      "description": "High-performance vector database management system focused on scalability and cost-effectiveness",
+      "technical_features": {
+        "indexing_algorithms": ["HNSW"],
+        "distributed_capability": true,
+        "gpu_support": false,
+        "hybrid_search": true
+      },
+      "performance": {
+        "notes": "Focuses on cost-effectiveness while maintaining performance"
+      },
+      "agent_memory_features": {
+        "long_term_memory": true,
+        "metadata_filtering": true
+      },
+      "cloud_service": {
+        "available": true,
+        "provider": "Epsilla Cloud"
+      },
+      "use_cases": [
+        "Cost-effective vector search",
+        "Startups and small teams",
+        "RAG applications"
+      ]
+    }
+  ],
+  "key_insights": {
+    "for_agent_memory": {
+      "top_choices": [
+        {
+          "name": "Chroma",
+          "reason": "Native agent memory support, AutoGen integration, MCP server, easy to use"
+        },
+        {
+          "name": "LanceDB",
+          "reason": "Multimodal support, RAG-optimized, serverless, developer-friendly"
+        },
+        {
+          "name": "Pinecone",
+          "reason": "Production-ready, excellent performance, context windows, managed service"
+        },
+        {
+          "name": "Weaviate",
+          "reason": "Best hybrid search, knowledge graph, contextual enrichment"
+        }
+      ],
+      "important_features": [
+        "Hybrid search (vector + keyword)",
+        "Metadata filtering",
+        "Incremental updates",
+        "Multi-tenancy/namespaces",
+        "Real-time updates",
+        "Easy integration with LLM frameworks"
+      ]
+    },
+    "hybrid_search_leaders": [
+      "Weaviate",
+      "Elasticsearch",
+      "Vespa",
+      "Typesense",
+      "RediSearch"
+    ],
+    "scalability_leaders": [
+      "Milvus",
+      "Vespa",
+      "Elasticsearch",
+      "Weaviate",
+      "Qdrant"
+    ],
+    "performance_leaders": [
+      "FAISS (GPU)",
+      "Qdrant",
+      "Milvus",
+      "pgvectorscale",
+      "RediSearch (in-memory)"
+    ],
+    "developer_experience_leaders": [
+      "Chroma",
+      "LanceDB",
+      "Pinecone",
+      "Typesense"
+    ],
+    "cloud_service_opportunities": {
+      "existing_providers": [
+        "Pinecone (cloud-only)",
+        "Zilliz Cloud (Milvus)",
+        "Weaviate Cloud",
+        "Qdrant Cloud",
+        "Elastic Cloud",
+        "LanceDB Cloud",
+        "Vespa Cloud",
+        "Typesense Cloud",
+        "Epsilla Cloud",
+        "Redis Cloud",
+        "Timescale Cloud (pgvectorscale)"
+      ],
+      "potential_gaps": [
+        "Agent-specific memory optimization services",
+        "Multi-model vector database management",
+        "Hybrid deployment (edge + cloud)",
+        "Specialized RAG infrastructure",
+        "Vector database migration services"
+      ]
+    },
+    "index_algorithms": {
+      "HNSW": {
+        "description": "Hierarchical Navigable Small World - most popular algorithm",
+        "users": ["Milvus", "Weaviate", "Qdrant", "Chroma", "pgvector", "Elasticsearch", "Vespa", "Typesense"],
+        "strengths": ["Fast search", "High recall", "Incremental updates", "State-of-the-art performance"]
+      },
+      "IVF": {
+        "description": "Inverted File Index - clustering-based approach",
+        "users": ["Milvus", "FAISS", "pgvector"],
+        "strengths": ["Good for large datasets", "Memory efficient with PQ"]
+      },
+      "DiskANN": {
+        "description": "Disk-based ANN for massive scale",
+        "users": ["Milvus", "pgvectorscale", "LanceDB"],
+        "strengths": ["Scales to billions", "Cost-effective", "Disk-based"]
+      },
+      "Product_Quantization": {
+        "description": "Compression technique for vectors",
+        "users": ["Milvus", "FAISS"],
+        "strengths": ["Reduces memory usage", "Enables larger datasets"]
+      }
+    },
+    "market_trends_2026": {
+      "serverless": "Second generation of serverless vector databases emerging",
+      "hybrid_search": "Becoming standard architecture by 2027",
+      "graph_enhanced": "Graph-enhanced vector retrieval as breakthrough",
+      "gpu_acceleration": "GPU-accelerated indexing becoming mainstream",
+      "quantization": "Advanced quantization (BBQ) reducing memory by 95%+",
+      "market_size": "$2.46B in 2024 → projected $10.6B by 2032 (27.5% CAGR)"
+    },
+    "memory_framework_dependencies": {
+      "most_used": ["Chroma", "Pinecone", "Weaviate", "Milvus", "pgvector"],
+      "emerging": ["LanceDB", "Qdrant"],
+      "integration_frameworks": ["LangChain", "LlamaIndex", "AutoGen", "Haystack"]
+    }
+  },
+  "sources": [
+    "https://github.com/milvus-io/milvus",
+    "https://github.com/weaviate/weaviate",
+    "https://github.com/qdrant/qdrant",
+    "https://github.com/chroma-core/chroma",
+    "https://github.com/pgvector/pgvector",
+    "https://github.com/RediSearch/RediSearch",
+    "https://github.com/facebookresearch/faiss",
+    "https://github.com/spotify/annoy",
+    "https://github.com/lancedb/lancedb",
+    "https://github.com/vespa-engine/vespa",
+    "https://github.com/elastic/elasticsearch",
+    "https://github.com/typesense/typesense",
+    "https://pinecone.io/",
+    "https://zilliz.com/",
+    "https://qdrant.tech/benchmarks/",
+    "https://www.pinecone.io/learn/vector-database/",
+    "https://weaviate.io/blog/hybrid-search-explained",
+    "https://milvus.io/blog/understand-hierarchical-navigable-small-worlds-hnsw-for-vector-search.md"
+  ]
+}

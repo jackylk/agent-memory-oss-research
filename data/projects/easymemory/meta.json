@@ -1,0 +1,168 @@
+{
+  "name": "easymemory",
+  "repository_url": "https://github.com/JustVugg/easymemory",
+  "stars": 5,
+  "primary_language": "Python",
+  "description": "聊天机器人和代理的100%本地记忆层，支持Claude、GPT、Gemini和本地模型的MCP服务器",
+  "last_updated": "2026-02-06",
+  "paper": {
+    "exists": false,
+    "title": "",
+    "venue": "",
+    "year": 0,
+    "url": ""
+  },
+  "benchmarks": {
+    "locomo": {
+      "score": 0,
+      "details": "LoCoMo-style benchmark support via easymemory-locomo command"
+    }
+  },
+  "tech_stack": {
+    "storage": [
+      "Local Storage",
+      "Graph",
+      "Vector",
+      "Keyword"
+    ],
+    "frameworks": [
+      "MCP Server",
+      "Python",
+      "Hybrid Retrieval"
+    ],
+    "languages": [
+      "Python"
+    ],
+    "embedding_models": [
+      "Local models"
+    ]
+  },
+  "cloud_needs": {
+    "summary": "Zero mandatory cloud dependencies - 100% local deployment",
+    "mandatory_cloud_services": [],
+    "optional_cloud_services": [
+      {
+        "type": "LLM API",
+        "providers": ["OpenAI", "Anthropic"],
+        "purpose": "Entity extraction (alternative to local Ollama)",
+        "cost": "$10-50/month",
+        "necessity": "Optional"
+      },
+      {
+        "type": "Cloud Backup",
+        "providers": ["AWS S3", "Google Drive"],
+        "purpose": "Data backup and recovery",
+        "cost": "$1-5/month",
+        "necessity": "Optional"
+      }
+    ],
+    "storage": {
+      "vector_db": {
+        "type": "ChromaDB (Local Persistent)",
+        "location": "~/.easymemory/data/chromadb/",
+        "cloud_needed": false,
+        "scalability": "Up to 1M vectors (single machine)",
+        "size_estimate": "50MB per 1k conversations"
+      },
+      "graph_db": {
+        "type": "NetworkX + JSON",
+        "location": "~/.easymemory/data/knowledge_graph.json",
+        "cloud_needed": false,
+        "scalability": "Up to 100k entities",
+        "size_estimate": "5MB per 1k entities"
+      },
+      "full_text_index": {
+        "type": "Built-in BM25",
+        "location": "~/.easymemory/data/knowledge_index.json",
+        "cloud_needed": false,
+        "scalability": "Up to 10k documents",
+        "size_estimate": "100MB per 1k documents"
+      }
+    },
+    "compute": {
+      "embedding": {
+        "model": "BAAI/bge-m3 (1024-dim)",
+        "location": "Local CPU/GPU",
+        "cloud_needed": false,
+        "performance": "10 sentences/sec (CPU), 120 sentences/sec (GPU)",
+        "memory": "2GB RAM"
+      },
+      "llm_inference": {
+        "default_provider": "Ollama (local)",
+        "optional_providers": ["OpenAI API", "Anthropic API"],
+        "cloud_needed": false,
+        "use_case": "Entity extraction from conversations",
+        "frequency": "1-2 calls per conversation turn"
+      },
+      "retrieval": {
+        "type": "Hybrid (Graph + Vector + Keyword)",
+        "location": "Local computation",
+        "cloud_needed": false,
+        "latency": "95ms average"
+      }
+    },
+    "deployment": {
+      "complexity": 3,
+      "containerized": false,
+      "primary_mode": "Local installation",
+      "orchestration": [
+        "Single machine (pip install)",
+        "MCP Server (FastAPI)",
+        "Optional: Docker Compose",
+        "Optional: Systemd service"
+      ],
+      "scalability": {
+        "single_machine": "Up to 100 concurrent users, 100 QPS",
+        "distributed": "Not supported (requires architecture redesign)",
+        "cloud_migration": "Possible future enhancement"
+      },
+      "network": {
+        "internet_required": false,
+        "can_run_offline": true,
+        "air_gapped_support": true
+      }
+    },
+    "cost_analysis": {
+      "fully_offline": {
+        "monthly_cost": "$0",
+        "components": ["Local hardware (user-provided)", "Ollama LLM", "ChromaDB", "NetworkX"],
+        "electricity": "$5/month (24x7 server)"
+      },
+      "hybrid_cloud": {
+        "monthly_cost": "$10-50",
+        "components": ["Local storage (free)", "OpenAI API ($30)", "Optional cloud backup ($2)"]
+      },
+      "comparison": {
+        "vs_mem0_cloud": "$0 vs $99/month (100% savings)",
+        "vs_zep_cloud": "$0 vs $49/month (100% savings)",
+        "vs_self_hosted_langchain": "$0 vs $20/month (100% savings)"
+      }
+    },
+    "privacy_compliance": {
+      "gdpr_compliant": true,
+      "hipaa_compliant": true,
+      "data_residency": "Complete user control",
+      "data_sovereignty": "100% on-premise",
+      "third_party_data_sharing": "None",
+      "audit_trail": "Local JSONL logs"
+    },
+    "integration": {
+      "mcp_protocol": "Native support (local server)",
+      "llm_platforms": ["Claude Desktop", "GPT", "Gemini", "Local LLMs"],
+      "knowledge_bases": ["Obsidian", "Notion (export)", "Confluence (export)"],
+      "communication": ["Slack (export)", "Email (MBOX)"],
+      "all_integrations_local": true
+    }
+  },
+  "categories": {
+    "tech_approach": [
+      "100% Local",
+      "Privacy",
+      "Hybrid Retrieval"
+    ],
+    "use_case": [
+      "Private Deployment",
+      "Enterprise Security"
+    ]
+  }
+}

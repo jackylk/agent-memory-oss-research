@@ -1,0 +1,119 @@
+{
+  "name": "Memary",
+  "repository_url": "https://github.com/kingjulio8238/Memary",
+  "stars": 2600,
+  "primary_language": "Python",
+  "description": "自主智能体的开源记忆层，模拟人类记忆工作原理",
+  "last_updated": "2025",
+  "paper": {
+    "exists": false,
+    "title": "",
+    "venue": "",
+    "year": 0,
+    "url": ""
+  },
+  "benchmarks": {},
+  "tech_stack": {
+    "storage": [
+      "Neo4j",
+      "FalkorDB",
+      "Knowledge Graph"
+    ],
+    "frameworks": [
+      "Python",
+      "ReAct",
+      "Dashboard"
+    ],
+    "languages": [
+      "Python"
+    ],
+    "embedding_models": [
+      "Ollama",
+      "GPT-3.5-turbo",
+      "GPT-4-vision"
+    ]
+  },
+  "cloud_needs": {
+    "storage": {
+      "types": [
+        "Knowledge Graph",
+        "Memory Stream",
+        "Entity Store"
+      ],
+      "requirements": [
+        "Dual memory architecture",
+        "Multi-agent support"
+      ]
+    },
+    "compute": {
+      "embedding": true,
+      "gpu_needed": false,
+      "estimated_requirements": "8-16 vCPUs for graph operations"
+    },
+    "deployment": {
+      "complexity": 7,
+      "containerized": true,
+      "orchestration": [
+        "Docker",
+        "Neo4j/FalkorDB cluster"
+      ]
+    }
+  },
+  "categories": {
+    "tech_approach": [
+      "Human Memory Simulation",
+      "Knowledge Graph",
+      "ReAct Framework"
+    ],
+    "use_case": [
+      "Autonomous Agents",
+      "Multi-agent Systems"
+    ]
+  },
+  "innovations": {
+    "key_features": [
+      "双层记忆流架构（Memory Stream + Entity Knowledge Store）",
+      "递归实体检索（最大深度2层）",
+      "多跳推理（合并多个子图）",
+      "同义词扩展检索",
+      "零代码集成",
+      "多图隔离（Multi-Graph，支持多代理）",
+      "人类记忆仿真（宽度+深度两维度）",
+      "自动记忆生成",
+      "Context Window 管理与 Token 蒸馏"
+    ],
+    "improvements": [
+      "基于 K-LaMP（Microsoft Research）设计的记忆模块",
+      "改进的 KG RAG 检索器（递归+多跳）",
+      "外部查询降级机制（Perplexity 集成）",
+      "实体频率和时效性跟踪",
+      "自动化记忆写回知识图谱",
+      "支持本地模型（Ollama）零云成本部署",
+      "Streamlit 可视化仪表板",
+      "多模态支持（LLaVA 视觉工具）"
+    ],
+    "user_value": [
+      "降低智能代理开发门槛（零代码集成）",
+      "长期记忆能力增强对话连贯性",
+      "个性化响应（基于用户知识深度）",
+      "成本可控（支持完全本地部署）",
+      "隐私保护（数据本地化选项）",
+      "快速原型验证（Docker Compose 部署）",
+      "多代理场景支持（FalkorDB 多图隔离）",
+      "灵活扩展（从本地到企业级）"
+    ]
+  },
+  "use_cases": {
+    "scenarios": [
+      "长期对话系统（客服机器人、个人助理）",
+      "个人知识管理（笔记、日记、学习助手）",
+      "专业知识库系统（医疗、法律、金融领域）",
+      "多代理协作平台（团队记忆共享）",
+      "教育领域（学习伴侣、智能辅导）",
+      "游戏 NPC 记忆系统",
+      "企业客户支持（上下文感知客服）",
+      "研究助手（文献管理、知识图谱构建）"
+    ],
+    "companies": []
+  }
+}

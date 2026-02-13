@@ -1,0 +1,949 @@
+{
+  "metadata": {
+    "collection_date": "2026-02-11",
+    "purpose": "Agent Memory Benchmark Analysis for OSS Research",
+    "total_benchmarks": 13,
+    "sources": [
+      "Academic papers (arXiv, ACL, ICLR, OpenReview)",
+      "GitHub repositories",
+      "Official benchmark websites",
+      "Company research blogs"
+    ]
+  },
+  "benchmarks": [
+    {
+      "name": "LoCoMo",
+      "full_name": "Long-term Context Memory Benchmark",
+      "status": "Published (ACL 2024, ICLR 2025)",
+      "authority": "High - Academic benchmark from Snap Research",
+      "url": "https://snap-research.github.io/locomo/",
+      "github": "https://arxiv.org/abs/2402.17753",
+      "paper": {
+        "title": "Evaluating Very Long-Term Conversational Memory of LLM Agents",
+        "authors": "Adyasha Maharana et al.",
+        "venue": "ACL 2024",
+        "arxiv": "2402.17753"
+      },
+      "description": "Large-scale multimodal benchmark for evaluating long-term conversational memory in LLMs through multi-session dialogue tasks",
+      "evaluation_dimensions": [
+        {
+          "dimension": "Question Answering (QA)",
+          "reasoning_types": [
+            "Single-hop reasoning",
+            "Multi-hop reasoning",
+            "Temporal reasoning",
+            "Commonsense/world knowledge",
+            "Adversarial reasoning"
+          ]
+        },
+        {
+          "dimension": "Event Summarization",
+          "description": "Extract event graph information from conversation history"
+        },
+        {
+          "dimension": "Multi-modal Dialog Generation",
+          "description": "Generate responses consistent with ongoing narrative using past context"
+        }
+      ],
+      "dataset_characteristics": {
+        "conversations": "Very long-term conversations",
+        "avg_turns_per_conversation": 300,
+        "avg_tokens_per_conversation": 9000,
+        "max_sessions": 35,
+        "detailed_stats": "Up to 32 sessions per dialogue, ~600 turns (~16,000 tokens) on average",
+        "time_span": "6-12 months",
+        "events_per_conversation": "Up to 25 events",
+        "multimodal": "Yes - includes images via web search and captioning",
+        "generation_method": "LLM-generated dialogues between virtual agents with multi-sentence personas"
+      },
+      "metrics": [
+        "F1 Score",
+        "LLM-as-a-Judge Score",
+        "Accuracy per reasoning type"
+      ],
+      "baseline_performance": {
+        "human_rater": {
+          "overall_f1": 88
+        },
+        "gpt_4_turbo_4k": {
+          "overall_f1": 32
+        },
+        "gpt_3_5_turbo_16k": {
+          "overall_f1": 37.8
+        },
+        "adversarial_qa_f1_range": "12-22",
+        "note": "All models show drastically lower scores on adversarial QA"
+      },
+      "tested_frameworks": [
+        {
+          "framework": "Mem0",
+          "score": 66.9,
+          "metric": "LLM-as-a-Judge score",
+          "improvement_over_baseline": "26% relative uplift over OpenAI Memory (52.9%)"
+        },
+        {
+          "framework": "OpenAI Memory",
+          "score": 52.9,
+          "metric": "LLM-as-a-Judge score"
+        },
+        {
+          "framework": "SimpleMem (GPT-4.1-mini)",
+          "score": 43.24,
+          "metric": "Average F1",
+          "tokens_per_query": 531,
+          "details": "64% performance boost over Claude-Mem"
+        },
+        {
+          "framework": "SimpleMem (GPT-4o)",
+          "score": 39.06,
+          "metric": "Average F1"
+        },
+        {
+          "framework": "Mem0 (baseline comparison)",
+          "score": 34.20,
+          "metric": "F1 on GPT-4.1-mini",
+          "tokens_per_query": 973
+        },
+        {
+          "framework": "A-Mem",
+          "score": 33.45,
+          "metric": "F1 on GPT-4o"
+        },
+        {
+          "framework": "MemMachine v0.2",
+          "score": 0.8487,
+          "metric": "LLM Judge Score (overall)",
+          "note": "Industry-leading scores, outperforms Mem0, Zep, and Memobase"
+        },
+        {
+          "framework": "MemU",
+          "score": 92.09,
+          "metric": "Average accuracy across all reasoning tasks"
+        },
+        {
+          "framework": "Letta (MemGPT) with GPT-4o-mini",
+          "score": 74.0,
+          "metric": "Percentage score",
+          "note": "Minimal prompt tuning; discrepancy with Mem0's reported MemGPT score"
+        },
+        {
+          "framework": "Full-context baseline",
+          "score": 18.70,
+          "metric": "F1",
+          "tokens_per_query": 16910
+        }
+      ],
+      "recognition": "Most widely cited long-term conversational memory benchmark",
+      "leaderboard": "Informal - various companies report their scores",
+      "limitations": "Relatively short conversations (~9k tokens) compared to real-world scenarios",
+      "scientific_rigor": "High - peer-reviewed, reproducible methodology"
+    },
+    {
+      "name": "LongMemEval",
+      "full_name": "Long-Term Interactive Memory Evaluation",
+      "status": "Published (ICLR 2025)",
+      "authority": "High - Academic benchmark accepted at ICLR 2025",
+      "url": "https://xiaowu0162.github.io/long-mem-eval/",
+      "github": "https://github.com/xiaowu0162/LongMemEval",
+      "paper": {
+        "title": "LongMemEval: Benchmarking Chat Assistants on Long-Term Interactive Memory",
+        "authors": "Xiaowu et al.",
+        "venue": "ICLR 2025",
+        "arxiv": "2410.10813"
+      },
+      "description": "Comprehensive benchmark evaluating five core long-term memory abilities through scalable user-assistant chat histories",
+      "evaluation_dimensions": [
+        "Information extraction",
+        "Multi-session reasoning",
+        "Temporal reasoning",
+        "Knowledge updates",
+        "Abstention (knowing when not to answer)"
+      ],
+      "dataset_characteristics": {
+        "total_questions": 500,
+        "description": "Meticulously curated questions embedded in freely scalable chat histories",
+        "variants": [
+          {
+            "name": "LongMemEvalS",
+            "tokens": "~115k",
+            "sessions": "30-40 sessions"
+          },
+          {
+            "name": "LongMemEvalM",
+            "tokens": "~1.5M",
+            "sessions": "~500 sessions"
+          }
+        ]
+      },
+      "metrics": [
+        "Accuracy",
+        "F1 Score",
+        "Task-specific metrics per memory ability"
+      ],
+      "baseline_performance": {
+        "commercial_assistants": {
+          "accuracy_drop": "30% on memorizing information across sustained interactions"
+        },
+        "long_context_llms": {
+          "accuracy_drop": "30% on memorizing information across sustained interactions"
+        }
+      },
+      "framework_optimizations": {
+        "description": "Unified framework breaking down memory into three stages",
+        "stages": [
+          "Indexing - session decomposition for value granularity",
+          "Retrieval - fact-augmented key expansion",
+          "Reading - time-aware query expansion for refining search scope"
+        ]
+      },
+      "tested_frameworks": [
+        {
+          "framework": "Supermemory",
+          "achievement": "State-of-the-Art on LongMemEval_s",
+          "strengths": "Effectively solves temporal reasoning and knowledge conflicts in high-noise environments (115k+ tokens)"
+        }
+      ],
+      "recognition": "Considered the new gold standard for benchmarking conversational agent memory",
+      "leaderboard": "Available on Hugging Face",
+      "huggingface": "https://huggingface.co/papers/2410.10813",
+      "scientific_rigor": "High - peer-reviewed at ICLR 2025, comprehensive evaluation framework",
+      "innovations": "Freely scalable chat histories, diverse memory ability assessment"
+    },
+    {
+      "name": "MemoryAgentBench",
+      "status": "Accepted (ICLR 2026)",
+      "authority": "High - Academic benchmark accepted at ICLR 2026",
+      "url": "https://openreview.net/forum?id=ZgQ0t3zYTQ",
+      "github": "https://github.com/HUST-AI-HYZ/MemoryAgentBench",
+      "paper": {
+        "title": "Evaluating Memory in LLM Agents via Incremental Multi-Turn Interactions",
+        "authors": "HUST-AI-HYZ et al.",
+        "venue": "ICLR 2026",
+        "arxiv": "2507.05257"
+      },
+      "description": "Unified benchmark evaluating memory agents across four essential competencies through incremental multi-turn interactions",
+      "evaluation_dimensions": [
+        {
+          "name": "Accurate Retrieval (AR)",
+          "description": "Document question answering, NIAH-style QA for identifying and extracting relevant snippets"
+        },
+        {
+          "name": "Test-Time Learning (TTL)",
+          "description": "Ability to ingest and reliably apply new classification labels, rules, or procedures during dialogue"
+        },
+        {
+          "name": "Long-Range Understanding (LRU)",
+          "description": "Fluency of input text (0 or 1) with dot product of fluency and F1 as final metric"
+        },
+        {
+          "name": "Conflict Resolution / Selective Forgetting",
+          "description": "Handle counterfactual edit pairs, accuracy of QA as evaluation metric"
+        }
+      ],
+      "dataset_characteristics": {
+        "total_datasets": 17,
+        "design_philosophy": "Inject once, query multiple times - one long text corresponds to multiple questions",
+        "efficiency": "Significantly improved evaluation efficiency"
+      },
+      "metrics": [
+        "F1 Score",
+        "Accuracy",
+        "Proportion of satisfactory responses",
+        "GPT-4o as judge for certain evaluations"
+      ],
+      "tested_frameworks": [
+        {
+          "note": "Performance results not yet widely published - benchmark recently released"
+        }
+      ],
+      "recognition": "Latest comprehensive academic benchmark (ICLR 2026)",
+      "leaderboard": "TBD - repository recently released",
+      "scientific_rigor": "High - peer-reviewed at top-tier venue, comprehensive 17-dataset evaluation"
+    },
+    {
+      "name": "RealMem",
+      "full_name": "Real-World Memory-Driven Interaction Benchmark",
+      "status": "Published (2026)",
+      "authority": "Medium-High - Recent academic benchmark",
+      "paper": {
+        "title": "RealMem: Benchmarking LLMs in Real-World Memory-Driven Interaction",
+        "arxiv": "2601.06966"
+      },
+      "github": "https://github.com/AvatarMemory/RealMemBench",
+      "description": "First benchmark grounded in realistic project scenarios for long-term project-oriented interactions",
+      "evaluation_dimensions": [
+        "Long-term project state tracking",
+        "Dynamic context dependency management",
+        "Evolving goal tracking"
+      ],
+      "dataset_characteristics": {
+        "total_dialogues": "2000+",
+        "type": "Cross-session dialogues",
+        "scenarios": 11,
+        "query_type": "Natural user queries",
+        "focus": "Long-term project-oriented interactions (vs casual conversation or task-oriented dialogue)"
+      },
+      "metrics": [
+        "Project state tracking accuracy",
+        "Context dependency resolution",
+        "Goal evolution tracking"
+      ],
+      "key_findings": "Current memory systems face significant challenges in managing long-term project states and dynamic context dependencies in real-world projects",
+      "innovation": "First to focus on project-oriented dialogue scenarios",
+      "scientific_rigor": "Medium-High - focuses on realistic scenarios but newer benchmark"
+    },
+    {
+      "name": "CloneMem",
+      "full_name": "Long-Term Memory for AI Clones Benchmark",
+      "status": "Published (2026)",
+      "authority": "Medium-High - Recent academic benchmark",
+      "paper": {
+        "title": "CloneMem: Benchmarking Long-Term Memory for AI Clones",
+        "arxiv": "2601.07023"
+      },
+      "description": "Benchmark for AI Clone scenarios grounded in non-conversational digital traces spanning 1-3 years",
+      "evaluation_dimensions": [
+        "Longitudinal coherence",
+        "Personal state tracking over time",
+        "Evolution of personal characteristics"
+      ],
+      "dataset_characteristics": {
+        "data_sources": [
+          "Diaries",
+          "Social media posts",
+          "Emails"
+        ],
+        "time_span": "1-3 years",
+        "construction": "Hierarchical data construction framework for longitudinal coherence"
+      },
+      "metrics": [
+        "Personal state tracking accuracy",
+        "Longitudinal coherence score"
+      ],
+      "key_findings": "Current memory mechanisms struggle in life-grounded personalized AI scenarios",
+      "innovation": "Focus on non-conversational data and long-term personal evolution",
+      "scientific_rigor": "Medium-High - novel approach but newer benchmark"
+    },
+    {
+      "name": "KnowMe-Bench",
+      "full_name": "Person Understanding for Lifelong Digital Companions",
+      "status": "Published (2026)",
+      "authority": "Medium-High - Recent academic benchmark",
+      "paper": {
+        "title": "KnowMe-Bench: Benchmarking Person Understanding for Lifelong Digital Companions",
+        "huggingface": "https://huggingface.co/papers/2601.04745"
+      },
+      "description": "Evaluates person understanding through flashback-aware, time-anchored narrative streams",
+      "evaluation_dimensions": [
+        "Factual recall",
+        "Subjective state attribution",
+        "Principle-level reasoning"
+      ],
+      "dataset_characteristics": {
+        "structure": "Flashback-aware, time-anchored streams",
+        "question_type": "Evidence-linked questions",
+        "narrative_sources": "Diverse"
+      },
+      "metrics": [
+        "Factual accuracy",
+        "Temporally grounded explanations",
+        "Higher-level inferences"
+      ],
+      "key_findings": "Retrieval-augmented systems mainly improve factual accuracy, but errors persist on temporally grounded explanations and higher-level inferences",
+      "innovation": "Focus on person understanding and subjective state modeling",
+      "scientific_rigor": "Medium-High - addresses specific gap in person-centric memory"
+    },
+    {
+      "name": "StoryBench",
+      "full_name": "Dynamic Benchmark for Long-Term Memory with Multi-Turns",
+      "status": "Published (2025)",
+      "authority": "Medium - Recent academic benchmark",
+      "url": "https://github.com/google/storybench",
+      "paper": {
+        "title": "StoryBench: A Dynamic Benchmark for Evaluating Long-Term Memory with Multi Turns",
+        "authors": "Wan & Ma, 2025",
+        "arxiv": "2506.13356"
+      },
+      "description": "Benchmark based on interactive fiction games with dynamically branching storylines",
+      "evaluation_dimensions": [
+        "Knowledge retention",
+        "Sequential reasoning",
+        "Short-term adjustment ability",
+        "Long-horizon strategic recall"
+      ],
+      "dataset_characteristics": {
+        "basis": "Interactive fiction games",
+        "structure": "Hierarchical decision trees with cascading dependencies",
+        "interaction_type": "Multi-turn gameplay"
+      },
+      "task_modes": [
+        {
+          "mode": "Immediate Feedback",
+          "description": "Evaluate responsiveness to error signals, short-term adjustment ability"
+        },
+        {
+          "mode": "Long-horizon Strategic Recall",
+          "description": "Evaluate longer-term memory utilization"
+        }
+      ],
+      "metrics": [
+        "Decision accuracy",
+        "Relationship tracking",
+        "Contradiction resolution"
+      ],
+      "innovation": "Dynamic branching storylines with cascading dependencies simulate real-world complexity",
+      "scientific_rigor": "Medium - novel approach using interactive fiction"
+    },
+    {
+      "name": "MemBench",
+      "full_name": "Comprehensive Memory Evaluation for LLM-based Agents",
+      "status": "Published (ACL 2025 Findings)",
+      "authority": "High - Academic benchmark",
+      "paper": {
+        "title": "MemBench: Towards More Comprehensive Evaluation on the Memory of LLM-based Agents",
+        "venue": "ACL 2025 Findings",
+        "arxiv": "2506.21605"
+      },
+      "github": "https://github.com/import-myself/Membench",
+      "description": "Comprehensive evaluation of memory effectiveness, efficiency, and capacity from multiple aspects",
+      "evaluation_dimensions": [
+        {
+          "memory_level": "Factual Memory",
+          "description": "Specific factual attributes (relative's age, occupation, event time details)"
+        },
+        {
+          "memory_level": "Reflective Memory",
+          "description": "Higher-level reflections and insights"
+        }
+      ],
+      "interaction_scenarios": [
+        "Participation - active agent involvement",
+        "Observation - passive information gathering"
+      ],
+      "metrics": [
+        "Accuracy",
+        "Recall",
+        "Capacity - maximum information retention",
+        "Temporal Efficiency - time-based performance"
+      ],
+      "innovation": "Diversity of memory levels and interactive scenarios",
+      "scientific_rigor": "High - peer-reviewed at ACL 2025"
+    },
+    {
+      "name": "Trust-Memevo / TAME",
+      "full_name": "Trustworthy Test-Time Evolution of Agent Memory",
+      "status": "Published (2026)",
+      "authority": "Medium-High - Recent research on trustworthiness",
+      "paper": {
+        "title": "TAME: A Trustworthy Test-Time Evolution of Agent Memory with Systematic Benchmarking",
+        "arxiv": "2602.03224"
+      },
+      "description": "First benchmark jointly evaluating agent memory evolution and multi-dimensional trustworthiness",
+      "evaluation_dimensions": [
+        "Safety",
+        "Privacy",
+        "Fairness",
+        "Memory evolution quality"
+      ],
+      "dataset_characteristics": {
+        "domains": [
+          "Math",
+          "Science",
+          "Tool use"
+        ],
+        "focus": "Test-time learning settings with behavioral monitoring"
+      },
+      "metrics": [
+        "Trustworthiness scores across dimensions",
+        "Task performance",
+        "Memory evolution quality"
+      ],
+      "key_findings": {
+        "problem": "Agent Memory Misevolution - score-driven agents erode initial safety constraints during benign task evolution",
+        "solution": "TAME method achieves joint improvement in trustworthiness and task performance"
+      },
+      "innovation": "First to evaluate trustworthiness degradation during memory evolution",
+      "scientific_rigor": "Medium-High - addresses critical safety concern"
+    },
+    {
+      "name": "Letta Leaderboard",
+      "full_name": "Letta Memory Management Benchmark",
+      "status": "Active",
+      "authority": "Medium - Industry benchmark from Letta (formerly MemGPT)",
+      "url": "https://www.letta.com/blog/letta-leaderboard",
+      "github": "https://github.com/letta-ai/letta-leaderboard",
+      "description": "Comprehensive benchmark suite evaluating LLM memory management capabilities within the Letta framework",
+      "evaluation_dimensions": [
+        "Core memory management",
+        "Archival memory operations",
+        "Memory consistency",
+        "Memory update accuracy"
+      ],
+      "metrics": [
+        "Task completion accuracy",
+        "Memory operation success rate",
+        "Cost efficiency (tokens/cost per task)"
+      ],
+      "top_performers": [
+        {
+          "model": "Claude 4 Sonnet (with Extended Thinking)",
+          "performance": "Consistently high scores"
+        },
+        {
+          "model": "Claude 4 Sonnet",
+          "performance": "Consistently high scores"
+        },
+        {
+          "model": "GPT 4.1",
+          "performance": "Consistently high scores"
+        },
+        {
+          "model": "GPT 4o",
+          "performance": "Consistently high scores"
+        }
+      ],
+      "cost_efficient_options": [
+        {
+          "model": "Gemini 2.5 Flash",
+          "note": "Solid memory performance at fraction of cost"
+        },
+        {
+          "model": "GPT 4o-mini",
+          "note": "Solid memory performance at fraction of cost"
+        }
+      ],
+      "leaderboard": "Yes - publicly accessible",
+      "scientific_rigor": "Medium - framework-specific but transparent methodology",
+      "innovation": "Apples-to-apples LLM comparison within single framework"
+    },
+    {
+      "name": "RealTalk",
+      "full_name": "Real-World Long-Term Conversation Dataset",
+      "status": "Published (2025)",
+      "authority": "Medium - Real-world dataset",
+      "description": "21-day real-world dataset for long-term conversation evaluation",
+      "dataset_characteristics": {
+        "duration": "21 days",
+        "data_type": "Real-world conversations"
+      },
+      "note": "Limited detailed information available, mentioned alongside LoCoMo and LongMemEval as specialized memory benchmark"
+    },
+    {
+      "name": "AgentBench",
+      "full_name": "Comprehensive LLM Agent Evaluation",
+      "status": "Published (ICLR 2024)",
+      "authority": "High - Academic benchmark",
+      "url": "https://github.com/THUDM/AgentBench",
+      "paper": {
+        "venue": "ICLR 2024"
+      },
+      "description": "Comprehensive benchmark to evaluate LLMs as agents across multiple dimensions",
+      "evaluation_dimensions": [
+        "Memory",
+        "Planning",
+        "World modeling",
+        "Retrospection",
+        "Grounding",
+        "Spatial navigation"
+      ],
+      "note": "Broader agent evaluation including memory as one component",
+      "leaderboard": "Yes - tracks results across multiple environments",
+      "scientific_rigor": "High - ICLR 2024 publication"
+    },
+    {
+      "name": "AgentBoard",
+      "full_name": "Analytical Evaluation Board of Multi-Turn LLM Agents",
+      "status": "Active",
+      "authority": "Medium-High - Academic research project",
+      "url": "https://hkust-nlp.github.io/agentboard/",
+      "description": "Evaluates agent capabilities across six dimensions including memory",
+      "evaluation_dimensions": [
+        "Memory",
+        "Planning",
+        "World modeling",
+        "Retrospection",
+        "Grounding",
+        "Spatial navigation"
+      ],
+      "leaderboard": "Yes - https://hkust-nlp.github.io/agentboard/static/leaderboard.html",
+      "note": "Broader agent evaluation framework with memory component"
+    }
+  ],
+  "performance_comparisons": {
+    "locomo_benchmark": {
+      "ranking": [
+        {
+          "rank": 1,
+          "system": "MemU",
+          "score": 92.09,
+          "metric": "Average accuracy",
+          "note": "Across all reasoning tasks"
+        },
+        {
+          "rank": 2,
+          "system": "MemMachine v0.2",
+          "score": 84.87,
+          "metric": "LLM Judge Score (percentage)"
+        },
+        {
+          "rank": 3,
+          "system": "Letta (GPT-4o-mini)",
+          "score": 74.0,
+          "metric": "Percentage score"
+        },
+        {
+          "rank": 4,
+          "system": "Mem0",
+          "score": 66.9,
+          "metric": "LLM-as-a-Judge score (percentage)"
+        },
+        {
+          "rank": 5,
+          "system": "OpenAI Memory",
+          "score": 52.9,
+          "metric": "LLM-as-a-Judge score (percentage)"
+        }
+      ],
+      "f1_score_comparison": [
+        {
+          "system": "SimpleMem (GPT-4.1-mini)",
+          "avg_f1": 43.24,
+          "tokens_per_query": 531,
+          "efficiency": "High"
+        },
+        {
+          "system": "SimpleMem (GPT-4o)",
+          "avg_f1": 39.06
+        },
+        {
+          "system": "Mem0 (GPT-4.1-mini)",
+          "avg_f1": 34.20,
+          "tokens_per_query": 973,
+          "efficiency": "Medium"
+        },
+        {
+          "system": "A-Mem (GPT-4o)",
+          "avg_f1": 33.45
+        },
+        {
+          "system": "SimpleMem (Qwen3-8b)",
+          "avg_f1": 33.45,
+          "note": "Smaller model achieving comparable results"
+        },
+        {
+          "system": "Mem0 (Qwen3-8b)",
+          "avg_f1": 25.80
+        },
+        {
+          "system": "Full-context baseline",
+          "avg_f1": 18.70,
+          "tokens_per_query": 16910,
+          "efficiency": "Very Low"
+        }
+      ],
+      "temporal_reasoning_performance": [
+        {
+          "system": "SimpleMem",
+          "f1": 58.62,
+          "note": "Strong temporal reasoning via Semantic Structured Compression"
+        },
+        {
+          "system": "Mem0",
+          "f1": 48.91
+        }
+      ]
+    },
+    "speed_comparisons": {
+      "retrieval_speed": [
+        {
+          "system": "Supermemory",
+          "claim": "Up to 10x faster than Zep, 25x faster than Mem0",
+          "unit": "milliseconds"
+        }
+      ],
+      "accuracy_improvements": [
+        {
+          "comparison": "Supermemory vs Mem0",
+          "mean_improvement": "37.4%",
+          "median_improvement": "41.4%",
+          "p95_improvement": "22.9%",
+          "p99_improvement": "43.0%",
+          "stability_gain": "39.5% (max 60%)"
+        },
+        {
+          "comparison": "Mem0 vs OpenAI Memory",
+          "improvement": "26% accuracy boost",
+          "speed_improvement": "91% faster performance"
+        }
+      ]
+    },
+    "controversies": {
+      "letta_vs_mem0": {
+        "issue": "Discrepancy in LoCoMo benchmark results",
+        "letta_claim": "74.0% with GPT-4o mini",
+        "mem0_claim": "68.5% for top-performing graph variant; reported MemGPT results questioned",
+        "controversy": "Letta team unable to determine how to backfill LoCoMo data without refactoring; Mem0 did not respond to clarification requests"
+      },
+      "zep_benchmark_dispute": {
+        "original_claim": "84% LoCoMo accuracy",
+        "corrected_evaluation": "58.44% accuracy",
+        "source": "https://github.com/getzep/zep-papers/issues/5"
+      }
+    }
+  },
+  "evaluation_methodologies": {
+    "common_metrics": [
+      {
+        "metric": "F1 Score",
+        "usage": "QA tasks, span-based retrieval, summarization",
+        "description": "Balance between precision and recall"
+      },
+      {
+        "metric": "Accuracy",
+        "usage": "General task completion, classification",
+        "description": "Percentage of correct responses"
+      },
+      {
+        "metric": "Recall@K",
+        "usage": "Retrieval tasks",
+        "description": "Overlap between top K recommendations and ground truth"
+      },
+      {
+        "metric": "LLM-as-a-Judge",
+        "usage": "Qualitative evaluation",
+        "description": "Using GPT-4 or similar to evaluate response quality"
+      },
+      {
+        "metric": "Temporal Efficiency",
+        "usage": "Time-based performance evaluation",
+        "description": "Performance degradation over time"
+      },
+      {
+        "metric": "Capacity",
+        "usage": "Maximum information retention",
+        "description": "How much information can be stored and retrieved"
+      },
+      {
+        "metric": "Token Efficiency",
+        "usage": "Cost and performance trade-off",
+        "description": "Tokens consumed per query"
+      }
+    ],
+    "evaluation_frameworks": {
+      "three_stage_framework": {
+        "source": "LongMemEval",
+        "stages": [
+          "Indexing - How information is stored",
+          "Retrieval - How information is found",
+          "Reading - How information is used"
+        ]
+      },
+      "four_competency_framework": {
+        "source": "MemoryAgentBench",
+        "competencies": [
+          "Accurate Retrieval",
+          "Test-Time Learning",
+          "Long-Range Understanding",
+          "Conflict Resolution"
+        ]
+      },
+      "memory_type_framework": {
+        "sources": ["Multiple surveys", "LangMem"],
+        "types": [
+          "Factual/Semantic - Facts and knowledge",
+          "Procedural - How-to knowledge and behaviors",
+          "Episodic - Past experiences and events"
+        ]
+      }
+    },
+    "key_findings_across_benchmarks": [
+      "Long-context LLMs and RAG improve QA tasks by 22-66% but lag 73% behind human performance on temporal reasoning",
+      "RAG methods (especially dense retrieval) outperform long-context agents on retrieval but struggle with global summarization and test-time learning",
+      "Current memory systems show 30% accuracy drop on sustained interactions (LongMemEval)",
+      "Adversarial scenarios reveal major weaknesses (F1 drops to 12-22 on LoCoMo)",
+      "Retrieval-augmented systems improve factual accuracy but struggle with temporally grounded explanations",
+      "Score-driven agents erode safety constraints during memory evolution (Trust-Memevo finding)"
+    ]
+  },
+  "research_trends": {
+    "2024_focus": [
+      "Basic long-term conversational memory (LoCoMo)",
+      "Multi-session reasoning foundations"
+    ],
+    "2025_focus": [
+      "Comprehensive memory ability assessment (LongMemEval)",
+      "Efficiency and scalability (SimpleMem approach)",
+      "Specialized scenarios (MemBench, StoryBench)"
+    ],
+    "2026_focus": [
+      "Incremental multi-turn interactions (MemoryAgentBench)",
+      "Real-world project scenarios (RealMem)",
+      "Personal AI and clones (CloneMem, KnowMe-Bench)",
+      "Trustworthiness and safety (TAME)",
+      "Agentic memory organization (A-MEM)"
+    ],
+    "emerging_directions": [
+      "Graph-based memory organization",
+      "Self-organizing memory systems (EverMemOS)",
+      "Runtime reinforcement learning on episodic memory (MemRL)",
+      "Zettelkasten-inspired interconnected knowledge networks",
+      "Unified short-term and long-term memory management"
+    ]
+  },
+  "academic_venues": {
+    "major_conferences": [
+      {
+        "name": "ICLR 2026",
+        "memory_benchmarks": ["MemoryAgentBench"],
+        "workshops": ["MemAgents: Memory for LLM-Based Agentic Systems"],
+        "url": "https://openreview.net/pdf?id=U51WxL382H"
+      },
+      {
+        "name": "ICLR 2025",
+        "memory_benchmarks": ["LongMemEval", "LoCoMo"]
+      },
+      {
+        "name": "ACL 2024",
+        "memory_benchmarks": ["LoCoMo"]
+      },
+      {
+        "name": "ACL 2025 Findings",
+        "memory_benchmarks": ["MemBench"]
+      },
+      {
+        "name": "ICLR 2024",
+        "memory_benchmarks": ["AgentBench"]
+      }
+    ]
+  },
+  "key_survey_papers": [
+    {
+      "title": "Memory in the Age of AI Agents",
+      "arxiv": "2512.13564",
+      "github": "https://github.com/Shichun-Liu/Agent-Memory-Paper-List",
+      "stars": "1k+",
+      "description": "Comprehensive survey with multidimensional taxonomy based on forms-functions-dynamics",
+      "contribution": "Up-to-date landscape of agent memory research"
+    },
+    {
+      "title": "A Survey on the Memory Mechanism of Large Language Model-based Agents",
+      "venue": "ACM Transactions on Information Systems",
+      "description": "Survey of memory mechanisms in LLM-based agents"
+    },
+    {
+      "title": "Memory in LLM-based Multi-agent Systems: Mechanisms, Challenges, and Collective",
+      "description": "Survey focusing on multi-agent memory systems"
+    }
+  ],
+  "curated_resources": [
+    {
+      "name": "Awesome-Agent-Memory",
+      "github": "https://github.com/TeleAI-UAGI/Awesome-Agent-Memory",
+      "description": "Curated systems, benchmarks, and papers on memory for LLMs/MLLMs",
+      "focus": "Long-term context, retrieval, and reasoning"
+    },
+    {
+      "name": "Awesome-Memory-for-Agents",
+      "github": "https://github.com/TsinghuaC3I/Awesome-Memory-for-Agents",
+      "description": "Collection of papers about memory for language agents"
+    }
+  ],
+  "industry_vs_academic_benchmarks": {
+    "academic_benchmarks": {
+      "examples": ["LoCoMo", "LongMemEval", "MemoryAgentBench", "MemBench"],
+      "characteristics": [
+        "Peer-reviewed",
+        "Reproducible methodology",
+        "Comprehensive evaluation",
+        "Public datasets"
+      ],
+      "authority": "High - recognized by research community"
+    },
+    "industry_benchmarks": {
+      "examples": ["Letta Leaderboard", "Mem0 Research", "MemMachine benchmarks"],
+      "characteristics": [
+        "Framework-specific",
+        "Transparent but not peer-reviewed",
+        "Focus on practical performance",
+        "May have conflicts of interest"
+      ],
+      "authority": "Medium - useful but requires scrutiny",
+      "controversies": [
+        "Discrepancies in reported scores",
+        "Lack of reproducibility in some cases",
+        "Selective reporting of favorable results"
+      ]
+    }
+  },
+  "recommendations_for_evaluation": {
+    "primary_benchmarks": [
+      {
+        "benchmark": "LoCoMo",
+        "reason": "Most widely adopted, good for conversational memory",
+        "use_case": "General long-term conversational memory evaluation"
+      },
+      {
+        "benchmark": "LongMemEval",
+        "reason": "Comprehensive, scalable, ICLR 2025 accepted",
+        "use_case": "Evaluating multiple memory abilities systematically"
+      },
+      {
+        "benchmark": "MemoryAgentBench",
+        "reason": "Most recent (ICLR 2026), covers four key competencies",
+        "use_case": "State-of-the-art comprehensive evaluation"
+      }
+    ],
+    "specialized_benchmarks": [
+      {
+        "benchmark": "RealMem",
+        "use_case": "Project-oriented applications"
+      },
+      {
+        "benchmark": "CloneMem",
+        "use_case": "Personal AI and digital clones"
+      },
+      {
+        "benchmark": "TAME",
+        "use_case": "Safety-critical applications"
+      },
+      {
+        "benchmark": "StoryBench",
+        "use_case": "Interactive and dynamic scenarios"
+      }
+    ],
+    "metrics_to_report": [
+      "F1 Score (primary for QA tasks)",
+      "Accuracy (overall performance)",
+      "Token efficiency (cost consideration)",
+      "Temporal reasoning performance (key differentiator)",
+      "Retrieval accuracy across reasoning types"
+    ],
+    "best_practices": [
+      "Use multiple benchmarks for comprehensive evaluation",
+      "Report detailed breakdown by task type",
+      "Include efficiency metrics (tokens, latency)",
+      "Compare against published baselines",
+      "Make evaluation code publicly available",
+      "Avoid cherry-picking favorable results",
+      "Clearly document evaluation methodology"
+    ]
+  },
+  "gaps_and_future_work": {
+    "identified_gaps": [
+      "Real-world deployment evaluation vs synthetic benchmarks",
+      "Multi-lingual memory evaluation",
+      "Privacy and security evaluation in memory systems",
+      "Memory compression trade-offs",
+      "Cross-domain memory transfer",
+      "Collaborative/shared memory in multi-agent systems"
+    ],
+    "future_benchmark_needs": [
+      "Standardized evaluation protocols across frameworks",
+      "Live/online evaluation (not just static datasets)",
+      "User satisfaction metrics (not just accuracy)",
+      "Long-term stability evaluation (months/years)",
+      "Adversarial robustness beyond current tests",
+      "Memory forgetting and privacy guarantees"
+    ]
+  }
+}

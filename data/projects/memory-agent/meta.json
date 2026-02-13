@@ -1,0 +1,156 @@
+{
+  "name": "memory-agent",
+  "repository_url": "https://github.com/langchain-ai/memory-agent",
+  "stars": 409,
+  "primary_language": "Python",
+  "description": "ReAct风格的智能体实现，具有持久化记忆管理，支持跨对话线程的学习",
+  "last_updated": "2025",
+  "paper": {
+    "exists": false,
+    "title": "",
+    "venue": "",
+    "year": 0,
+    "url": ""
+  },
+  "benchmarks": {},
+  "tech_stack": {
+    "storage": [
+      "Database",
+      "Memory Store"
+    ],
+    "frameworks": [
+      "LangGraph",
+      "LangChain",
+      "LangSmith"
+    ],
+    "languages": [
+      "Python"
+    ],
+    "embedding_models": [
+      "OpenAI",
+      "Anthropic"
+    ]
+  },
+  "cloud_needs": {
+    "storage": {
+      "types": [
+        "Database",
+        "User-scoped Storage"
+      ],
+      "requirements": [
+        "Cross-thread persistence",
+        "User isolation"
+      ]
+    },
+    "compute": {
+      "embedding": true,
+      "gpu_needed": false,
+      "estimated_requirements": "2-8 vCPUs"
+    },
+    "deployment": {
+      "complexity": 5,
+      "containerized": true,
+      "orchestration": [
+        "LangGraph Cloud",
+        "Docker"
+      ]
+    }
+  },
+  "categories": {
+    "tech_approach": [
+      "ReAct",
+      "LangChain Official",
+      "Simple Reference"
+    ],
+    "use_case": [
+      "Chatbots",
+      "Conversational Agents"
+    ]
+  },
+  "innovations": [
+    {
+      "name": "用户级记忆隔离",
+      "description": "基于 user_id 的命名空间设计，实现跨对话线程的记忆持久化和用户隐私隔离，每个用户的记忆完全独立存储和检索"
+    },
+    {
+      "name": "语义记忆检索",
+      "description": "集成向量搜索（LangGraph Store + 嵌入模型），根据对话上下文自动检索最相关的历史记忆，相似度分数可见，帮助模型判断记忆相关性"
+    },
+    {
+      "name": "工具参数注入机制",
+      "description": "使用 InjectedToolArg 注解隐藏系统级参数（user_id、store），模型只需关注业务参数（content、context），提高安全性和易用性"
+    },
+    {
+      "name": "ReAct 闭环设计",
+      "description": "store_memory 节点执行后自动回到 call_model 节点，形成完整的推理-行动-观察循环，模型可在保存记忆后继续生成响应或调整行为"
+    },
+    {
+      "name": "记忆去重指导",
+      "description": "通过工具 docstring 明确指导模型更新而非创建重复记忆，支持通过 memory_id 更新现有记忆，减少记忆冗余"
+    },
+    {
+      "name": "最小化状态设计",
+      "description": "状态仅包含 messages 字段，配合 add_messages reducer 实现高效的消息管理，其他信息通过 Runtime Context 传递，清晰分离状态和配置"
+    },
+    {
+      "name": "异步并发优化",
+      "description": "完全异步架构，支持并发记忆保存（asyncio.gather）、异步存储查询和 LLM 调用，单实例可处理 20-50 并发请求"
+    },
+    {
+      "name": "时间上下文注入",
+      "description": "自动注入当前时间戳到系统提示词，帮助模型理解信息时效性，支持时间推理和过时信息判断"
+    }
+  ],
+  "use_cases": [
+    {
+      "category": "个性化对话助手",
+      "description": "记住用户偏好、习惯和个人信息，提供个性化的对话体验。例如记住用户的饮食偏好、兴趣爱好、日常习惯等，在未来对话中主动引用和应用这些信息。",
+      "example": "用户在首次对话中提到喜欢披萨和素食，几周后再次对话时，助手能主动推荐素食披萨餐厅。"
+    },
+    {
+      "category": "客户服务机器人",
+      "description": "跨会话记录客户问题、解决方案和反馈，避免重复询问，提供连续性服务。记忆客户的产品使用情况、历史工单和特殊需求。",
+      "example": "客户上周报告了软件 bug，本周回访时机器人能主动询问问题是否已解决，无需客户重复描述问题背景。"
+    },
+    {
+      "category": "学习陪伴系统",
+      "description": "记录学生的学习进度、薄弱知识点和学习风格，提供个性化的学习建议和复习计划。跨学习会话追踪知识掌握情况。",
+      "example": "记住学生在代数方面有困难且偏好视觉学习，后续课程中优先使用图表和动画解释代数概念。"
+    },
+    {
+      "category": "虚拟助理",
+      "description": "记住用户的工作流程、常用工具和偏好设置，提供智能化的任务建议和自动化支持。记录日程安排、项目进度和协作习惯。",
+      "example": "记住用户每周一早上有团队会议，主动在周一早晨整理上周进展和待办事项，准备会议议程。"
+    },
+    {
+      "category": "健康与健身教练",
+      "description": "记录用户的健康目标、运动历史、身体状况和饮食习惯，提供个性化的健康建议和训练计划。跟踪长期健康指标和进展。",
+      "example": "记住用户有膝盖伤病史，在推荐运动计划时自动避免高冲击运动，推荐低冲击替代方案如游泳和瑜伽。"
+    },
+    {
+      "category": "心理健康支持",
+      "description": "记录用户的情绪模式、压力源和有效的应对策略，提供连续性的心理支持和个性化的情绪管理建议。",
+      "example": "记住用户在工作压力大时通过冥想获得缓解，在检测到压力迹象时主动推荐冥想练习。"
+    },
+    {
+      "category": "创意写作助手",
+      "description": "记住用户的写作风格、偏好主题和正在进行的创作项目，提供一致的写作建议和灵感。跟踪角色设定、情节线索和世界观设定。",
+      "example": "记住用户小说中主角的性格特点和背景故事，在续写时确保角色行为和对话符合已设定的人物性格。"
+    },
+    {
+      "category": "语言学习伙伴",
+      "description": "记录学习者的语言水平、已掌握词汇、常见错误和学习目标，提供个性化的语言练习和纠错。",
+      "example": "记住学习者经常混淆 'affect' 和 'effect'，在后续练习中特意设计针对性练习，并在犯错时提供回顾。"
+    },
+    {
+      "category": "产品推荐系统",
+      "description": "记忆用户的购买历史、浏览偏好和产品反馈，提供个性化的产品推荐和购物建议。",
+      "example": "记住用户偏好环保产品和某个特定品牌，在推荐时优先展示该品牌的可持续产品线。"
+    },
+    {
+      "category": "企业知识助手",
+      "description": "记录员工的专业领域、项目经验和知识需求，提供个性化的知识推荐和专家匹配。跨会话维护工作上下文。",
+      "example": "记住员工正在负责的项目使用 React 技术栈，在回答技术问题时自动关联到该项目场景，提供实用建议。"
+    }
+  ]
+}

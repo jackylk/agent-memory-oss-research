@@ -1,0 +1,123 @@
+{
+  "name": "claude-mem",
+  "repository_url": "https://github.com/thedotmack/claude-mem",
+  "stars": 27000,
+  "primary_language": "TypeScript",
+  "description": "Claude Code插件，通过自动捕获、AI驱动的压缩和上下文注入，实现编码会话间的持久化记忆",
+  "last_updated": "2026-02-11",
+  "paper": {
+    "exists": false,
+    "title": "",
+    "venue": "",
+    "year": 0,
+    "url": ""
+  },
+  "benchmarks": {},
+  "tech_stack": {
+    "storage": [
+      "SQLite",
+      "Chroma Vector DB"
+    ],
+    "frameworks": [
+      "Claude Code Plugin",
+      "Web Viewer UI"
+    ],
+    "languages": [
+      "TypeScript"
+    ],
+    "embedding_models": [
+      "Semantic + Keyword hybrid search"
+    ]
+  },
+  "cloud_needs": {
+    "storage": {
+      "types": [
+        "SQLite",
+        "Vector Store"
+      ],
+      "requirements": [
+        "Local storage",
+        "Privacy-focused",
+        "Hybrid search"
+      ]
+    },
+    "compute": {
+      "embedding": true,
+      "gpu_needed": false,
+      "estimated_requirements": "Local runtime, minimal compute"
+    },
+    "deployment": {
+      "complexity": 3,
+      "containerized": false,
+      "orchestration": [
+        "Local installation",
+        "Plugin architecture"
+      ]
+    }
+  },
+  "categories": {
+    "tech_approach": [
+      "Local-first",
+      "Compression",
+      "Privacy-focused"
+    ],
+    "use_case": [
+      "Claude Code",
+      "Development",
+      "Coding Sessions"
+    ]
+  },
+  "innovations": {
+    "key_features": [
+      "自动化记忆捕获：通过 5 个生命周期 Hook 自动捕获工具使用观察，无需手动干预",
+      "3 层递进式上下文注入（Progressive Disclosure）：会话初始化（~100-200 tokens）→ 时间线查询 → 完整观察详情，减少 token 消耗",
+      "混合搜索架构：SQLite FTS5 全文搜索（<100ms）+ Chroma 向量语义搜索（<1s），平衡速度与准确性",
+      "观察者模式 SDK Agent：只读代理，无工具执行能力，专注于记忆压缩和上下文生成",
+      "本地优先架构：SQLite + Chroma 本地存储，隐私数据不离开用户设备",
+      "私密标签系统：<private> 标签边缘处理，敏感内容在 Hook 层即被过滤，不进入存储系统",
+      "Token 成本追踪：每个观察记录 discovery_tokens 字段，实时计算记忆系统 ROI",
+      "MCP 技能接口：5 个 MCP 工具（search/timeline/get_observations/save_memory/__IMPORTANT）实现渐进式记忆检索",
+      "Web Viewer UI：实时记忆流可视化（http://localhost:37777），支持搜索、过滤、引用查看",
+      "Beta Channel 机制：通过 Web UI 切换稳定版/Beta 版，支持 Endless Mode 等实验性功能"
+    ],
+    "improvements": [
+      "相比传统 AI 记忆系统：通过 Hook 系统自动化捕获，无需应用层手动调用记忆 API",
+      "相比 Mem0/Graphiti：采用本地优先架构，降低云服务依赖和成本，满足隐私合规需求",
+      "相比简单上下文注入：3 层渐进披露设计减少 90% 无效 token 消耗，仅在需要时加载完整详情",
+      "相比纯向量搜索：混合搜索（FTS5 + Chroma）在关键词精确匹配和语义理解之间取得平衡",
+      "相比中心化存储：SQLite WAL 模式支持高并发写入，毫秒级响应，适合频繁观察记录场景",
+      "相比静态摘要：动态时间线查询允许按需探索观察周围的时间上下文，而非预先生成固定摘要",
+      "相比黑盒记忆：提供完整的可视化界面和 HTTP API，用户可直接查看、编辑、删除记忆",
+      "相比单一模型绑定：通过 Claude Agent SDK 抽象，理论上可切换其他 LLM（需要适配）"
+    ],
+    "user_value": [
+      "零学习成本：安装插件后自动工作，开发者无需改变工作流程",
+      "跨会话连续性：Claude Code 重启后仍能记住项目上下文，减少重复说明",
+      "成本可控：本地存储 + 渐进披露设计，平均每会话仅消耗 3000-5000 tokens（约 $0.02-0.05）",
+      "隐私保护：数据存储在 ~/.claude-mem/，支持 <private> 标签手动控制敏感内容",
+      "透明可控：Web Viewer UI 实时展示记忆流，用户可随时查看、搜索、删除记忆",
+      "快速检索：混合搜索架构提供亚秒级查询（~600ms），支持自然语言和关键词搜索",
+      "无供应商锁定：开源 AGPL-3.0 许可，数据格式标准（SQLite + Parquet），易于迁移",
+      "开发者友好：提供 HTTP API（localhost:37777）和 MCP 技能，支持集成到其他工具"
+    ]
+  },
+  "use_cases": {
+    "scenarios": [
+      "Claude Code 长期开发项目：自动记住项目架构、技术栈、设计决策，跨会话保持上下文连续性",
+      "多项目并行开发：通过 session_id 隔离不同项目的记忆，避免上下文混淆",
+      "知识库构建：将开发过程中的观察（bug 修复、性能优化、架构决策）压缩为可搜索的知识库",
+      "团队协作（通过共享数据库）：多人共享 ~/.claude-mem/ 目录，构建团队级别的项目记忆",
+      "编程学习：记录学习过程中的代码片段、概念理解、问题解决路径，构建个人编程知识图谱",
+      "代码审查辅助：记录历史审查意见和修复模式，帮助 Claude 提供一致的审查建议",
+      "文档生成：从会话摘要和观察中提取关键信息，自动生成项目文档和变更日志",
+      "调试历史追踪：记录 bug 调试过程和解决方案，避免重复踩坑",
+      "API 使用记录：自动记录第三方 API 调用模式和参数配置，形成 API 使用手册",
+      "性能优化日志：记录性能瓶颈发现和优化措施，建立性能优化知识库"
+    ],
+    "companies": [
+      "个人开发者（项目作者 @thedotmack 及 27000+ GitHub stars 用户群体）",
+      "使用 Claude Code 的开发团队",
+      "AI 辅助编程工具用户（需要跨会话记忆功能的场景）"
+    ]
+  }
+}

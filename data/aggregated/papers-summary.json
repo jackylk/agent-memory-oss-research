@@ -1,0 +1,78 @@
+{
+  "total_papers": 12,
+  "venues": {
+    "arXiv": 6,
+    "ICLR": 3,
+    "ACL": 1,
+    "NeurIPS": 1,
+    "Research Paper": 1
+  },
+  "years": {
+    "2023": 1,
+    "2024": 1,
+    "2025": 7,
+    "2026": 3
+  },
+  "top_papers": [
+    {
+      "title": "Mem0: Building Production-Ready AI Agents with Scalable Long-Term Memory",
+      "project": "mem0",
+      "venue": "arXiv",
+      "year": 2025
+    },
+    {
+      "title": "MemGPT: Towards LLMs as Operating Systems",
+      "project": "letta",
+      "venue": "arXiv",
+      "year": 2023
+    },
+    {
+      "title": "Zep: A Temporal Knowledge Graph Architecture for Agent Memory",
+      "project": "graphiti",
+      "venue": "arXiv",
+      "year": 2025
+    },
+    {
+      "title": "SimpleMem: Semantic Lossless Compression for Agent Memory",
+      "project": "SimpleMem",
+      "venue": "arXiv",
+      "year": 2026
+    },
+    {
+      "title": "A-MEM: Agentic Memory for LLM Agents",
+      "project": "A-MEM",
+      "venue": "NeurIPS",
+      "year": 2025
+    },
+    {
+      "title": "LongMemEval: Benchmarking Chat Assistants on Long-term Memory",
+      "project": "LongMemEval",
+      "venue": "ICLR",
+      "year": 2025
+    },
+    {
+      "title": "LoCoMo: Long-term Conversational Memory Benchmark",
+      "project": "locomo",
+      "venue": "ACL",
+      "year": 2024
+    },
+    {
+      "title": "LightMem: Lightweight and Efficient Memory Management",
+      "project": "LightMem",
+      "venue": "ICLR",
+      "year": 2026
+    },
+    {
+      "title": "MemoryAgentBench: Evaluating Memory in LLM Agents",
+      "project": "MemoryAgentBench",
+      "venue": "ICLR",
+      "year": 2026
+    },
+    {
+      "title": "Hindsight: Learning-focused Agent Memory",
+      "project": "hindsight",
+      "venue": "Research Paper",
+      "year": 2025
+    }
+  ]
+}

@@ -1,0 +1,97 @@
+{
+  "name": "locomo",
+  "repository_url": "https://github.com/snap-research/locomo",
+  "stars": 539,
+  "primary_language": "Python",
+  "description": "用于评估LLM代理超长期对话记忆的数据和代码（ACL 2024，SNAP Research）",
+  "last_updated": "2024",
+  "paper": {
+    "exists": true,
+    "title": "LoCoMo: Long-term Conversational Memory Benchmark",
+    "venue": "ACL",
+    "year": 2024,
+    "url": "https://aclanthology.org/unknown"
+  },
+  "benchmarks": {
+    "locomo": {
+      "score": 0,
+      "details": "This IS the LoCoMo benchmark - official SNAP Research implementation"
+    }
+  },
+  "tech_stack": {
+    "storage": [
+      "Evaluation Dataset",
+      "RAG Database"
+    ],
+    "frameworks": [
+      "Python",
+      "GPT-3.5-turbo"
+    ],
+    "languages": [
+      "Python"
+    ],
+    "embedding_models": [
+      "RAG support"
+    ]
+  },
+  "cloud_needs": {
+    "storage": {
+      "types": [
+        "Dataset Storage",
+        "RAG DB"
+      ],
+      "requirements": [
+        "10 conversations",
+        "Multi-hop reasoning"
+      ]
+    },
+    "compute": {
+      "embedding": true,
+      "gpu_needed": false,
+      "estimated_requirements": "4-8 vCPUs for evaluation"
+    },
+    "deployment": {
+      "complexity": 5,
+      "containerized": true,
+      "orchestration": [
+        "Docker",
+        "Research tools"
+      ]
+    }
+  },
+  "categories": {
+    "tech_approach": [
+      "Benchmark",
+      "ACL 2024",
+      "Official"
+    ],
+    "use_case": [
+      "Memory Evaluation",
+      "Conversational AI"
+    ]
+  },
+  "innovations": [
+    "首个超长期对话记忆评估基准，时间跨度达 240 天",
+    "多任务评估框架：问答（5种类型）、事件摘要、多模态对话生成",
+    "LLM驱动的对话生成框架，包含因果事件图和时序依赖",
+    "分层记忆机制：粗粒度会话摘要 + 细粒度检索增强",
+    "多模型多模态支持：GPT/Claude/Gemini + BLIP图像理解",
+    "RAG多数据库模式：dialog/observation/summary三种检索策略",
+    "标准化评估指标：F1/EM/Recall/BERT-Score多维度评估",
+    "记忆反思机制：模拟长期关系中的洞察积累",
+    "多跳推理能力测试：跨会话跨时间的复杂问答",
+    "开源完整工具链：从数据生成到评估的端到端流程"
+  ],
+  "use_cases": [
+    "长期个人助手：跨月度的用户关系管理和偏好记忆",
+    "虚拟客服系统：历史对话追溯和上下文延续",
+    "教育AI导师：学生学习历程追踪和个性化辅导",
+    "健康管理助手：长期健康对话记录和趋势分析",
+    "社交聊天机器人：模拟长期友谊和情感连接",
+    "企业知识助手：跨时间的项目讨论和决策追踪",
+    "心理咨询AI：长期治疗过程中的情绪和事件记录",
+    "老年陪伴机器人：长期记忆衰退辅助和情感支持",
+    "学术研究工具：评估新型记忆机制和检索策略",
+    "记忆模型基准测试：对比不同LLM的长期记忆能力"
+  ]
+}

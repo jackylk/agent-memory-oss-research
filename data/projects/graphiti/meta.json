@@ -1,0 +1,79 @@
+{
+  "name": "graphiti",
+  "repository_url": "https://github.com/getzep/graphiti",
+  "website_url": "https://www.getzep.com",
+  "stars": 22700,
+  "primary_language": "Python",
+  "description": "专为 AI 代理设计的时态感知知识图谱构建和查询框架",
+  "last_updated": "2026-02",
+  "paper": {
+    "exists": true,
+    "title": "Zep: A Temporal Knowledge Graph Architecture for Agent Memory",
+    "venue": "arXiv",
+    "year": 2025,
+    "url": "https://arxiv.org/abs/2501.13956"
+  },
+  "benchmarks": {
+    "dmr": {
+      "score": 94.8,
+      "details": "在 Deep Memory Retrieval 基准测试中达到 94.8%，超越 MemGPT 的 93.4%"
+    }
+  },
+  "innovations": {
+    "key_features": [
+      "双时态知识图谱（bi-temporal model）追踪事件发生时间和记录时间",
+      "动态知识图谱实时更新，支持增量式非破坏性更新",
+      "混合检索：语义嵌入 + BM25 关键词 + 图遍历",
+      "自定义实体类型支持（Pydantic models）"
+    ],
+    "improvements": [
+      "超越 MemGPT：DMR 基准 94.8% vs 93.4%",
+      "支持复杂关系结构的演化追踪",
+      "实时增量更新无需批量重计算"
+    ],
+    "user_value": [
+      "企业级动态知识整合（对话 + 业务数据）",
+      "历史关系和事实有效期追踪",
+      "复杂、演化世界的知识表示",
+      "支持多图数据库后端（Neo4j、FalkorDB、Neptune）"
+    ]
+  },
+  "use_cases": {
+    "scenarios": [
+      "企业 AI 代理：整合对话和业务数据的动态知识管理",
+      "时序推理：需要追踪事实演化的应用",
+      "知识图谱 RAG：超越静态文档检索的知识整合",
+      "关系复杂的领域：金融、医疗、供应链"
+    ],
+    "companies": [
+      "Zep AI 在生产环境中使用（企业客户）",
+      "已开源并被多个 AI 代理框架集成"
+    ]
+  },
+  "tech_stack": {
+    "storage": ["Neo4j", "FalkorDB", "Kuzu", "Amazon Neptune"],
+    "frameworks": ["Python SDK", "Pydantic", "MCP Server"],
+    "languages": ["Python"],
+    "embedding_models": ["Semantic embeddings", "BM25"]
+  },
+  "cloud_needs": {
+    "storage": {
+      "types": ["Graph Database", "Vector Store"],
+      "requirements": ["Temporal data model", "Bi-temporal tracking", "Real-time updates"]
+    },
+    "compute": {
+      "embedding": true,
+      "gpu_needed": false,
+      "estimated_requirements": "8-32 vCPUs, graph database requires memory"
+    },
+    "deployment": {
+      "complexity": 8,
+      "containerized": true,
+      "orchestration": ["Kubernetes", "Graph DB cluster"]
+    }
+  },
+  "categories": {
+    "tech_approach": ["Knowledge Graph", "Temporal Modeling", "Hybrid Retrieval"],
+    "use_case": ["Agent Memory", "Knowledge Management", "Temporal Reasoning"]
+  }
+}

@@ -1,0 +1,85 @@
+{
+  "name": "MemOS",
+  "repository_url": "https://github.com/MemTensor/MemOS",
+  "stars": 5100,
+  "primary_language": "Python",
+  "description": "LLM和Agent系统的AI记忆操作系统，支持持久化技能记忆，实现跨任务技能复用和演进",
+  "last_updated": "2025-12-24",
+  "paper": {
+    "exists": true,
+    "title": "MemOS: AI Memory Operating System",
+    "venue": "Research Paper",
+    "year": 2025,
+    "url": "https://github.com/MemTensor/MemOS"
+  },
+  "benchmarks": {
+    "locomo": {
+      "score": 75.8,
+      "details": "LoCoMo: 75.80"
+    },
+    "longmemeval": {
+      "score": 40.43,
+      "details": "LongMemEval: +40.43%"
+    },
+    "prefeval": {
+      "score": 2568,
+      "details": "PrefEval-10: +2568%"
+    },
+    "personamem": {
+      "score": 40.75,
+      "details": "PersonaMem: +40.75%"
+    }
+  },
+  "tech_stack": {
+    "storage": [
+      "Multi-Cube Knowledge Base",
+      "Multi-modal storage"
+    ],
+    "frameworks": [
+      "Python",
+      "Unified Memory API"
+    ],
+    "languages": [
+      "Python"
+    ],
+    "embedding_models": [
+      "Multi-modal support"
+    ]
+  },
+  "cloud_needs": {
+    "storage": {
+      "types": [
+        "Knowledge Base",
+        "Multi-modal storage"
+      ],
+      "requirements": [
+        "Text, images, tool traces, personas"
+      ]
+    },
+    "compute": {
+      "embedding": true,
+      "gpu_needed": false,
+      "estimated_requirements": "8-16 vCPUs with memory optimization"
+    },
+    "deployment": {
+      "complexity": 7,
+      "containerized": true,
+      "orchestration": [
+        "Kubernetes",
+        "MemScheduler"
+      ]
+    }
+  },
+  "categories": {
+    "tech_approach": [
+      "Memory OS",
+      "Multi-modal",
+      "Skill Memory"
+    ],
+    "use_case": [
+      "Cross-task Reuse",
+      "Skill Evolution",
+      "Multi-agent Sharing"
+    ]
+  }
+}

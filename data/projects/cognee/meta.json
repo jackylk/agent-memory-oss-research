@@ -1,0 +1,117 @@
+{
+  "name": "cognee",
+  "repository_url": "https://github.com/topoteretes/cognee",
+  "stars": 12200,
+  "primary_language": "Python",
+  "description": "AI代理记忆知识引擎，仅需6行代码即可将原始数据转化为持久化的动态AI记忆",
+  "last_updated": "2026-02-04",
+  "paper": {
+    "exists": true,
+    "title": "Optimizing the interface between knowledge graphs and LLMs",
+    "venue": "Research Paper",
+    "year": 2025,
+    "url": "https://github.com/topoteretes/cognee"
+  },
+  "benchmarks": {},
+  "innovations": {
+    "key_features": [
+      "ECL（提取、认知化、加载）流程替代传统 RAG",
+      "知识图谱 + 向量混合架构（Graph+Vector Hybrid）",
+      "支持 30+ 数据源的 Pythonic 数据管道",
+      "模块化任务系统和可定制管道",
+      "多租户隔离和权限系统",
+      "8+ 向量数据库和 3+ 图数据库支持",
+      "10+ LLM 提供商统一集成（litellm + Instructor）",
+      "本地优先设计，零配置开发环境"
+    ],
+    "improvements": [
+      "降低开发者成本和基础设施成本",
+      "将数据互联替代传统数据库查询",
+      "通过图和向量混合检索提升准确性",
+      "支持本地部署和多种数据库后端切换",
+      "提供企业级多租户和访问控制"
+    ],
+    "user_value": [
+      "6 行代码即可构建 AI 记忆系统",
+      "灵活的知识图谱生成和查询",
+      "支持文本、对话、文件、图片、音频等多种数据类型",
+      "降低运维成本（本地 SQLite+Kuzu+LanceDB 零成本）",
+      "8 种搜索类型满足不同检索需求",
+      "生产就绪的监控和日志系统",
+      "活跃的开源社区和详细文档支持"
+    ]
+  },
+  "use_cases": {
+    "scenarios": [
+      "企业知识管理系统",
+      "AI 代理持久化记忆",
+      "增强型 RAG 应用",
+      "代码理解和搜索",
+      "研究论文分析",
+      "客户支持知识库",
+      "多模态数据处理（文档、图片、音频）",
+      "对话历史和上下文管理"
+    ],
+    "companies": [
+      "被 AI 初创公司用于知识管理",
+      "集成到多个 AI Agent 框架",
+      "用于企业文档智能化",
+      "研究机构的论文分析工具"
+    ]
+  },
+  "tech_stack": {
+    "storage": [
+      "Graph Database",
+      "Vector Database",
+      "Unified Engine"
+    ],
+    "frameworks": [
+      "Python",
+      "Pythonic Pipelines",
+      "CLI Tool"
+    ],
+    "languages": [
+      "Python"
+    ],
+    "embedding_models": [
+      "Multiple LLM providers"
+    ]
+  },
+  "cloud_needs": {
+    "storage": {
+      "types": [
+        "Graph+Vector Hybrid",
+        "Multi-format storage"
+      ],
+      "requirements": [
+        "30+ data source integrations",
+        "Unified knowledge engine"
+      ]
+    },
+    "compute": {
+      "embedding": true,
+      "gpu_needed": false,
+      "estimated_requirements": "4-16 vCPUs for processing pipelines"
+    },
+    "deployment": {
+      "complexity": 6,
+      "containerized": true,
+      "orchestration": [
+        "Docker",
+        "Local UI"
+      ]
+    }
+  },
+  "categories": {
+    "tech_approach": [
+      "Graph+Vector Hybrid",
+      "Easy Integration",
+      "Multi-source"
+    ],
+    "use_case": [
+      "Knowledge Management",
+      "Data Integration",
+      "Enterprise AI"
+    ]
+  }
+}

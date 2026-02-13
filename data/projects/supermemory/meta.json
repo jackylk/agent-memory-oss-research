@@ -1,0 +1,131 @@
+{
+  "name": "supermemory",
+  "repository_url": "https://github.com/supermemoryai/supermemory",
+  "stars": 16400,
+  "primary_language": "TypeScript",
+  "description": "极速高扩展的记忆引擎和应用 - AI时代的记忆API",
+  "last_updated": "2026-02",
+  "paper": {
+    "exists": false,
+    "title": "",
+    "venue": "",
+    "year": 0,
+    "url": ""
+  },
+  "benchmarks": {
+    "longmemeval": {
+      "score": 0,
+      "details": "State-of-the-art performance on LongMemEval"
+    }
+  },
+  "tech_stack": {
+    "storage": [
+      "Vector Database",
+      "Fast Storage"
+    ],
+    "frameworks": [
+      "TypeScript",
+      "MCP",
+      "Browser Extension",
+      "Raycast"
+    ],
+    "languages": [
+      "TypeScript"
+    ],
+    "embedding_models": [
+      "Multiple providers"
+    ]
+  },
+  "cloud_needs": {
+    "storage": {
+      "types": [
+        "Vector DB",
+        "Multi-format Storage"
+      ],
+      "requirements": [
+        "URLs, PDFs, plain text",
+        "Fast retrieval",
+        "Scalable"
+      ]
+    },
+    "compute": {
+      "embedding": true,
+      "gpu_needed": false,
+      "estimated_requirements": "4-16 vCPUs for API"
+    },
+    "deployment": {
+      "complexity": 6,
+      "containerized": true,
+      "orchestration": [
+        "Docker",
+        "Kubernetes"
+      ]
+    }
+  },
+  "categories": {
+    "tech_approach": [
+      "Fast Retrieval",
+      "Scalable",
+      "Multi-platform"
+    ],
+    "use_case": [
+      "Browser Extension",
+      "Raycast",
+      "Notion",
+      "Google Drive"
+    ]
+  },
+  "innovations": {
+    "key_features": [
+      "Model Context Protocol (MCP) 集成，为 Claude 和 Cursor 提供记忆能力",
+      "多渠道统一访问（Web 应用、浏览器扩展、Raycast、MCP 服务器）",
+      "Cloudflare Workers 全球边缘计算部署，低延迟高性能",
+      "内存图谱可视化（Memory Graph），展示知识连接关系",
+      "智能内容处理流程（自动摘要、标记、分类、向量化）",
+      "支持多种内容格式（URLs、PDFs、纯文本、Google Drive、Notion）",
+      "PGVector 内置向量搜索，无需独立向量数据库",
+      "混合搜索（向量语义搜索 + 全文搜索）",
+      "零冷启动的无服务器架构",
+      "多租户组织级别数据隔离"
+    ],
+    "improvements": [
+      "边缘计算优先架构，全球 300+ 节点自动分发",
+      "统一的记忆管理界面，多平台无缝同步",
+      "AI 驱动的自动分类和标记，减少手动整理",
+      "Hyperdrive 连接池优化数据库性能，降低延迟 80%",
+      "R2 对象存储零出口费用，大幅降低成本",
+      "真正按需付费的 Serverless 架构，无空闲成本",
+      "开发者友好的 SDK 和完善文档",
+      "基于 Better Auth 的灵活认证系统（OAuth + API Key）",
+      "Durable Objects 提供强一致性有状态计算",
+      "Turbo Monorepo 架构，简化多应用管理"
+    ],
+    "user_value": [
+      "统一的第二大脑，所有重要信息集中管理",
+      "与 AI 工具深度集成（Claude、Cursor），增强 AI 助手记忆能力",
+      "浏览器扩展随时保存，无需切换应用",
+      "自然语言搜索，快速找到相关内容",
+      "自动整理和关联，发现知识之间的联系",
+      "多平台同步，随时随地访问",
+      "隐私保护，多租户数据隔离",
+      "开发者可通过 API 集成到自己的应用",
+      "低成本部署（小规模 $50-100/月）",
+      "全球低延迟访问（< 50ms）"
+    ]
+  },
+  "use_cases": {
+    "scenarios": [
+      "AI 助手记忆增强（为 Claude、Cursor 等 AI 工具提供长期记忆）",
+      "个人知识管理（保存和组织阅读笔记、文章、PDF）",
+      "团队协作记忆（组织级别知识共享和检索）",
+      "内容创作者素材库（保存灵感、参考资料、研究笔记）",
+      "研究人员文献管理（保存论文、自动提取关键信息）",
+      "开发者代码片段和文档管理（快速检索技术文档）",
+      "学生学习笔记系统（课程资料、作业、复习材料）",
+      "客服知识库（保存常见问题和解决方案）",
+      "产品经理需求文档管理（PRD、用户反馈、竞品分析）",
+      "销售团队客户信息管理（客户对话、需求、跟进记录）"
+    ],
+    "companies": []
+  }
+}

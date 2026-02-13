@@ -1,0 +1,62 @@
+[
+  {
+    "need_type": "Vector Database",
+    "frequency": 18,
+    "projects": ["mem0", "MemOS", "SimpleMem", "cognee", "supermemory", "hindsight", "A-MEM", "ReMe", "Memori", "general-agentic-memory", "LightMem", "Memary", "easymemory", "memory-agent", "langgraph-redis", "graphiti", "letta", "claude-mem"],
+    "priority": "high"
+  },
+  {
+    "need_type": "Graph Database",
+    "frequency": 8,
+    "projects": ["graphiti", "cognee", "Memori", "Memary", "beads", "hindsight", "A-MEM", "ReMe"],
+    "priority": "medium"
+  },
+  {
+    "need_type": "Relational/SQL Database",
+    "frequency": 12,
+    "projects": ["mem0", "letta", "Memori", "hindsight", "memU", "langgraph-redis", "MemOS", "SimpleMem", "general-agentic-memory", "LightMem", "memory-agent", "supermemory"],
+    "priority": "high"
+  },
+  {
+    "need_type": "Embedding Generation",
+    "frequency": 22,
+    "projects": ["mem0", "letta", "graphiti", "cognee", "MemOS", "SimpleMem", "memU", "A-MEM", "general-agentic-memory", "Memori", "supermemory", "hindsight", "LongMemEval", "memory-agent", "easymemory", "LightMem", "Memary", "ReMe", "langgraph-redis", "claude-mem", "MemoryAgentBench", "Backboard-Locomo-Benchmark"],
+    "priority": "high"
+  },
+  {
+    "need_type": "GPU Compute",
+    "frequency": 1,
+    "projects": ["LongMemEval"],
+    "priority": "low"
+  },
+  {
+    "need_type": "Kubernetes Orchestration",
+    "frequency": 16,
+    "projects": ["mem0", "letta", "graphiti", "cognee", "MemOS", "memU", "general-agentic-memory", "Memori", "supermemory", "hindsight", "Memary", "ReMe", "LightMem", "SimpleMem", "beads", "memtrace"],
+    "priority": "high"
+  },
+  {
+    "need_type": "Redis/Caching",
+    "frequency": 8,
+    "projects": ["mem0", "langgraph-redis", "MemOS", "memU", "supermemory", "cognee", "ReMe", "SimpleMem"],
+    "priority": "medium"
+  },
+  {
+    "need_type": "Object Storage (S3)",
+    "frequency": 10,
+    "projects": ["mem0", "supermemory", "cognee", "MemOS", "general-agentic-memory", "hindsight", "Memori", "letta", "SimpleMem", "memU"],
+    "priority": "medium"
+  },
+  {
+    "need_type": "Time-series Database",
+    "frequency": 2,
+    "projects": ["memtrace", "graphiti"],
+    "priority": "low"
+  },
+  {
+    "need_type": "Local/Edge Deployment",
+    "frequency": 3,
+    "projects": ["claude-mem", "easymemory", "memtrace"],
+    "priority": "low"
+  }
+]

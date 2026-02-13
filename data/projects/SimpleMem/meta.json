@@ -1,0 +1,77 @@
+{
+  "name": "SimpleMem",
+  "repository_url": "https://github.com/aiming-lab/SimpleMem",
+  "website_url": "https://aiming-lab.github.io/SimpleMem-Page",
+  "stars": 2800,
+  "primary_language": "Python",
+  "description": "使用语义无损压缩实现长期记忆的高效 LLM 代理记忆框架",
+  "last_updated": "2026-02-09",
+  "paper": {
+    "exists": true,
+    "title": "SimpleMem: Efficient Lifelong Memory for LLM Agents",
+    "venue": "arXiv",
+    "year": 2026,
+    "url": "https://arxiv.org/abs/2601.02553"
+  },
+  "benchmarks": {
+    "locomo": {"score": 43.24, "details": "LoCoMo-10: SimpleMem F1 43.24%（相比 Mem0 提升 26.4%，相比 LightMem 提升 75.6%）"}
+  },
+  "innovations": {
+    "key_features": [
+      "三阶段流水线：语义压缩 → 在线合成 → 意图感知检索",
+      "语义无损压缩：提取核心信息，消除冗余",
+      "多视图索引：语义（向量）+ 词汇（BM25）+ 符号（元数据）",
+      "在线语义合成：实时整合相关上下文为统一抽象表示"
+    ],
+    "improvements": [
+      "Token 用量降低 30 倍（~550 tokens）",
+      "相比 Mem0 平均 F1 提升 26.4%",
+      "检索速度提升 50.2%",
+      "LoCoMo 基准 F1 43.24%（最佳性能）"
+    ],
+    "user_value": [
+      "极低的 Token 成本（显著降低 LLM API 费用）",
+      "高精度检索（语义理解 + 关键词匹配 + 元数据过滤）",
+      "跨会话记忆持久化",
+      "与 Claude、Cursor、LM Studio 无缝集成"
+    ]
+  },
+  "use_cases": {
+    "scenarios": [
+      "长期对话助手：跨会话记住用户偏好和历史",
+      "代码助手（Cursor）：项目上下文和决策历史",
+      "个人知识库：压缩存储大量个人信息",
+      "低成本 AI 应用：Token 成本敏感的场景"
+    ],
+    "companies": [
+      "面向个人开发者和小型团队的工具",
+      "集成到 Claude Code、Cursor、LM Studio 等工具"
+    ]
+  },
+  "tech_stack": {
+    "storage": ["Compressed Memory Store", "Vector Database"],
+    "frameworks": ["MCP Server", "Claude Skills", "Python"],
+    "languages": ["Python"],
+    "embedding_models": ["Semantic compression"]
+  },
+  "cloud_needs": {
+    "storage": {
+      "types": ["Compressed Storage", "Vector DB"],
+      "requirements": ["Semantic synthesis", "Cross-session persistence"]
+    },
+    "compute": {
+      "embedding": true,
+      "gpu_needed": false,
+      "estimated_requirements": "4-16 vCPUs with parallel processing"
+    },
+    "deployment": {
+      "complexity": 5,
+      "containerized": true,
+      "orchestration": ["Docker", "MCP Server"]
+    }
+  },
+  "categories": {
+    "tech_approach": ["Compression", "Semantic Synthesis", "Cross-session"],
+    "use_case": ["Claude", "Cursor", "LM Studio"]
+  }
+}

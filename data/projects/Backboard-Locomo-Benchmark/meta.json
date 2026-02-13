@@ -1,0 +1,355 @@
+{
+  "name": "Backboard-Locomo-Benchmark",
+  "repository_url": "https://github.com/Backboard-io/Backboard-Locomo-Benchmark",
+  "stars": 0,
+  "primary_language": "Python",
+  "description": "Comprehensive evaluation framework for Backboard's memory system using LoCoMo benchmark - achieves state-of-the-art 90% accuracy across conversational AI memory dimensions",
+  "last_updated": "2026-02-12",
+  "paper": {
+    "exists": false,
+    "title": "",
+    "venue": "",
+    "year": 0,
+    "url": "",
+    "notes": "Uses LoCoMo-MC10 dataset for standardized memory evaluation"
+  },
+  "benchmarks": {
+    "locomo": {
+      "score": 90.00,
+      "details": "State-of-the-art performance: 90.00% overall (89.36% single-hop, 75.00% multi-hop, 91.20% open-domain, 91.90% temporal)",
+      "categories": {
+        "single_hop": 89.36,
+        "multi_hop": 75.00,
+        "open_domain": 91.20,
+        "temporal_reasoning": 91.90
+      },
+      "competitors": {
+        "memobase_v0.0.37": 75.78,
+        "zep": 75.14,
+        "mem0_graph": 68.44,
+        "openai": 52.90
+      }
+    }
+  },
+  "tech_stack": {
+    "storage": [
+      "Backboard Managed Memory System",
+      "Vector Database (abstracted)",
+      "File-based JSON results"
+    ],
+    "frameworks": [
+      "httpx (async HTTP)",
+      "OpenAI SDK",
+      "Python asyncio"
+    ],
+    "languages": [
+      "Python 3.8+"
+    ],
+    "llm_providers": [
+      "Google Gemini-2.5-pro (conversation responses)",
+      "OpenAI GPT-4.1 (LLM judge evaluation)"
+    ],
+    "embedding_models": [],
+    "dependencies": [
+      "httpx>=0.24.0",
+      "openai>=1.0.0",
+      "python-dotenv>=1.0.0",
+      "numpy>=1.24.0"
+    ]
+  },
+  "cloud_needs": {
+    "storage": {
+      "types": [
+        "Backboard Cloud Memory Storage (managed)",
+        "Local SSD for dataset and results"
+      ],
+      "requirements": [
+        "50 MB for LoCoMo-MC10 dataset",
+        "5-10 MB per benchmark run results",
+        "5 GB recommended total (including historical results)",
+        "Standard SSD sufficient (no high IOPS needed)"
+      ],
+      "backup": {
+        "frequency": "Daily",
+        "retention": "30-90 days",
+        "lifecycle": "Archive results >90 days to cold storage"
+      }
+    },
+    "compute": {
+      "cpu": {
+        "minimum": "2 vCPUs",
+        "recommended": "4 vCPUs",
+        "high_throughput": "8-16 vCPUs for parallel processing",
+        "architecture": "x86_64 or ARM64"
+      },
+      "memory": {
+        "minimum": "4 GB",
+        "recommended": "8 GB",
+        "high_throughput": "16 GB for large-scale benchmarks"
+      },
+      "gpu_needed": false,
+      "gpu_rationale": "All LLM inference via external APIs (Backboard, OpenAI)",
+      "workload_type": "I/O-bound (network API calls dominate)",
+      "estimated_requirements": "4 vCPUs, 8 GB RAM optimal"
+    },
+    "network": {
+      "bandwidth": {
+        "minimum": "5 Mbps",
+        "recommended": "10 Mbps",
+        "high_throughput": "50 Mbps"
+      },
+      "latency": {
+        "critical": "<200ms to app.backboard.io",
+        "acceptable": "<500ms"
+      },
+      "data_transfer": {
+        "per_run": "20-50 MB total",
+        "monthly_estimate": "800 MB for 20 runs"
+      },
+      "connectivity": [
+        "Outbound HTTPS (443) to app.backboard.io",
+        "Outbound HTTPS (443) to api.openai.com",
+        "No inbound traffic (worker-only process)"
+      ]
+    },
+    "deployment": {
+      "complexity": 3,
+      "complexity_rationale": "Moderate - requires API keys, Docker/container knowledge, but no complex infrastructure",
+      "containerized": true,
+      "container_platforms": [
+        "Docker",
+        "Kubernetes",
+        "AWS ECS Fargate",
+        "Google Cloud Run",
+        "Azure Container Instances"
+      ],
+      "orchestration": [
+        "Kubernetes Job (recommended for parallel processing)",
+        "Docker Compose (development)",
+        "ECS Task (sporadic runs)",
+        "Cloud Run Job (serverless)"
+      ],
+      "recommended_architecture": "Kubernetes Job with 5 parallel pods for multi-conversation processing"
+    },
+    "monitoring": {
+      "metrics": [
+        "benchmark_questions_total",
+        "benchmark_questions_correct",
+        "benchmark_accuracy_percent",
+        "benchmark_response_time_seconds",
+        "benchmark_api_errors_total",
+        "cpu_utilization_percent",
+        "memory_used_bytes",
+        "network_io_bytes"
+      ],
+      "logging": {
+        "format": "JSON structured logs",
+        "retention": "14 days (debug), 90 days (error)",
+        "aggregation": "CloudWatch Logs, ELK Stack, or Loki"
+      },
+      "alerting": [
+        "Benchmark failure (exit code != 0)",
+        "Low accuracy (<85%)",
+        "High API error rate (>5%)",
+        "Long execution time (>60 minutes)"
+      ]
+    },
+    "security": {
+      "api_key_management": "Kubernetes Secrets, AWS Secrets Manager, Azure Key Vault",
+      "network_security": [
+        "Private subnet with NAT gateway",
+        "TLS 1.3 for all API communication",
+        "Firewall: Allow outbound HTTPS only"
+      ],
+      "data_privacy": "Synthetic dataset (no real PII), results contain AI-generated content",
+      "compliance": "GDPR/CCPA not directly applicable (synthetic data)"
+    },
+    "cost_estimates": {
+      "compute_monthly": "$2-3 (standard), $0.40-0.80 (spot instances)",
+      "storage_monthly": "$0.35",
+      "network_monthly": "$0.07",
+      "api_costs_monthly": "$60-130 (Backboard + OpenAI GPT-4.1)",
+      "total_monthly": "$62-133",
+      "annual": "$750-1,600",
+      "cost_per_run": "$3-7 (compute + API costs)",
+      "optimization_strategies": [
+        "Use spot instances (60-80% savings on compute)",
+        "Cache GPT-4.1 evaluations for repeated questions",
+        "Batch evaluations to reduce API calls",
+        "Archive old results to cold storage"
+      ]
+    },
+    "scalability": {
+      "horizontal": "Near-linear scaling up to API rate limits (conversation-level parallelism)",
+      "vertical": "Diminishing returns beyond 8 vCPUs (I/O bound)",
+      "auto_scaling": {
+        "trigger": "Queue depth of pending conversations",
+        "scale_up": ">5 conversations waiting",
+        "scale_down": "<2 conversations in queue",
+        "min_replicas": 0,
+        "max_replicas": 10
+      }
+    }
+  },
+  "categories": {
+    "tech_approach": [
+      "Benchmark Framework",
+      "State-of-the-Art Performance",
+      "LLM-as-Judge Evaluation",
+      "Multi-Dimensional Assessment"
+    ],
+    "use_case": [
+      "Conversational AI Memory Evaluation",
+      "Long-Term Context Retention Testing",
+      "Memory System Benchmarking",
+      "Temporal Reasoning Validation",
+      "Multi-Hop Reasoning Assessment"
+    ],
+    "deployment_type": [
+      "Batch Processing",
+      "API-Driven Evaluation",
+      "Cloud-Native Worker"
+    ],
+    "cognitive_dimensions": [
+      "Single-Hop Reasoning",
+      "Multi-Hop Reasoning",
+      "Open Domain Knowledge",
+      "Temporal Reasoning"
+    ]
+  },
+  "key_features": {
+    "evaluation": [
+      "Four cognitive dimension testing (single-hop, multi-hop, open-domain, temporal)",
+      "LLM-as-judge evaluation with GPT-4.1",
+      "Per-conversation and overall accuracy tracking",
+      "Real-time progress streaming",
+      "Comprehensive statistical reporting"
+    ],
+    "architecture": [
+      "Isolated memory per conversation (assistant-level isolation)",
+      "Multi-thread session support (preserves temporal structure)",
+      "Async I/O with httpx for performance",
+      "Streaming response processing",
+      "Automatic retry logic for network errors"
+    ],
+    "data_handling": [
+      "Custom timestamp injection (ISO 8601)",
+      "Multi-modal support (image query + BLIP captions)",
+      "Multiple dataset format normalization",
+      "Memory operation lifecycle tracking"
+    ],
+    "results_management": [
+      "Per-conversation JSON export",
+      "Overall benchmark summary JSON",
+      "Real-time accuracy updates",
+      "Category-specific metrics aggregation"
+    ]
+  },
+  "comparative_advantages": {
+    "vs_competitors": [
+      "14.22% higher accuracy than Memobase v0.0.37 (90% vs 75.78%)",
+      "14.86% higher accuracy than Zep (90% vs 75.14%)",
+      "37.10% higher accuracy than OpenAI native memory (90% vs 52.90%)",
+      "Strongest temporal reasoning: 91.90% vs next best 85.05%",
+      "Best open-domain knowledge: 91.20% vs next best 77.17%"
+    ],
+    "technical_differentiators": [
+      "Managed service optimization (cloud-native design)",
+      "Advanced retrieval algorithms (proprietary ranking)",
+      "Native metadata handling (temporal timestamps)",
+      "Cross-thread memory aggregation (multi-session awareness)"
+    ]
+  },
+  "limitations": {
+    "current": [
+      "Sequential conversation processing (no parallelism in base implementation)",
+      "Requires active internet connection (API-dependent)",
+      "GPT-4.1 judge adds $0.01-0.02 per question cost",
+      "Limited to LoCoMo-MC10 dataset (10 conversations)",
+      "Adversarial questions (category 5) excluded from evaluation"
+    ],
+    "future_improvements": [
+      "Kubernetes-based parallel conversation processing",
+      "Support for alternative LLM judges (Claude, open-source)",
+      "Real-time dashboard for live monitoring",
+      "Extended dataset support (LoCoMo-MC50, custom sets)",
+      "Multi-modal evaluation (image content verification)",
+      "Adversarial testing (category 5 inclusion)"
+    ]
+  },
+  "ideal_use_cases": [
+    "Customer support bots (multi-session, temporal context)",
+    "Healthcare assistants (precise temporal reasoning)",
+    "Personal AI companions (long-term relationship memory)",
+    "Enterprise knowledge management (complex multi-hop queries)",
+    "Memory system procurement evaluation",
+    "CI/CD integration for regression testing",
+    "Research on conversational AI memory architectures"
+  ],
+  "documentation": {
+    "readme": "Comprehensive setup, usage, and reproduction instructions",
+    "analysis": "10-chapter analysis covering architecture, cloud requirements, evaluation methodology",
+    "cloud_needs": "Detailed cloud service requirements, cost analysis, deployment patterns",
+    "api_reference": "Backboard API endpoint documentation and usage patterns"
+  },
+  "reproducibility": {
+    "dataset": "LoCoMo-MC10 (10 conversations, ~250 questions)",
+    "evaluation_consistency": "±2-3% variance across runs (GPT-4.1 judge with temperature=0.1)",
+    "dry_run_mode": "Simulation mode for testing without API consumption",
+    "open_source": "Full implementation available for transparency"
+  },
+  "performance_metrics": {
+    "accuracy": {
+      "overall": 90.00,
+      "single_hop": 89.36,
+      "multi_hop": 75.00,
+      "open_domain": 91.20,
+      "temporal": 91.90
+    },
+    "latency": {
+      "avg_response_time": "2-4 seconds per question",
+      "memory_retrieval": "200-500ms",
+      "llm_generation": "1-3 seconds",
+      "evaluation_overhead": "2-4 seconds (GPT-4.1 judge)"
+    },
+    "execution": {
+      "benchmark_runtime": "10-30 minutes for 10 conversations",
+      "questions_per_conversation": "~25 (filtered, excluding category 5)",
+      "total_questions": "~250"
+    }
+  },
+  "api_dependencies": {
+    "backboard": {
+      "endpoint": "https://app.backboard.io/api",
+      "authentication": "X-API-Key header",
+      "key_endpoints": [
+        "POST /assistants",
+        "POST /assistants/{id}/threads",
+        "POST /threads/{id}/messages",
+        "GET /assistants/memories/operations/{id}"
+      ]
+    },
+    "openai": {
+      "model": "GPT-4.1",
+      "usage": "LLM judge for answer evaluation",
+      "temperature": 0.1,
+      "output_format": "JSON (reasoning + label)"
+    },
+    "google": {
+      "model": "Gemini-2.5-pro",
+      "usage": "Conversation response generation (assistant LLM)"
+    }
+  },
+  "analysis_chapters": {
+    "chapter_1": "Project Overview - Identity, purpose, value proposition, scope",
+    "chapter_2": "Technical Architecture - System design, tech stack, data flow, API integration",
+    "chapter_3": "Cloud Service Requirements Analysis (9 subsections) - Compute, storage, network, database, orchestration, monitoring, security, cost optimization",
+    "chapter_4": "Memory System Architecture - Formation, retrieval, thread isolation, metadata handling",
+    "chapter_5": "Evaluation Methodology - LoCoMo structure, LLM judge, accuracy metrics, response time",
+    "chapter_6": "Implementation Details - Async I/O, streaming, data normalization, results export",
+    "chapter_7": "Comparative Analysis - Competitive landscape, performance analysis, use case suitability",
+    "chapter_8": "Deployment and Operations - Setup, execution modes, Docker, cloud strategies, monitoring",
+    "chapter_9": "Extensions and Customization - Custom judges, dataset extensions, optimizations, alternative backends",
+    "chapter_10": "Future Roadmap and Conclusions - Limitations, planned enhancements, research opportunities, recommendations"
+  }
+}

@@ -1,0 +1,664 @@
+[
+  {
+    "name": "mem0",
+    "repository_url": "https://github.com/mem0ai/mem0",
+    "stars": 47100,
+    "forks": 5200,
+    "watchers": null,
+    "primary_language": "Python",
+    "description": "Universal memory layer for AI Agents that enhances AI assistants with intelligent memory capabilities for personalized interactions",
+    "last_updated": "2026-02-03",
+    "created_at": null,
+    "key_features": [
+      "Multi-level memory management (User, Session, Agent state)",
+      "Cross-platform SDKs with developer-friendly APIs",
+      "Support for multiple LLM providers",
+      "Integration frameworks for CrewAI and Langgraph",
+      "Browser extension for ChatGPT, Perplexity, and Claude",
+      "+26% Accuracy vs OpenAI Memory on LOCOMO benchmark",
+      "91% faster responses than full-context",
+      "90% lower token usage than full-context"
+    ],
+    "benchmark_mentions": {
+      "locomo": true,
+      "longmemeval": false,
+      "details": "+26% Accuracy vs. OpenAI Memory on the LOCOMO benchmark, 91% Faster Responses, 90% Lower Token Usage"
+    },
+    "innovation_highlights": "Production-ready with extensive integrations, strong benchmark performance on LoCoMo"
+  },
+  {
+    "name": "letta",
+    "repository_url": "https://github.com/letta-ai/letta",
+    "stars": 21000,
+    "forks": 2200,
+    "watchers": null,
+    "primary_language": "Python",
+    "description": "Platform for building stateful agents with advanced memory that can learn and self-improve over time (formerly MemGPT)",
+    "last_updated": "2026-01-29",
+    "created_at": null,
+    "key_features": [
+      "Letta Code CLI tool for running agents locally",
+      "Letta API for integrating agents into applications",
+      "Support for skills and subagents",
+      "Advanced memory management and continual learning",
+      "Model-agnostic architecture",
+      "SDK support for Python and TypeScript",
+      "Full-featured agents API with database persistence"
+    ],
+    "benchmark_mentions": {
+      "locomo": false,
+      "longmemeval": false,
+      "details": "Model leaderboard available at leaderboard.letta.com"
+    },
+    "innovation_highlights": "Well-established framework with strong community, self-improvement capabilities"
+  },
+  {
+    "name": "graphiti",
+    "repository_url": "https://github.com/getzep/graphiti",
+    "stars": 22700,
+    "forks": 2200,
+    "watchers": null,
+    "primary_language": "Python",
+    "description": "Framework for constructing and querying temporally-aware knowledge graphs tailored for AI agents",
+    "last_updated": "2026-02",
+    "created_at": null,
+    "key_features": [
+      "Real-time incremental updates without batch recomputation",
+      "Bi-temporal data model tracking event occurrence and ingestion times",
+      "Hybrid retrieval combining semantic embeddings, BM25, and graph-based search",
+      "Custom entity definitions via Pydantic models",
+      "Scalability with parallel processing",
+      "Multiple database support: Neo4j, FalkorDB, Kuzu, Amazon Neptune",
+      "MCP Server integration for AI assistant workflows"
+    ],
+    "benchmark_mentions": {
+      "locomo": false,
+      "longmemeval": false,
+      "details": "Peer-reviewed paper: Zep: A Temporal Knowledge Graph Architecture for Agent Memory (arXiv:2501.13956)"
+    },
+    "innovation_highlights": "Unique temporal knowledge graph approach with bi-temporal modeling"
+  },
+  {
+    "name": "cognee",
+    "repository_url": "https://github.com/topoteretes/cognee",
+    "stars": 12200,
+    "forks": 1200,
+    "watchers": null,
+    "primary_language": "Python",
+    "description": "Knowledge Engine for AI Agent Memory in 6 lines of code that transforms raw data into persistent and dynamic AI memory",
+    "last_updated": "2026-02-04",
+    "created_at": null,
+    "key_features": [
+      "Interconnects multiple data types: conversations, files, images, audio",
+      "Unified knowledge engine combining graphs and vectors",
+      "30+ data source integrations via Pythonic pipelines",
+      "Customizable tasks and modular pipelines",
+      "Built-in search endpoints",
+      "CLI tool (cognee-cli) and local UI",
+      "Compatible with multiple LLM providers",
+      "Reduces infrastructure costs while improving precision"
+    ],
+    "benchmark_mentions": {
+      "locomo": false,
+      "longmemeval": false,
+      "details": "2025 research paper on optimizing interface between knowledge graphs and LLMs"
+    },
+    "innovation_highlights": "Easy integration (6 lines of code), comprehensive data source support"
+  },
+  {
+    "name": "claude-mem",
+    "repository_url": "https://github.com/thedotmack/claude-mem",
+    "stars": 27000,
+    "forks": 1800,
+    "watchers": null,
+    "primary_language": "TypeScript",
+    "description": "Claude Code plugin enabling persistent memory across coding sessions through automatic capture, AI-powered compression, and context injection",
+    "last_updated": "2026-02-11",
+    "created_at": "2026-02",
+    "key_features": [
+      "Persistent context preservation across sessions",
+      "Progressive disclosure with token cost visibility",
+      "Natural language memory search via skill interface",
+      "Web viewer UI dashboard at localhost:37777",
+      "Privacy controls using <private> tags",
+      "Fully automatic operation",
+      "Citation system with observation IDs",
+      "~10x token savings through filtered context retrieval",
+      "SQLite database for persistent storage",
+      "Chroma vector database for hybrid semantic/keyword search"
+    ],
+    "benchmark_mentions": {
+      "locomo": false,
+      "longmemeval": false,
+      "details": "None mentioned"
+    },
+    "innovation_highlights": "Explosive growth: 20K+ stars in 2 days, one of fastest-growing GitHub projects in history, specifically designed for Claude Code"
+  },
+  {
+    "name": "ReMe",
+    "repository_url": "https://github.com/agentscope-ai/ReMe",
+    "stars": 965,
+    "forks": 94,
+    "watchers": null,
+    "primary_language": "Python",
+    "description": "Memory Management Kit for Agents providing modular capabilities to extract, reuse, and share memories across users, tasks, and agents",
+    "last_updated": "2025-12",
+    "created_at": null,
+    "key_features": [
+      "Task Memory/Experience with success pattern recognition and failure analysis",
+      "Personal Memory for individual preferences and contextual adaptation",
+      "Tool Memory for data-driven tool selection and parameter optimization",
+      "Working Memory for message offload & reload in long-running agents",
+      "Async operations support",
+      "MCP protocol support",
+      "Multiple vector storage backends (Elasticsearch, ChromaDB)",
+      "Direct Python import support"
+    ],
+    "benchmark_mentions": {
+      "locomo": false,
+      "longmemeval": false,
+      "details": "Validated on appworld, bfcl(v3), and frozenlake benchmarks"
+    },
+    "innovation_highlights": "Modular memory types (task, personal, tool, working), procedural memory research (Dec 2025)"
+  },
+  {
+    "name": "MemOS",
+    "repository_url": "https://github.com/MemTensor/MemOS",
+    "stars": 5100,
+    "forks": 469,
+    "watchers": null,
+    "primary_language": "Python",
+    "description": "AI memory OS for LLM and Agent systems enabling persistent Skill memory for cross-task skill reuse and evolution",
+    "last_updated": "2025-12-24",
+    "created_at": null,
+    "key_features": [
+      "Unified Memory API for add, retrieve, edit, delete operations",
+      "Multi-modal memory support (text, images, tool traces, personas)",
+      "Multi-Cube Knowledge Base Management",
+      "Asynchronous ingestion via MemScheduler with millisecond-level latency",
+      "Memory feedback and natural-language correction",
+      "Multi-agent memory sharing",
+      "72% lower token usage"
+    ],
+    "benchmark_mentions": {
+      "locomo": true,
+      "longmemeval": true,
+      "details": "LoCoMo: 75.80, LongMemEval: +40.43%, PrefEval-10: +2568%, PersonaMem: +40.75%, +43.70% Accuracy vs. OpenAI Memory"
+    },
+    "innovation_highlights": "Comprehensive benchmark performance across multiple evaluations, multi-modal memory support"
+  },
+  {
+    "name": "SimpleMem",
+    "repository_url": "https://github.com/aiming-lab/SimpleMem",
+    "stars": 2800,
+    "forks": 280,
+    "watchers": null,
+    "primary_language": "Python",
+    "description": "Efficient memory framework for LLM agents using semantic lossless compression for long-term memories",
+    "last_updated": "2026-02-09",
+    "created_at": "2026-01-01",
+    "key_features": [
+      "Semantic structured compression for compact memory units",
+      "Online semantic synthesis consolidating related fragments",
+      "Intent-aware retrieval planning",
+      "Cross-session memory with 64% performance boost over Claude-Mem",
+      "MCP Server Support at mcp.simplemem.cloud",
+      "Claude Skills integration",
+      "Parallel processing with multi-worker support",
+      "Works across Claude, Cursor, LM Studio"
+    ],
+    "benchmark_mentions": {
+      "locomo": true,
+      "longmemeval": false,
+      "details": "LoCoMo-10: SimpleMem F1 43.24% (26.4% improvement over Mem0, 75.6% over LightMem)"
+    },
+    "innovation_highlights": "Semantic lossless compression approach, very recent project (Jan 2026) with strong performance"
+  },
+  {
+    "name": "memU",
+    "repository_url": "https://github.com/NevaMind-AI/memU",
+    "stars": 8900,
+    "forks": 674,
+    "watchers": null,
+    "primary_language": "Python",
+    "description": "Memory for 24/7 proactive agents designed for always-on AI agents that continuously learn and anticipate user needs",
+    "last_updated": "2026-02",
+    "created_at": null,
+    "key_features": [
+      "24/7 proactive agent architecture for continuous operation",
+      "Hierarchical memory system (Resources, Items, Categories)",
+      "File system metaphor for structured, hierarchical access",
+      "Auto-organized topics and cross-referenced memories",
+      "Cost efficiency through intelligent caching",
+      "Multi-provider support (OpenAI, Qwen, Voyage AI, OpenRouter)",
+      "Proactive workflows for information recommendation, email, finance"
+    ],
+    "benchmark_mentions": {
+      "locomo": true,
+      "longmemeval": false,
+      "details": "92.09% average accuracy on Locomo benchmark across all reasoning tasks"
+    },
+    "innovation_highlights": "Designed specifically for 24/7 proactive agents, excellent LoCoMo performance (92.09%)"
+  },
+  {
+    "name": "A-MEM",
+    "repository_url": "https://github.com/agiresearch/A-mem",
+    "stars": 833,
+    "forks": 90,
+    "watchers": null,
+    "primary_language": "Python",
+    "description": "Novel agentic memory system for LLM agents that dynamically organizes memories in an agentic way using Zettelkasten principles",
+    "last_updated": "2025",
+    "created_at": null,
+    "key_features": [
+      "Dynamic memory organization following Zettelkasten principles",
+      "Semantic indexing and linking via ChromaDB",
+      "Structured note generation with metadata",
+      "Interconnected knowledge networks",
+      "Continuous memory evolution",
+      "Agent-driven adaptive memory management",
+      "Support for multiple LLM backends (OpenAI, Ollama)"
+    ],
+    "benchmark_mentions": {
+      "locomo": false,
+      "longmemeval": false,
+      "details": "Superior performance vs SOTA baselines on six foundation models (NeurIPS 2025 paper)"
+    },
+    "innovation_highlights": "Zettelkasten-inspired approach for knowledge organization, NeurIPS 2025 acceptance"
+  },
+  {
+    "name": "general-agentic-memory",
+    "repository_url": "https://github.com/VectorSpaceLab/general-agentic-memory",
+    "stars": 810,
+    "forks": 79,
+    "watchers": null,
+    "primary_language": "Python",
+    "description": "General memory system for agents powered by deep-research with dual-agent architecture combining long-term retention and dynamic reasoning",
+    "last_updated": "2025-10",
+    "created_at": "2025-10-08",
+    "key_features": [
+      "Just-in-Time (JIT) memory optimization with runtime deep research",
+      "Dual-agent cooperative framework (Memorizer and Researcher)",
+      "Modular, extensible design with plugin architecture",
+      "Compatible with GPT-4, GPT-4o-mini, Qwen2.5",
+      "State-of-the-art performance across evaluation frameworks"
+    ],
+    "benchmark_mentions": {
+      "locomo": true,
+      "longmemeval": false,
+      "details": "Evaluation on LoCoMo, HotpotQA, NarrativeQA, RULER. Superior F1 and BLEU-1 metrics vs A-MEM, Mem0, MemoryOS, LightMem"
+    },
+    "innovation_highlights": "Dual-agent architecture (Memorizer + Researcher), JIT memory optimization"
+  },
+  {
+    "name": "Memori",
+    "repository_url": "https://github.com/MemoriLabs/Memori",
+    "stars": 12100,
+    "forks": 1000,
+    "watchers": null,
+    "primary_language": "Python",
+    "description": "SQL Native Memory Layer for LLMs, AI Agents & Multi-Agent Systems - enterprise AI memory fabric",
+    "last_updated": "2026-01-28",
+    "created_at": null,
+    "key_features": [
+      "Vectorized memories with in-memory semantic search",
+      "Third normal form database schema with knowledge graph storage",
+      "Support for multiple LLMs (Anthropic, Bedrock, Gemini, Grok, OpenAI)",
+      "Framework compatibility (LangChain, Agno)",
+      "Database integration via PEP 249 API 2.0, Django ORM, SQLAlchemy",
+      "Multi-level memory tracking (entity, process, session)",
+      "Advanced augmentation (attributes, events, facts, preferences, relationships, rules, skills)",
+      "Asynchronous background memory creation with zero latency impact"
+    ],
+    "benchmark_mentions": {
+      "locomo": false,
+      "longmemeval": false,
+      "details": "None mentioned"
+    },
+    "innovation_highlights": "SQL-native approach, enterprise-focused with traditional database integration"
+  },
+  {
+    "name": "memtrace",
+    "repository_url": "https://github.com/Basekick-Labs/memtrace",
+    "stars": 5,
+    "forks": 0,
+    "watchers": null,
+    "primary_language": "Go",
+    "description": "LLM-agnostic memory layer for AI agents with no embeddings or vector DB - just fast, structured, temporal memory consumable as plain text",
+    "last_updated": "2026-02-07",
+    "created_at": "2026-02-07",
+    "key_features": [
+      "Time-series memory storage using Arc database",
+      "Multiple memory types: episodic, decision, entity, session",
+      "Time-windowed queries (e.g., 'what happened in last 2 hours?')",
+      "Session context endpoint generating LLM-ready markdown",
+      "Deduplication and write batching",
+      "Shared memory across multiple agents",
+      "MCP Server integration for Claude Code, Cursor, Windsurf",
+      "SDKs: Python, TypeScript, Go with async support",
+      "OpenAI Agents SDK integration"
+    ],
+    "benchmark_mentions": {
+      "locomo": false,
+      "longmemeval": false,
+      "details": "None mentioned"
+    },
+    "innovation_highlights": "No embeddings/vector DB approach, time-series focus, very new (Feb 2026), Go implementation"
+  },
+  {
+    "name": "supermemory",
+    "repository_url": "https://github.com/supermemoryai/supermemory",
+    "stars": 16400,
+    "forks": 1600,
+    "watchers": null,
+    "primary_language": "TypeScript",
+    "description": "Memory engine and app that is extremely fast, scalable - the Memory API for the AI era",
+    "last_updated": "2026-02",
+    "created_at": null,
+    "key_features": [
+      "Add memories from URLs, PDFs, plain text",
+      "Natural language chat interface with stored content",
+      "MCP integration with Claude, Cursor, and other AI tools",
+      "Browser extension for Chrome/Edge with ChatGPT/Claude integrations",
+      "Raycast extension for keyboard-based memory",
+      "Connections to Notion, Google Drive, OneDrive",
+      "State-of-the-art performance on LongMemEval",
+      "Persistent context and reasoning memory"
+    ],
+    "benchmark_mentions": {
+      "locomo": false,
+      "longmemeval": true,
+      "details": "State-of-the-art performance on LongMemEval, solves long-term forgetting in LLMs"
+    },
+    "innovation_highlights": "Excellent LongMemEval performance, comprehensive integrations across platforms"
+  },
+  {
+    "name": "hindsight",
+    "repository_url": "https://github.com/vectorize-io/hindsight",
+    "stars": 1400,
+    "forks": 164,
+    "watchers": null,
+    "primary_language": "Python",
+    "description": "Agent memory system built to create smarter agents that learn over time - focusing on learning, not just remembering",
+    "last_updated": "2025-10",
+    "created_at": "2025-10-30",
+    "key_features": [
+      "Three core operations: Retain, Recall, Reflect",
+      "Biomimetic memory structures (World facts, Experiences, Mental Models)",
+      "Multi-strategy retrieval: semantic, keyword (BM25), graph-based, temporal filtering",
+      "LLM-powered extraction for entities, relationships, temporal data",
+      "Per-user memory support with custom metadata filtering",
+      "Multiple deployment options: Docker, PostgreSQL, embedded Python, HTTP API",
+      "State-of-the-art LongMemEval performance"
+    ],
+    "benchmark_mentions": {
+      "locomo": false,
+      "longmemeval": true,
+      "details": "State-of-the-art performance on LongMemEval benchmark, independently reproduced by Virginia Tech and Washington Post"
+    },
+    "innovation_highlights": "Biomimetic approach mimicking human memory, emphasis on reflection and learning, strong academic validation"
+  },
+  {
+    "name": "LongMemEval",
+    "repository_url": "https://github.com/xiaowu0162/LongMemEval",
+    "stars": 397,
+    "forks": 24,
+    "watchers": null,
+    "primary_language": "Python",
+    "description": "Benchmark for evaluating long-term memory of chat assistants across extended conversations (ICLR 2025)",
+    "last_updated": "2025-09",
+    "created_at": null,
+    "key_features": [
+      "500 manually created questions testing five core memory abilities",
+      "Information extraction, multi-session reasoning, temporal reasoning, knowledge updates, abstention",
+      "Multiple difficulty levels: LongMemEval_S (~40 sessions, 115k tokens) and LongMemEval_M (~500 sessions)",
+      "Oracle variant with ground-truth evidence sessions",
+      "Comprehensive toolkit for memory retrieval, indexing, RAG",
+      "Multiple retrieval baselines: BM25, Contriever, Stella, GTE embeddings",
+      "Support for open-weight and proprietary LLMs via vLLM"
+    ],
+    "benchmark_mentions": {
+      "locomo": false,
+      "longmemeval": true,
+      "details": "This IS the LongMemEval benchmark - official implementation"
+    },
+    "innovation_highlights": "Official benchmark implementation, ICLR 2025 acceptance, comprehensive evaluation framework"
+  },
+  {
+    "name": "locomo",
+    "repository_url": "https://github.com/snap-research/locomo",
+    "stars": 539,
+    "forks": 64,
+    "watchers": null,
+    "primary_language": "Python",
+    "description": "Data and code for evaluating very long-term conversational memory of LLM agents (ACL 2024, SNAP Research)",
+    "last_updated": "2024",
+    "created_at": null,
+    "key_features": [
+      "High-quality evaluation dataset with 10 extended conversations",
+      "Question-answering task testing retrieval from lengthy dialogue histories",
+      "Event summarization evaluation",
+      "Multimodal dialog generation assessment",
+      "Five reasoning types: single-hop, multi-hop, temporal, commonsense/world knowledge, adversarial",
+      "Observations and session summaries via GPT-3.5-turbo",
+      "RAG database support",
+      "Evaluation for OpenAI, Anthropic, Google Gemini models"
+    ],
+    "benchmark_mentions": {
+      "locomo": true,
+      "longmemeval": false,
+      "details": "This IS the LoCoMo benchmark - official SNAP Research implementation"
+    },
+    "innovation_highlights": "Official benchmark implementation, ACL 2024 acceptance, widely used for memory evaluation"
+  },
+  {
+    "name": "memory-agent",
+    "repository_url": "https://github.com/langchain-ai/memory-agent",
+    "stars": 409,
+    "forks": 77,
+    "watchers": null,
+    "primary_language": "Python",
+    "description": "ReAct-style agent implementation with persistent memory management for learning across conversational threads",
+    "last_updated": "2025",
+    "created_at": null,
+    "key_features": [
+      "Memory persistence tool for storing important information",
+      "User-scoped memory storage across conversation threads",
+      "Integration with LangGraph Cloud deployment",
+      "Support for multiple LLM providers (Anthropic Claude, OpenAI)",
+      "Memory evaluation and testing framework using LangSmith",
+      "Customizable memory structure and prompts"
+    ],
+    "benchmark_mentions": {
+      "locomo": false,
+      "longmemeval": false,
+      "details": "None mentioned"
+    },
+    "innovation_highlights": "Official LangChain implementation, simple reference example for memory in agents"
+  },
+  {
+    "name": "easymemory",
+    "repository_url": "https://github.com/JustVugg/easymemory",
+    "stars": 5,
+    "forks": 0,
+    "watchers": null,
+    "primary_language": "Python",
+    "description": "100% local memory layer for chatbots and agents with MCP server for Claude, GPT, Gemini, and local models",
+    "last_updated": "2026-02-06",
+    "created_at": "2026-02-06",
+    "key_features": [
+      "Auto-save: Every conversation automatically saved",
+      "Hybrid Retrieval+: Graph + Vector + Keyword + Built-in Local Knowledge Index",
+      "100% local: Data stays on your machine",
+      "Enterprise security: OAuth2, API keys, rate limiting, audit logs",
+      "Multi-format document support (PDF, DOCX, TXT, Markdown)",
+      "Integrations for Slack, Notion, Google Drive",
+      "LoCoMo-style benchmark support",
+      "Proof benchmark for single-hop, multi-hop, adversarial scenarios"
+    ],
+    "benchmark_mentions": {
+      "locomo": true,
+      "longmemeval": false,
+      "details": "Includes LoCoMo-style benchmark via easymemory-locomo command and Proof benchmark"
+    },
+    "innovation_highlights": "Very new (Feb 2026), privacy-focused with 100% local deployment, hybrid retrieval approach"
+  },
+  {
+    "name": "LightMem",
+    "repository_url": "https://github.com/zjunlp/LightMem",
+    "stars": 564,
+    "forks": 52,
+    "watchers": null,
+    "primary_language": "Python",
+    "description": "Lightweight and efficient memory management framework for LLMs and AI Agents (ICLR 2026)",
+    "last_updated": "2026-01-26",
+    "created_at": null,
+    "key_features": [
+      "Minimalist architecture with fast response",
+      "Simple integration with straightforward API",
+      "Modular design with pluggable components",
+      "Broad model support (OpenAI, DeepSeek, Ollama, vLLM)",
+      "MCP Server support for Model Context Protocol",
+      "Custom storage engines and retrieval strategies",
+      "Resource-efficient with minimal code modifications"
+    ],
+    "benchmark_mentions": {
+      "locomo": true,
+      "longmemeval": true,
+      "details": "Complete LoCoMo and LongMemEval support with reproduction scripts. Up to 10.9% accuracy gains, 117× less tokens, 159× fewer API calls, 12× faster runtime"
+    },
+    "innovation_highlights": "ICLR 2026 acceptance, exceptional efficiency metrics, comprehensive benchmark support"
+  },
+  {
+    "name": "Memary",
+    "repository_url": "https://github.com/kingjulio8238/Memary",
+    "stars": 2600,
+    "forks": 194,
+    "watchers": null,
+    "primary_language": "Python",
+    "description": "Open Source Memory Layer for Autonomous Agents simulating how human memory works",
+    "last_updated": "2025",
+    "created_at": null,
+    "key_features": [
+      "Automatic memory generation and updates during interactions",
+      "Knowledge graph integration (Neo4j, FalkorDB)",
+      "Recursive retrieval and multi-hop reasoning",
+      "Dual memory architecture: Memory Stream + Entity Knowledge Store",
+      "ReAct agent framework with search, vision, location, stock tools",
+      "Multi-agent support with independent memory contexts",
+      "Custom tool integration",
+      "Model flexibility (Ollama, GPT-3.5-turbo, GPT-4-vision)",
+      "Dashboard visualization for tracking agent improvement"
+    ],
+    "benchmark_mentions": {
+      "locomo": false,
+      "longmemeval": false,
+      "details": "None mentioned"
+    },
+    "innovation_highlights": "Human memory simulation approach, comprehensive tooling with dashboard"
+  },
+  {
+    "name": "beads",
+    "repository_url": "https://github.com/steveyegge/beads",
+    "stars": 15900,
+    "forks": 940,
+    "watchers": null,
+    "primary_language": "Go",
+    "description": "Distributed, git-backed graph issue tracker for AI agents providing persistent, structured memory for coding tasks",
+    "last_updated": "2026-02-08",
+    "created_at": null,
+    "key_features": [
+      "Dolt-powered database with version-controlled SQL",
+      "Cell-level merge capabilities and native branching",
+      "JSONL for git compatibility",
+      "Agent-optimized JSON outputs with dependency tracking",
+      "Collision prevention via hash-based task IDs",
+      "Memory management with semantic summarization",
+      "Messaging system with threading support",
+      "Knowledge graphs with relationship linking",
+      "Flexible workflows with hierarchical task organization"
+    ],
+    "benchmark_mentions": {
+      "locomo": false,
+      "longmemeval": false,
+      "details": "None mentioned"
+    },
+    "innovation_highlights": "Git-native approach treating Git as persistence layer, unique for coding agents, created by Steve Yegge"
+  },
+  {
+    "name": "MemoryAgentBench",
+    "repository_url": "https://github.com/HUST-AI-HYZ/MemoryAgentBench",
+    "stars": 223,
+    "forks": 34,
+    "watchers": null,
+    "primary_language": "Python",
+    "description": "Benchmark for evaluating memory in LLM agents via incremental multi-turn interactions (ICLR 2026)",
+    "last_updated": "2026-01-26",
+    "created_at": null,
+    "key_features": [
+      "Four core competencies: Accurate Retrieval, Test-Time Learning, Long-Range Understanding, Conflict Resolution",
+      "Inject once, query multiple times approach for efficiency",
+      "New datasets: EventQA and FactConsolidation",
+      "Multi-agent support evaluating long context models, RAG systems, agentic memory frameworks",
+      "Evaluates Letta, Mem0, Cognee architectures",
+      "LLM-based evaluation using GPT-4o as judge"
+    ],
+    "benchmark_mentions": {
+      "locomo": false,
+      "longmemeval": false,
+      "details": "This IS the MemoryAgentBench benchmark - ICLR 2026"
+    },
+    "innovation_highlights": "ICLR 2026 acceptance, evaluates multiple memory frameworks, multi-turn interaction focus"
+  },
+  {
+    "name": "langgraph-redis",
+    "repository_url": "https://github.com/redis-developer/langgraph-redis",
+    "stars": 190,
+    "forks": 36,
+    "watchers": null,
+    "primary_language": "Python",
+    "description": "Redis checkpointer and store for memory management in LangGraph",
+    "last_updated": "2025-01-03",
+    "created_at": "2025-01-03",
+    "key_features": [
+      "Redis checkpoint savers with full history or shallow implementations",
+      "Persistent key-value storage with optional vector search",
+      "Redis middleware including semantic caching for LLM responses",
+      "Tool result caching for expensive operations",
+      "Conversation memory injection",
+      "Semantic routing capabilities",
+      "TTL support with automatic expiration and thread pinning",
+      "Async support for synchronous and asynchronous implementations",
+      "Requires RedisJSON and RediSearch modules"
+    ],
+    "benchmark_mentions": {
+      "locomo": false,
+      "longmemeval": false,
+      "details": "None mentioned"
+    },
+    "innovation_highlights": "Redis-native implementation for LangGraph, production-grade with enterprise Redis support"
+  },
+  {
+    "name": "Backboard-Locomo-Benchmark",
+    "repository_url": "https://github.com/Backboard-io/Backboard-Locomo-Benchmark",
+    "stars": null,
+    "forks": null,
+    "watchers": null,
+    "primary_language": "Python",
+    "description": "Comprehensive evaluation framework for Backboard's memory system using LoCoMo benchmark",
+    "last_updated": null,
+    "created_at": null,
+    "key_features": [
+      "LoCoMo benchmark implementation for Backboard",
+      "Tests memory systems across multiple dimensions of conversational AI",
+      "Evaluates context maintenance, information recall, reasoning across extended dialogues",
+      "90.00% overall performance on LoCoMo benchmark"
+    ],
+    "benchmark_mentions": {
+      "locomo": true,
+      "longmemeval": false,
+      "details": "Implementation of LoCoMo benchmark for Backboard system with 90.00% performance"
+    },
+    "innovation_highlights": "High LoCoMo performance (90.00%), focused on conversational AI benchmarking"
+  }
+]

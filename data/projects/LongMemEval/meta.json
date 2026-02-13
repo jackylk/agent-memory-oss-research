@@ -1,0 +1,583 @@
+{
+  "name": "LongMemEval",
+  "repository_url": "https://github.com/xiaowu0162/LongMemEval",
+  "stars": 162,
+  "primary_language": "Python",
+  "description": "用于评估聊天助手在长对话中长期记忆能力的基准测试（ICLR 2025）",
+  "last_updated": "2025-09",
+  "paper": {
+    "exists": true,
+    "title": "LongMemEval: Benchmarking Chat Assistants on Long-Term Interactive Memory",
+    "venue": "ICLR",
+    "year": 2025,
+    "url": "https://arxiv.org/abs/2410.10813"
+  },
+  "innovations": [
+    {
+      "name": "属性控制的 Haystack 编译流程",
+      "description": "创新的对话历史编译方法,通过属性控制确保 filler 会话与目标问题无冲突,保证评估公平性。支持动态调整会话数量和 token 长度,可扩展至任意规模。",
+      "impact": "解决了长期记忆评估中的数据污染问题,确保模型真正依靠记忆而非上下文推理"
+    },
+    {
+      "name": "五维记忆能力评估框架",
+      "description": "全面覆盖长期记忆的五大核心能力：信息提取 (Information Extraction)、多会话推理 (Multi-Session Reasoning)、知识更新 (Knowledge Updates)、时间推理 (Temporal Reasoning)、拒绝回答 (Abstention)。每个维度都有专门设计的问题类型和评估标准。",
+      "impact": "首个系统性评估长期记忆的多维框架,为记忆能力研究提供标准化基准"
+    },
+    {
+      "name": "可扩展的基准设计",
+      "description": "提供三个难度级别：LongMemEval_S (115k tokens, ~40 会话)、LongMemEval_M (~500 会话)、LongMemEval_Oracle (仅证据会话)。支持自定义历史编译,用户可根据需求调整会话数量和时间跨度。",
+      "impact": "允许研究者在不同规模下测试模型,从短期上下文到极长期记忆"
+    },
+    {
+      "name": "时间感知的评估设计",
+      "description": "所有对话历史都带有精确时间戳,支持复杂的时序推理场景。包括同日多会话、跨日推理、知识更新时序约束等。时间生成算法确保时序逻辑一致性。",
+      "impact": "填补了现有基准缺乏时间维度的空白,更贴近真实对话场景"
+    },
+    {
+      "name": "索引扩展机制",
+      "description": "提供多种索引增强方法：会话摘要 (Session Summarization)、关键短语提取 (Keyphrase Extraction)、用户事实提取 (User Fact Extraction)、时间事件提取 (Temporal Event)。支持三种合并模式 (separate/merge/replace)。",
+      "impact": "Recall@5 提升 5-6%,为检索增强生成 (RAG) 系统提供实用优化方法"
+    },
+    {
+      "name": "LLM-as-Judge 自动评估",
+      "description": "针对不同问题类型设计定制化评估提示,支持部分匹配、off-by-one 容错、知识更新检测等。使用 GPT-4 或开源 LLM 作为评估器,减少人工标注成本。",
+      "impact": "评估准确率与人工标注高度一致,大幅降低基准使用门槛"
+    },
+    {
+      "name": "Needle-in-a-Haystack 范式",
+      "description": "借鉴 'needle-in-a-haystack' 测试理念,将关键信息 (针) 隐藏在大量无关对话 (草堆) 中。通过控制草堆大小和针的位置,系统性测试记忆检索能力。",
+      "impact": "提供可控的难度调节机制,便于分析模型在不同信息密度下的表现"
+    },
+    {
+      "name": "多粒度检索评估",
+      "description": "同时支持 session-level 和 turn-level 检索评估,提供 Recall@K、NDCG@K 等多个指标。Turn-to-Session 转换算法允许跨粒度对比。",
+      "impact": "帮助研究者理解不同检索粒度对最终 QA 性能的影响"
+    },
+    {
+      "name": "Chain-of-Notes (CoN) 方法",
+      "description": "创新的两阶段生成方法：先为每个检索到的会话生成阅读笔记,再基于笔记回答问题。相比直接 RAG,CoN 提取更精炼的相关信息,减少噪声干扰。",
+      "impact": "在 LongMemEval_S 上 accuracy 提升 6.7% (vs CoT),为长上下文处理提供新思路"
+    },
+    {
+      "name": "开源数据编译流程",
+      "description": "完整开源历史编译代码和数据构建流程,包括用户属性库、问题库、填充会话库 (ShareGPT/UltraChat)。研究者可基于此构建自定义基准。",
+      "impact": "促进社区参与和基准持续改进,加速长期记忆研究发展"
+    }
+  ],
+  "use_cases": [
+    {
+      "category": "学术研究",
+      "scenarios": [
+        {
+          "name": "长期记忆机制研究",
+          "description": "为研究长期记忆的神经网络架构 (Memory Networks, Neural Turing Machines) 提供标准评估基准。测试不同记忆编码、存储、检索策略的有效性。",
+          "target_users": "AI 研究者、博士生、实验室"
+        },
+        {
+          "name": "RAG 系统优化",
+          "description": "评估检索增强生成系统在长期交互场景下的性能。对比不同检索器 (BM25, Dense, Hybrid)、索引方法、重排序策略的效果。",
+          "target_users": "NLP 研究者、RAG 系统开发者"
+        },
+        {
+          "name": "长上下文模型评估",
+          "description": "测试 GPT-4 (128k)、Claude 3 (200k)、Gemini 1.5 (2M) 等长上下文模型在真实对话记忆任务上的表现。超越简单的 'needle-in-a-haystack',评估实际应用能力。",
+          "target_users": "模型开发团队、基准测试研究者"
+        },
+        {
+          "name": "持续学习研究",
+          "description": "评估模型在连续会话中的在线学习能力。测试知识更新、遗忘曲线、灾难性遗忘等现象。",
+          "target_users": "持续学习、终身学习研究者"
+        },
+        {
+          "name": "时间推理研究",
+          "description": "专注于时序逻辑推理的研究。测试模型理解事件顺序、计算时间间隔、推断时间关系的能力。",
+          "target_users": "时间推理、因果推理研究者"
+        }
+      ]
+    },
+    {
+      "category": "工业应用",
+      "scenarios": [
+        {
+          "name": "智能客服系统",
+          "description": "评估客服机器人在长期客户交互中的记忆能力。测试能否记住客户历史问题、偏好设置、过往投诉,提供个性化服务。",
+          "target_users": "客服软件公司、电商平台、金融机构",
+          "benefits": "提升客户满意度、减少重复询问、增强用户粘性"
+        },
+        {
+          "name": "个人 AI 助理",
+          "description": "评估 Siri、Alexa、Google Assistant 等个人助理的长期记忆表现。测试能否记住用户日程、习惯、偏好,提供真正个性化的帮助。",
+          "target_users": "科技巨头、AI 助理开发团队",
+          "benefits": "打造有'记忆'的助理,从工具升级为伙伴"
+        },
+        {
+          "name": "企业知识库问答",
+          "description": "评估企业内部问答系统在长文档、多轮对话中的记忆检索能力。测试能否准确定位历史讨论、项目决策、技术文档。",
+          "target_users": "企业 IT 部门、知识管理平台",
+          "benefits": "提高知识查找效率、减少信息孤岛、加速新员工培训"
+        },
+        {
+          "name": "医疗对话系统",
+          "description": "评估医疗 AI 在长期患者交互中的记忆能力。测试能否记住病史、用药记录、过敏信息,提供安全准确的医疗建议。",
+          "target_users": "医疗科技公司、医院信息系统",
+          "benefits": "提升诊疗质量、避免医疗事故、优化患者体验",
+          "note": "需符合 HIPAA 等医疗隐私法规"
+        },
+        {
+          "name": "教育辅导系统",
+          "description": "评估 AI 教师在长期教学中的记忆能力。测试能否记住学生知识点掌握情况、学习风格、历史错题,提供个性化辅导。",
+          "target_users": "在线教育平台、智能教育硬件",
+          "benefits": "实现真正的因材施教、提高学习效率"
+        },
+        {
+          "name": "社交机器人",
+          "description": "评估聊天机器人在长期社交互动中的记忆能力。测试能否记住用户兴趣、话题历史、情感状态,维持有深度的对话。",
+          "target_users": "社交平台、陪伴机器人公司",
+          "benefits": "增强用户参与度、建立情感连接"
+        }
+      ]
+    },
+    {
+      "category": "模型开发",
+      "scenarios": [
+        {
+          "name": "LLM 基准测试",
+          "description": "作为 LLM 评估套件的一部分,与 MMLU、GSM8K、HumanEval 等基准并列,全面评估模型能力。特别关注长期记忆这一被忽视的维度。",
+          "target_users": "LLM 开发团队 (OpenAI, Anthropic, Google, Meta)",
+          "benefits": "发现模型短板、指导训练优化"
+        },
+        {
+          "name": "检索模型训练",
+          "description": "使用 LongMemEval 作为训练数据或验证集,优化 embedding 模型在长期对话记忆场景下的表现。",
+          "target_users": "检索模型开发者、向量数据库公司",
+          "benefits": "提升检索精度、降低误召回率"
+        },
+        {
+          "name": "提示工程优化",
+          "description": "测试不同提示策略 (CoT, CoN, Few-shot) 在长期记忆任务上的效果。为提示工程师提供数据驱动的优化方向。",
+          "target_users": "Prompt Engineers、应用开发者",
+          "benefits": "提升应用性能、降低 API 成本"
+        },
+        {
+          "name": "模型压缩与量化",
+          "description": "评估量化模型 (INT8/INT4) 在长期记忆任务上的精度损失。平衡推理速度与记忆准确性。",
+          "target_users": "边缘 AI 开发者、移动应用团队",
+          "benefits": "实现本地部署、降低云服务成本"
+        }
+      ]
+    },
+    {
+      "category": "开发工具集成",
+      "scenarios": [
+        {
+          "name": "LangChain/LlamaIndex 评估",
+          "description": "作为 LangChain、LlamaIndex 等框架的标准评估基准,测试其长期记忆模块 (ConversationBufferMemory, VectorStoreMemory) 的性能。",
+          "target_users": "框架开发者、应用开发者",
+          "benefits": "验证框架功能、对比不同实现"
+        },
+        {
+          "name": "向量数据库测试",
+          "description": "评估 Pinecone、Weaviate、Milvus 等向量数据库在长期记忆场景下的检索性能、延迟、成本。",
+          "target_users": "向量数据库厂商、DevOps 工程师",
+          "benefits": "选型决策、性能调优"
+        },
+        {
+          "name": "CI/CD 集成",
+          "description": "将 LongMemEval 集成到持续集成流程,自动化测试每次模型更新对长期记忆能力的影响。及时发现性能退化。",
+          "target_users": "MLOps 团队、质量保证团队",
+          "benefits": "保证模型质量、防止性能退化"
+        }
+      ]
+    },
+    {
+      "category": "特定领域应用",
+      "scenarios": [
+        {
+          "name": "法律咨询系统",
+          "description": "评估法律 AI 在长期案件跟踪中的记忆能力。测试能否记住案件细节、法律条文、先例判决,提供准确的法律建议。",
+          "target_users": "法律科技公司、律师事务所",
+          "benefits": "提高办案效率、降低疏漏风险"
+        },
+        {
+          "name": "心理咨询机器人",
+          "description": "评估心理健康 AI 在长期咨询中的记忆能力。测试能否记住来访者心理状态变化、治疗进展、触发因素。",
+          "target_users": "心理健康平台、医疗机构",
+          "benefits": "提供连续性治疗、建立信任关系",
+          "note": "需专业人士监督,不可替代人类咨询师"
+        },
+        {
+          "name": "金融投顾系统",
+          "description": "评估金融 AI 在长期客户服务中的记忆能力。测试能否记住投资偏好、风险承受度、历史交易,提供个性化投资建议。",
+          "target_users": "金融科技公司、财富管理机构",
+          "benefits": "提升客户资产、增强服务粘性",
+          "note": "需符合金融监管要求"
+        },
+        {
+          "name": "HR 招聘助手",
+          "description": "评估 HR AI 在长期招聘流程中的记忆能力。测试能否记住候选人面试记录、技能评估、沟通历史。",
+          "target_users": "HR SaaS 公司、大型企业 HR 部门",
+          "benefits": "提高招聘效率、改善候选人体验"
+        }
+      ]
+    },
+    {
+      "category": "数据集与基准生态",
+      "scenarios": [
+        {
+          "name": "多语言扩展",
+          "description": "基于 LongMemEval 框架构建中文、日语、法语等多语言版本,评估跨语言长期记忆能力。",
+          "target_users": "多语言 NLP 研究者",
+          "benefits": "推动非英语语言的记忆研究"
+        },
+        {
+          "name": "多模态扩展",
+          "description": "扩展到图像、音频、视频等多模态输入,评估多模态长期记忆能力。例如记住用户分享的照片、讨论的视频内容。",
+          "target_users": "多模态 AI 研究者、视觉-语言模型开发者",
+          "benefits": "评估真实世界交互场景"
+        },
+        {
+          "name": "领域定制基准",
+          "description": "利用开源的编译流程,为特定领域 (医疗、法律、金融) 构建专业化长期记忆基准。",
+          "target_users": "垂直领域研究者、行业从业者",
+          "benefits": "更贴近实际应用、发现领域特有挑战"
+        },
+        {
+          "name": "动态基准",
+          "description": "基于 LongMemEval 构建动态更新的基准,定期添加新问题,防止模型过拟合。",
+          "target_users": "基准维护者、学术机构",
+          "benefits": "保持基准长期有效性"
+        }
+      ]
+    }
+  ],
+  "benchmarks": {
+    "longmemeval": {
+      "score": 0,
+      "details": "This IS the LongMemEval benchmark - official implementation"
+    }
+  },
+  "tech_stack": {
+    "storage": [
+      "JSON (Benchmark Dataset)",
+      "PostgreSQL (Experimental Results)",
+      "S3/GCS (Model Cache)",
+      "向量数据库 (可选: Pinecone/Weaviate/Milvus)"
+    ],
+    "frameworks": [
+      "PyTorch 2.3.1",
+      "Transformers 4.43.3",
+      "vLLM 0.5.3 (高性能 LLM 推理)",
+      "Sentence-Transformers 2.2.2",
+      "FlashAttention 2.6.3"
+    ],
+    "languages": [
+      "Python 3.9"
+    ],
+    "embedding_models": [
+      "BM25 (稀疏检索, rank-bm25)",
+      "Contriever (Facebook, 768 维)",
+      "Stella V5 1.5B (DunZhang, 1024 维)",
+      "GTE-Qwen2-7B (Alibaba, 4096 维, SOTA)"
+    ],
+    "llm_models": [
+      "GPT-4o / GPT-4o-mini (OpenAI, 评估)",
+      "Llama 3.1 8B/70B (Meta, 开源)",
+      "Mistral 7B/Mixtral 8x7B/8x22B (Mistral AI)",
+      "Phi-3 Medium 128k / Phi-4 (Microsoft)",
+      "Claude 3.5 Sonnet (Anthropic, 替代方案)",
+      "Gemini 1.5 Pro (Google, 2M 上下文)"
+    ],
+    "infrastructure": [
+      "Docker (容器化)",
+      "Kubernetes (编排, 可选)",
+      "vLLM (OpenAI API 兼容服务器)",
+      "Nginx/ALB (负载均衡)",
+      "CloudWatch/Prometheus (监控)"
+    ]
+  },
+  "cloud_needs": {
+    "storage": {
+      "types": [
+        "对象存储 (S3/GCS/Azure Blob): 150-1000 GB",
+        "块存储 (EBS/Persistent Disk): 500 GB - 2 TB",
+        "共享文件系统 (EFS/Filestore): 500 GB - 1 TB (可选)",
+        "关系型数据库 (PostgreSQL): 20-100 GB",
+        "向量数据库: 100 MB - 20 GB (取决于规模)"
+      ],
+      "requirements": [
+        "LongMemEval_S: 500 questions, ~40 sessions, 115k tokens",
+        "LongMemEval_M: 500 questions, ~500 sessions, 500k+ tokens",
+        "模型缓存: 100-500 GB (Llama 70B, GTE 7B, etc.)",
+        "实验日志: 5-20 GB",
+        "数据生命周期策略: 30 天后迁移至 Glacier (节省 70% 成本)"
+      ]
+    },
+    "compute": {
+      "cpu": {
+        "description": "BM25 检索、数据预处理、评估",
+        "recommended": "16-32 vCPUs, 32-64 GB RAM",
+        "instances": "c5.4xlarge (AWS), c2-standard-16 (GCP)",
+        "cost_estimate": "$0.68/hr (AWS)"
+      },
+      "gpu": {
+        "retrieval": {
+          "contriever": "1x T4 (4 GB VRAM), $0.526/hr",
+          "stella_v5": "1x V100 (12 GB VRAM), $3.06/hr",
+          "gte_qwen2": "1x A100 (28 GB VRAM), $4.10/hr"
+        },
+        "llm_inference": {
+          "llama_8b": "1x A100 40GB, $4.10/hr",
+          "llama_70b": "4x A100 40GB (Tensor Parallel), $16.40/hr",
+          "phi3_medium": "2x A100 40GB, $8.20/hr"
+        },
+        "index_expansion": {
+          "llm": "1x A100 40GB (Llama 3.1 8B), $4.10/hr",
+          "time_estimate": "2-4 hours for 20k sessions"
+        }
+      },
+      "workload_estimate": {
+        "longmemeval_s": {
+          "retrieval": "2-6 hours (GTE on 4x A100)",
+          "generation": "4 hours (Llama 70B on 4x A100)",
+          "evaluation": "1 hour (GPT-4o API)",
+          "total_time": "7-11 hours",
+          "gpu_hours": "28-44 A100-hours",
+          "cost": "$715-780 (含 GPU + OpenAI API)"
+        },
+        "longmemeval_m": {
+          "retrieval": "48 hours (GTE on 8x A100)",
+          "generation": "不适用 (超过 128k 上下文, 需 RAG)",
+          "gpu_hours": "~384 A100-hours",
+          "cost": "~$1,575 (仅 GPU)"
+        }
+      },
+      "embedding": true,
+      "gpu_needed": true,
+      "estimated_requirements": "研究: 1-4x V100/A100, 生产: 8+ A100"
+    },
+    "database": {
+      "relational": {
+        "type": "PostgreSQL",
+        "use_case": "实验配置、QA 结果、检索指标",
+        "size": "20-100 GB",
+        "instances": {
+          "aws": "db.t3.medium ($50/月) - db.r5.xlarge ($350/月)",
+          "gcp": "db-n1-standard-1 ($50/月) - db-n1-standard-4 ($200/月)",
+          "azure": "GP_Gen5_2 ($60/月) - GP_Gen5_8 ($240/月)"
+        }
+      },
+      "nosql": {
+        "type": "MongoDB / DynamoDB",
+        "use_case": "原始对话历史、检索日志 (JSONB)",
+        "size": "3-5 GB (LongMemEval_S), 100+ GB (大规模)",
+        "instances": {
+          "mongodb_atlas": "M10 ($57/月) - M30 ($300/月)",
+          "aws_dynamodb": "On-Demand ($1.25/GB 读 + $6.25/GB 写)",
+          "gcp_firestore": "$0.18/GB 存储 + $0.06/100k 读"
+        }
+      },
+      "vector_db": {
+        "type": "Pinecone / Weaviate / Milvus / Qdrant",
+        "use_case": "向量索引持久化、高效 ANN 搜索",
+        "size": "100 MB - 20 GB (取决于向量数和维度)",
+        "scale": {
+          "longmemeval_s_turn": "100k vectors * 4096 dim (GTE) = 1.64 GB",
+          "longmemeval_m_turn": "1.25M vectors * 4096 dim = 20.5 GB"
+        },
+        "instances": {
+          "pinecone": "$70/月/pod (p1.x1, 768 维), 不支持 >2048 维",
+          "weaviate_cloud": "$25-500/月",
+          "milvus_self_hosted": "$300-500/月 (Kubernetes)",
+          "qdrant_cloud": "$25-50/月 (<1M vectors)"
+        },
+        "recommendation": "研究: 内存检索 (免费), 小规模生产: Qdrant Cloud ($25/月), 大规模: 自托管 Milvus"
+      }
+    },
+    "ai_ml_services": {
+      "embedding_api": {
+        "openai": "不推荐 (维度不匹配, $0.13/1M tokens)",
+        "cohere": "不推荐 (评估不公平, $0.10/1M tokens)",
+        "self_hosted": "推荐 (Contriever/Stella/GTE, 仅 GPU 成本)"
+      },
+      "llm_api": {
+        "openai_gpt4o": {
+          "use_case": "评估 (推荐), 生成 (LongMemEval_S)",
+          "cost": "$2.50/1M tokens 输入 + $10/1M tokens 输出",
+          "longmemeval_s_eval": "~$3.13",
+          "longmemeval_s_gen": "~$152.50",
+          "limitation": "不支持 LongMemEval_M (>128k 上下文)"
+        },
+        "openai_gpt4o_mini": {
+          "use_case": "经济型评估/生成",
+          "cost": "$0.15/1M tokens 输入 + $0.60/1M tokens 输出",
+          "longmemeval_s_eval": "~$0.19"
+        },
+        "anthropic_claude": {
+          "cost": "$3/1M tokens 输入 + $15/1M tokens 输出",
+          "context": "200k tokens",
+          "longmemeval_s_eval": "~$3.75"
+        },
+        "google_gemini": {
+          "cost": "$1.25-2.50/1M tokens 输入 + $5-10/1M tokens 输出",
+          "context": "2M tokens (最大)",
+          "longmemeval_m_support": "完全支持! ~$1,250"
+        },
+        "self_hosted_vllm": {
+          "use_case": "推荐用于重复实验",
+          "llama_70b_cost": "$16.40/hr (4x A100)",
+          "longmemeval_s_gen": "~$65.60 (vs $152.50 OpenAI, 节省 57%)",
+          "llama_8b_eval": "$4.10/hr",
+          "longmemeval_s_eval": "~$4.10 (1 hr)"
+        },
+        "managed_inference": {
+          "replicate": "$0.0005/秒, LongMemEval_S ~$2.50",
+          "runpod_spot": "$2.40/hr (4x A100), LongMemEval_S ~$9.60"
+        }
+      },
+      "index_expansion": {
+        "openai_mini": "$2.10 (20k sessions, 推荐)",
+        "vllm_llama8b": "$8.20 (2 hrs)"
+      }
+    },
+    "network": {
+      "bandwidth": {
+        "model_download": "180 GB 一次性 (Llama 70B, GTE, etc.)",
+        "runtime_traffic": "~120 MB/500 questions (可忽略)"
+      },
+      "cdn": {
+        "cloudflare": "免费计划 (数据集分发), Pro $20/月",
+        "aws_cloudfront": "~$0.05/月 (100 次下载)",
+        "use_case": "加速数据集/模型分发, 节省 90% 重复下载带宽"
+      }
+    },
+    "deployment": {
+      "complexity": 7,
+      "containerized": true,
+      "orchestration": [
+        "Docker (单机部署)",
+        "Kubernetes (分布式, GPU 节点池)",
+        "Helm (配置管理)"
+      ],
+      "ci_cd": {
+        "github_actions": "自动化测试、Docker 构建、K8s 部署",
+        "cost": "免费 (公开仓库), $0.008/分钟 (私有)"
+      },
+      "docker_registry": {
+        "docker_hub": "免费 (公开), $5/月 (私有)",
+        "aws_ecr": "$0.10/GB/月",
+        "gcp_artifact_registry": "$0.10/GB/月"
+      },
+      "kubernetes": {
+        "dev": {
+          "gke_autopilot": "$220/月 (推荐, 按 Pod 付费)",
+          "aws_eks": "$569/月 (控制平面 $73 + 节点 $496)"
+        },
+        "prod_gpu": {
+          "gke_preemptible": "$876/月 (2x A100, 抢占式, 节省 70%)",
+          "aws_spot": "$2,263/月 (2x p3.2xlarge, Spot)"
+        }
+      }
+    },
+    "cost_estimates": {
+      "research_prototype": {
+        "budget": "< $500/月",
+        "compute": "GCP Preemptible GPU ($74/月, 100 hrs)",
+        "storage": "Cloudflare R2 ($7.50/月)",
+        "database": "AWS RDS t3.micro ($15/月)",
+        "llm": "Replicate ($50/月)",
+        "total": "~$146.50/月"
+      },
+      "small_production": {
+        "budget": "$500-2000/月",
+        "compute": "AWS Spot p3.2xlarge ($184/月)",
+        "storage": "S3 1TB + EBS 500GB ($60/月)",
+        "database": "RDS t3.medium + Qdrant Cloud ($110/月)",
+        "llm": "vLLM on RunPod + OpenAI ($340/月)",
+        "network": "CloudFront ($10/月)",
+        "total": "~$654/月"
+      },
+      "large_production": {
+        "budget": "> $2000/月",
+        "compute": "EKS + Spot Instances ($1,500/月) 或 Reserved ($4,800/月)",
+        "storage": "S3 5TB + EFS 2TB ($715/月)",
+        "database": "RDS r5.xlarge + Pinecone ($490/月)",
+        "llm": "Self-hosted vLLM 4x A100 ($12,000/月 按需, $4,800 Reserved)",
+        "network": "CloudFront + WAF ($150/月)",
+        "monitoring": "Datadog ($300/月)",
+        "total": "~$7,655/月 (Spot) 或 ~$6,455/月 (Reserved)"
+      },
+      "cost_optimization": {
+        "spot_preemptible": "节省 60-90% GPU 成本",
+        "reserved_instances": "节省 40-60% (1-3 年承诺)",
+        "model_quantization": "INT8 节省 50% GPU, INT4 节省 75%",
+        "storage_lifecycle": "Glacier 节省 70-95% 存储成本",
+        "cdn_caching": "节省 90% 重复下载带宽",
+        "hybrid_cloud": "混合使用 Cloudflare R2 (无出站费用), RunPod (Spot GPU) 可节省 87%"
+      }
+    },
+    "recommended_setup": {
+      "research": {
+        "cloud": "GCP (Preemptible GPU 成本最低)",
+        "compute": "GKE Autopilot + Preemptible GPU ($1.48/hr 按需)",
+        "storage": "Cloudflare R2 (无出站费用) + GCS 备份",
+        "database": "Cloud SQL PostgreSQL ($100/月) + 自托管 Qdrant ($80/月)",
+        "llm": "自托管 vLLM (GKE) + Replicate (峰值)",
+        "cdn": "Cloudflare 免费",
+        "monitoring": "Cloud Monitoring (部分免费)",
+        "estimated_cost": "~$800/月 (中等使用)",
+        "scalability": "可扩展至 >10x, 成本线性增长"
+      },
+      "production": {
+        "cloud": "AWS (成熟生态, Reserved Instances)",
+        "compute": "EKS + Reserved Instances (p4d.24xlarge, 3 年)",
+        "storage": "S3 + EFS",
+        "database": "RDS PostgreSQL (Multi-AZ) + ElastiCache Redis",
+        "llm": "Self-hosted vLLM cluster",
+        "network": "CloudFront + Shield Advanced + WAF",
+        "monitoring": "CloudWatch + X-Ray",
+        "estimated_cost": "~$16,000/月",
+        "sla": "99.95% (Multi-AZ)"
+      },
+      "startup": {
+        "cloud": "混合云 (成本优化)",
+        "compute": "RunPod Spot GPU ($2.40/hr)",
+        "storage": "Cloudflare R2 (无出站费用)",
+        "database": "Supabase PostgreSQL ($25/月) + Qdrant Cloud ($50/月)",
+        "llm": "Replicate (Llama 70B) + OpenAI (备用)",
+        "monitoring": "Sentry (免费)",
+        "estimated_cost": "~$540/月",
+        "advantages": "无承诺, 按需扩展, 最小出站费用"
+      }
+    }
+  },
+  "categories": {
+    "tech_approach": [
+      "Benchmark (基准测试)",
+      "Evaluation (评估工具)",
+      "Research (学术研究)",
+      "RAG (检索增强生成)",
+      "Long-Context (长上下文)"
+    ],
+    "use_case": [
+      "Long-term Memory Evaluation (长期记忆评估)",
+      "Academic Research (学术研究)",
+      "Chatbot Testing (聊天机器人测试)",
+      "Conversational AI (对话式 AI)",
+      "Customer Service (客服系统)",
+      "Personal Assistant (个人助理)",
+      "Enterprise Knowledge Base (企业知识库)",
+      "Healthcare AI (医疗 AI)",
+      "Education AI (教育 AI)"
+    ],
+    "research_topics": [
+      "Long-term Memory",
+      "Temporal Reasoning",
+      "Knowledge Update",
+      "Multi-session Reasoning",
+      "Information Extraction",
+      "Retrieval-Augmented Generation (RAG)",
+      "Long-context LLMs",
+      "Continual Learning"
+    ]
+  }
+}

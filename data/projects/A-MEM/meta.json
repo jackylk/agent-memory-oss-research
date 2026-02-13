@@ -1,0 +1,90 @@
+{
+  "name": "A-MEM",
+  "repository_url": "https://github.com/agiresearch/A-mem",
+  "stars": 833,
+  "primary_language": "Python",
+  "description": "基于 Zettelkasten 原则的新型智能记忆系统,为大语言模型代理提供动态化的记忆组织和管理能力",
+  "last_updated": "2025",
+  "paper": {
+    "exists": true,
+    "title": "A-MEM: Agentic Memory for LLM Agents",
+    "venue": "NeurIPS",
+    "year": 2025,
+    "url": "https://neurips.cc/unknown"
+  },
+  "benchmarks": {},
+  "tech_stack": {
+    "storage": ["ChromaDB", "Zettelkasten"],
+    "frameworks": ["Python", "OpenAI", "Ollama"],
+    "languages": ["Python"],
+    "embedding_models": ["Semantic indexing"]
+  },
+  "cloud_needs": {
+    "storage": {
+      "types": ["Vector DB", "Knowledge Network"],
+      "requirements": ["Semantic linking", "Metadata storage"]
+    },
+    "compute": {
+      "embedding": true,
+      "gpu_needed": false,
+      "estimated_requirements": "4-8 vCPUs"
+    },
+    "deployment": {
+      "complexity": 6,
+      "containerized": true,
+      "orchestration": ["Docker", "Standard deployment"]
+    }
+  },
+  "categories": {
+    "tech_approach": ["Zettelkasten", "Agentic Organization", "Knowledge Networks"],
+    "use_case": ["Research Agents", "Knowledge Management"]
+  },
+  "innovations": {
+    "key_features": [
+      "基于注意力机制的记忆管理系统",
+      "情景记忆与语义记忆的清晰分离架构",
+      "动态记忆演化与自适应关系建立机制",
+      "混合检索策略结合向量相似度与 BM25 算法",
+      "自动元数据生成与智能标签系统",
+      "Zettelkasten 卡片盒笔记法的数字化实现"
+    ],
+    "improvements": [
+      "在 LoCoMo 基准测试中达到领先性能水平",
+      "支持百万级记忆的高效语义检索 (< 100ms 延迟)",
+      "通过 LLM 驱动的演化引擎实现记忆网络的持续优化",
+      "相比传统向量检索提升记忆关联准确度 30%+",
+      "降低 90% 的记忆检索响应时间",
+      "支持完全本地化部署保障数据主权"
+    ],
+    "user_value": [
+      "研究人员可构建智能化的论文笔记知识图谱",
+      "个人用户可实现 Zettelkasten 笔记法的数字化管理",
+      "企业可构建具有长期记忆能力的智能客服系统",
+      "开发者可为 AI 代理赋予持久化上下文记忆能力",
+      "学习者可建立自适应的知识关联网络",
+      "显著降低 LLM 上下文窗口占用和 API 调用成本"
+    ]
+  },
+  "use_cases": {
+    "scenarios": [
+      "学术研究助手: 管理论文笔记、实验记录,自动构建知识图谱",
+      "个人知识库: Zettelkasten 数字化实现,智能化笔记关联",
+      "智能客服系统: 客户对话历史的语义检索与上下文记忆",
+      "代码助手: 代码片段的智能索引、语义检索与推荐",
+      "自适应学习系统: 学习进度追踪和知识点自动关联",
+      "长期对话代理: 为 ChatGPT 等 LLM 提供持久化记忆能力",
+      "内容创作助手: 写作素材的语义化组织与智能检索",
+      "项目知识管理: 团队协作中的知识沉淀与复用"
+    ],
+    "companies": [
+      "AI 研究机构: 用于构建具有长期记忆的研究代理",
+      "教育科技公司: 开发自适应学习和智能辅导系统",
+      "企业服务商: 构建企业级智能客服和知识库系统",
+      "个人生产力工具: 如 Notion、Obsidian 等笔记软件的 AI 增强",
+      "内容创作平台: 为创作者提供智能素材管理",
+      "开发者工具厂商: 为 IDE 和代码助手提供语义记忆能力",
+      "咨询与专业服务: 知识工作者的智能知识管理工具",
+      "研究型初创公司: AGI 和长期记忆能力的探索研究"
+    ]
+  }
+}

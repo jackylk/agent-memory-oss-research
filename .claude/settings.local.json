@@ -1,0 +1,30 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:florinelchis.medium.com)",
+      "Bash(gh repo view:*)",
+      "Bash(python3:*)",
+      "Bash(wc:*)",
+      "Bash(du:*)",
+      "Bash(test:*)",
+      "Bash(npm install:*)",
+      "Bash(npm run type-check:*)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(npx create-next-app:*)",
+      "Bash(npx create-next-app@latest website --typescript --tailwind --app --no-src-dir --import-alias \"@/*\" --eslint --use-npm --yes)",
+      "Bash(npm run build:*)",
+      "Bash(kill:*)",
+      "Bash(npm run dev:*)",
+      "Bash(curl:*)",
+      "Bash(git clone:*)",
+      "Bash(./clone_repos.sh:*)",
+      "Bash(find:*)",
+      "Bash(grep:*)",
+      "Bash(xargs:*)",
+      "Bash(do echo \"=== $project ===\" grep \"^## \" /Users/jacky/code/agent-memory-oss-research/data/projects/$project/architecture.md)",
+      "Bash(cat:*)",
+      "Bash(git rm:*)"
+    ]
+  }
+}
