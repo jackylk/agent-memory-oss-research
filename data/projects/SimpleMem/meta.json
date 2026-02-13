@@ -107,7 +107,12 @@
         "schema_isolation": "单租户",
         "connection_pool": false
       },
-      "graph_database": {},
+      "graph_database": {
+        "required": false,
+        "type": "无",
+        "evidence": "SimpleMem不使用图数据库,采用多视图索引(语义+词汇+符号)架构",
+        "external_graph_db": false
+      },
       "cache": {
         "type": "Redis",
         "min_version": "6.0",
@@ -281,7 +286,9 @@
         "use_case": [
           "PDF存储",
           "原始记忆备份"
-        ]
+        ],
+        "recommended_services": ["华为云OBS", "AWS S3", "阿里云OSS"],
+        "evidence": "external_services.object_storage标注为required; 华为云部署建议使用OBS存储原始PDF和备份数据"
       },
       "search_service": {
         "type": "Tantivy (全文检索)",

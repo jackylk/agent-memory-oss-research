@@ -100,6 +100,19 @@
         ],
         "evidence": "pyproject.toml: redis>=6.2.0为mem-scheduler可选依赖; MemScheduler基于Redis Streams实现异步任务调度; 环境变量MEMSCHEDULER_REDIS_HOST"
       },
+      "object_storage": {
+        "required": false,
+        "recommended": true,
+        "type": "阿里云OSS / 本地文件系统",
+        "use_case": "静态文件存储、备份、文件下载服务",
+        "alternatives": [
+          "华为云OBS (S3兼容)",
+          "AWS S3",
+          "MinIO (自托管)",
+          "本地文件系统(开发环境)"
+        ],
+        "evidence": "architecture.md第180-182行提到本地存储和阿里云OSS集成(alibabacloud-oss-v2 SDK); 环境变量FILE_LOCAL_PATH和MOS_CUBE_PATH; FastAPI StaticFiles挂载到/download路径; 华为云部署建议中提到将阿里云OSS替换为华为云OBS SDK"
+      },
       "data_scale": {
         "estimated_total": "按用户规模: 100用户约10GB, 1000用户约100GB",
         "per_user_avg": "每用户数百条记忆, 约100MB(含图结构+向量+元数据)",

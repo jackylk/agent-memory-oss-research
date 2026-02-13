@@ -52,14 +52,16 @@
         "necessity": "Optional"
       },
       {
-        "type": "Cloud Backup",
+        "type": "Object Storage",
         "providers": [
           "AWS S3",
-          "Google Drive"
+          "Huawei OBS",
+          "Google Cloud Storage"
         ],
         "purpose": "Data backup and recovery",
         "cost": "$1-5/month",
-        "necessity": "Optional"
+        "necessity": "Optional",
+        "note": "Not required for core functionality, only for backup"
       }
     ],
     "storage": {

@@ -215,6 +215,27 @@
           "本地推理(Ollama/vLLM)降低API成本",
           "DeepSeek成本约OpenAI的1/10"
         ]
+      },
+      "object_storage": {
+        "providers": [
+          "AWS S3",
+          "阿里云OSS",
+          "Google Cloud Storage",
+          "Azure Blob Storage"
+        ],
+        "use_cases": [
+          "模型文件存储: LLMlingua-2 (~1GB), all-MiniLM-L6-v2 (~80MB)",
+          "Qdrant向量数据库备份 (50-500GB)",
+          "日志文件归档 (10GB/月)",
+          "模型缓存和版本管理"
+        ],
+        "estimated_storage": "模型8GB + 日志10GB + Qdrant备份50-500GB = 68-518GB",
+        "required": true,
+        "cost_per_month": {
+          "small_scale": "$2-5 (50GB)",
+          "medium_scale": "$10-15 (200GB)",
+          "large_scale": "$40-60 (500GB)"
+        }
       }
     },
     "deployment_detail": {

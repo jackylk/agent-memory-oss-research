@@ -165,6 +165,19 @@
         ],
         "evidence": "pyproject.toml第54-55行显示Redis依赖redis>=5.0.0,<6.0.0和redisvl>=0.1.0"
       },
+      "object_storage": {
+        "required": false,
+        "recommended": true,
+        "type": "AWS S3 / 兼容S3的对象存储",
+        "use_case": "文件存储、数据备份、归档历史记忆",
+        "alternatives": [
+          "华为云OBS (S3兼容)",
+          "阿里云OSS",
+          "MinIO (自托管)",
+          "本地文件系统(开发环境)"
+        ],
+        "evidence": "meta.json第78行storage.types包含S3; architecture.md未显式提及但在云原生部署中通常需要对象存储用于备份和归档; 华为云部署建议中第439行提到OBS用于备份、归档、日志存储"
+      },
       "data_scale": {
         "estimated_total": "向量数据6-12GB(100万记忆), 图数据10-50GB, 历史数据1GB(100万操作)",
         "per_user_avg": "100条记忆约600KB向量数据(1536维), 1-3MB图数据",

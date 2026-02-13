@@ -76,10 +76,11 @@
         "connection_pool": true
       },
       "graph_database": {
-        "type": "内置Redis数据结构",
+        "type": "不需要",
         "required": false,
-        "use_case": "Checkpoint依赖关系和会话状态图",
-        "complexity": "简单"
+        "use_case": "使用Redis原生数据结构(Hash, Set, Sorted Set)存储关系",
+        "complexity": "简单",
+        "note": "无需专用图数据库,Redis内置数据结构足够"
       },
       "cache": {
         "type": "Redis",
@@ -130,15 +131,17 @@
           "T4",
           "L4"
         ],
-        "use_case": "仅推理",
+        "use_case": "Embedding向量化加速(可选)",
         "vram_requirement": "4GB",
+        "performance_gain": "向量化速度提升3-5倍,但CPU足够",
+        "cost_benefit": "中小规模CPU足够,大规模(>10K用户)建议GPU",
         "cuda_dependency": {
           "has_direct_cuda": false,
           "cuda_version": null,
           "cudnn_required": false,
           "tensorrt_used": false,
           "custom_cuda_kernels": false,
-          "gpu_libraries": []
+          "gpu_libraries": ["PyTorch(via sentence-transformers,可选)"]
         }
       },
       "scalability": {

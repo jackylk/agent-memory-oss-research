@@ -87,7 +87,14 @@
       "graph_database": {
         "required": false,
         "type": "内置知识图谱(SQL表存储)",
-        "evidence": "memori_knowledge_graph表使用subject_id/predicate_id/object_id存储语义三元组,不依赖外部图数据库如Neo4j"
+        "evidence": "memori_knowledge_graph表使用subject_id/predicate_id/object_id存储语义三元组,不依赖外部图数据库如Neo4j",
+        "external_graph_db": false
+      },
+      "object_storage": {
+        "required": false,
+        "use_case": "备份存储",
+        "recommended_services": ["S3", "GCS", "OBS"],
+        "evidence": "architecture.md推荐用于备份:6个月数据归档到冷存储; 备份存储(S3/GCS)在云服务清单中列为必需"
       },
       "cache": {
         "type": "内存缓存 (内置)",

@@ -30,6 +30,19 @@
     ]
   },
   "cloud_needs": {
+    "mandatory_cloud_services": [
+      {
+        "type": "LLM API",
+        "providers": [
+          "Anthropic Claude Agent SDK"
+        ],
+        "purpose": "Memory compression and context generation via SDK Agent",
+        "cost": "$20-500/month",
+        "necessity": "Mandatory",
+        "note": "Uses Claude Agent SDK (@anthropic-ai/claude-agent-sdk ^0.1.76)"
+      }
+    ],
+    "optional_cloud_services": [],
     "storage": {
       "types": [
         "SQLite",
@@ -39,12 +52,25 @@
         "Local storage",
         "Privacy-focused",
         "Hybrid search"
-      ]
+      ],
+      "graph_database": {
+        "required": false,
+        "note": "No graph database - flat observation and session structure"
+      },
+      "vector_database": {
+        "required": true,
+        "type": "ChromaDB (local)",
+        "note": "Communicates via MCP protocol, data stored in ~/.claude-mem/chroma/"
+      },
+      "object_storage": {
+        "required": false,
+        "note": "All data stored locally"
+      }
     },
     "compute": {
       "embedding": true,
       "gpu_needed": false,
-      "estimated_requirements": "Local runtime, minimal compute"
+      "estimated_requirements": "Local runtime, minimal compute (target <200MB memory)"
     },
     "deployment": {
       "complexity": 3,
@@ -52,7 +78,8 @@
       "orchestration": [
         "Local installation",
         "Plugin architecture"
-      ]
+      ],
+      "note": "Local IDE plugin, not a cloud service"
     },
     "storage_detail": {
       "vector_storage": {

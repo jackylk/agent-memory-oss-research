@@ -68,7 +68,12 @@
         "schema_isolation": "单租户",
         "connection_pool": false
       },
-      "graph_database": {},
+      "graph_database": {
+        "type": "不需要",
+        "required": false,
+        "use_case": "极简设计,无图谱需求",
+        "note": "仅存储扁平化的记忆条目(content+context),通过向量搜索建立语义关联"
+      },
       "cache": {
         "type": "内存缓存",
         "required_modules": [],
@@ -195,7 +200,18 @@
         ]
       },
       "object_storage": {
-        "required": false
+        "required": false,
+        "use_case": [
+          "可选:对话历史归档",
+          "备份数据"
+        ],
+        "recommended_services": {
+          "aws": "S3 Intelligent-Tiering",
+          "gcp": "Cloud Storage Standard",
+          "huawei": "OBS对象存储",
+          "langgraph_cloud": "内置存储(推荐)"
+        },
+        "note": "LangGraph Cloud部署时内置存储管理,自建部署可使用对象存储备份"
       }
     },
     "deployment_detail": {

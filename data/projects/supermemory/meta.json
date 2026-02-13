@@ -37,6 +37,88 @@
     ]
   },
   "cloud_needs": {
+    "mandatory_cloud_services": [
+      {
+        "type": "PostgreSQL with PGVector",
+        "providers": [
+          "Huawei RDS PostgreSQL",
+          "Cloudflare Hyperdrive + PostgreSQL",
+          "Supabase",
+          "Neon"
+        ],
+        "purpose": "Primary database with built-in vector search (768-dim)",
+        "cost": "$300-1800/month",
+        "necessity": "Mandatory"
+      },
+      {
+        "type": "Serverless Compute",
+        "providers": [
+          "Cloudflare Workers (original)",
+          "Huawei FunctionGraph (migration)",
+          "AWS Lambda",
+          "Vercel Edge Functions"
+        ],
+        "purpose": "API backend and edge compute",
+        "cost": "$0-2400/month",
+        "necessity": "Mandatory"
+      },
+      {
+        "type": "Object Storage",
+        "providers": [
+          "Cloudflare R2 (original)",
+          "Huawei OBS (migration)",
+          "AWS S3"
+        ],
+        "purpose": "Document and file storage",
+        "cost": "$10-75/month",
+        "necessity": "Mandatory"
+      },
+      {
+        "type": "Embedding API",
+        "providers": [
+          "Cloudflare Workers AI (@cf/baai/bge-base-en-v1.5)",
+          "Huawei ModelArts Embedding API (migration)",
+          "OpenAI Embeddings"
+        ],
+        "purpose": "Generate 768-dim embeddings for semantic search",
+        "cost": "$200-2000/month",
+        "necessity": "Mandatory"
+      },
+      {
+        "type": "KV Storage / Cache",
+        "providers": [
+          "Cloudflare KV (original)",
+          "Huawei DCS Redis (migration)",
+          "Redis Cloud"
+        ],
+        "purpose": "Session cache, API response cache, OAuth tokens",
+        "cost": "$100-300/month",
+        "necessity": "Mandatory"
+      }
+    ],
+    "optional_cloud_services": [
+      {
+        "type": "CDN",
+        "providers": [
+          "Cloudflare CDN (built-in)",
+          "Huawei CDN"
+        ],
+        "purpose": "Global content delivery for web app",
+        "cost": "$50-500/month",
+        "necessity": "Optional"
+      },
+      {
+        "type": "LLM API",
+        "providers": [
+          "OpenAI",
+          "Anthropic",
+          "Google"
+        ],
+        "purpose": "AI-powered summarization and classification",
+        "cost": "$500-3000/month",
+        "necessity": "Optional"
+      }
+    ],
     "storage": {
       "types": [
         "Vector DB",
@@ -46,20 +128,29 @@
         "URLs, PDFs, plain text",
         "Fast retrieval",
         "Scalable"
-      ]
+      ],
+      "graph_database": {
+        "required": false,
+        "note": "Memory Graph visualization uses vector similarity, not standalone graph DB"
+      },
+      "object_storage": {
+        "required": true,
+        "use_case": "Core functionality for document storage"
+      }
     },
     "compute": {
       "embedding": true,
       "gpu_needed": false,
-      "estimated_requirements": "4-16 vCPUs for API"
+      "estimated_requirements": "Serverless (Cloudflare Workers, no fixed vCPUs)"
     },
     "deployment": {
       "complexity": 6,
-      "containerized": true,
+      "containerized": false,
       "orchestration": [
-        "Docker",
-        "Kubernetes"
-      ]
+        "Cloudflare Workers (Serverless)",
+        "Docker (for migration only)"
+      ],
+      "migration_note": "Migrating from Cloudflare to traditional cloud requires significant refactoring"
     },
     "storage_detail": {
       "vector_storage": {

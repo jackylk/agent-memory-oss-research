@@ -200,6 +200,29 @@
           "本地开源模型零API费用",
           "选择性评估(每种类型采样)"
         ]
+      },
+      "object_storage": {
+        "providers": [
+          "AWS S3",
+          "Google Cloud Storage",
+          "Azure Blob Storage",
+          "阿里云OSS"
+        ],
+        "use_cases": [
+          "基准数据集: locomo10.json (~2.8MB), msc_personas_all.json (~3MB)",
+          "检索模型权重: Contriever (~440MB), Dragon (~1GB), DPR (~500MB)",
+          "本地LLM模型: Gemma/LLaMA (10-140GB)",
+          "BLIP图像描述模型 (~1GB)",
+          "评估结果和向量embeddings (pickle格式, 50MB)",
+          "生成的对话历史和图片"
+        ],
+        "estimated_storage": "数据集6MB + 检索模型2GB + LLM模型10-140GB + BLIP 1GB + 结果50MB = 13-143GB",
+        "required": true,
+        "cost_per_month": {
+          "minimal": "$0.30 (数据集+结果, 仅API模式)",
+          "with_retrieval": "$0.50 (含检索模型)",
+          "with_local_llm": "$3-4 (含大型LLM模型)"
+        }
       }
     },
     "deployment_detail": {

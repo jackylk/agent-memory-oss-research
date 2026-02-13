@@ -30,6 +30,33 @@
     "embedding_models": []
   },
   "cloud_needs": {
+    "mandatory_cloud_services": [
+      {
+        "type": "Arc Time-Series Database",
+        "providers": [
+          "Self-hosted Arc",
+          "Huawei GaussDB(for Influx) as alternative",
+          "InfluxDB Cloud (adapter required)",
+          "TimescaleDB (adapter required)"
+        ],
+        "purpose": "Time-series memory storage with Parquet backend",
+        "cost": "$0-3500/month",
+        "necessity": "Mandatory"
+      }
+    ],
+    "optional_cloud_services": [
+      {
+        "type": "Object Storage",
+        "providers": [
+          "Huawei OBS",
+          "AWS S3",
+          "Google Cloud Storage"
+        ],
+        "purpose": "Backup for SQLite metadata and Arc Parquet files",
+        "cost": "$10-200/month",
+        "necessity": "Optional"
+      }
+    ],
     "storage": {
       "types": [
         "Arc Time-Series Database",
@@ -49,7 +76,19 @@
         "large": "100GB-1TB (1M+ memories/day)"
       },
       "compression": "5-10x via Parquet",
-      "backup_strategy": "Daily SQLite backup + Arc Parquet file backup to S3/GCS"
+      "backup_strategy": "Daily SQLite backup + Arc Parquet file backup to S3/GCS/OBS",
+      "graph_database": {
+        "required": false,
+        "note": "No graph database - uses time-series only"
+      },
+      "vector_database": {
+        "required": false,
+        "note": "No embeddings, no vector search - plain text temporal queries"
+      },
+      "object_storage": {
+        "required": false,
+        "use_case": "Backup only"
+      }
     },
     "compute": {
       "embedding": false,

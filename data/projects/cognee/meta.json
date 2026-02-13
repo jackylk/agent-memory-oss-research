@@ -136,6 +136,19 @@
         ],
         "evidence": "pyproject.toml: fakeredis为核心依赖(内存模拟Redis); 可选redis>=5.0.3; diskcache>=5.6.3"
       },
+      "object_storage": {
+        "required": false,
+        "recommended": true,
+        "type": "AWS S3 / 兼容S3的对象存储 / 本地文件系统",
+        "use_case": "文件存储(文档、图片、音频)、数据备份、原始数据归档",
+        "alternatives": [
+          "华为云OBS (S3兼容)",
+          "阿里云OSS",
+          "MinIO (自托管)",
+          "本地文件系统(开发环境)"
+        ],
+        "evidence": "architecture.md第509行提到'云: AWS S3 (s3fs+boto3)'; pyproject.toml包含s3fs和boto3依赖; 华为云部署建议中提到使用OBS替代AWS S3作为文件存储后端"
+      },
       "data_scale": {
         "estimated_total": "1K用户约90GB, 10K用户约900GB",
         "per_user_avg": "原始数据+处理后数据+缓存约90MB/用户",

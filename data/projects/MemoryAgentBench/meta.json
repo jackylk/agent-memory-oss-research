@@ -249,6 +249,54 @@
           "API代理方法避免本地GPU",
           "批处理评估减少重复计算"
         ]
+      },
+      "object_storage": {
+        "providers": [
+          "AWS S3 (推荐,生态成熟)",
+          "Google Cloud Storage",
+          "Cloudflare R2 (零出站费用,成本优化)",
+          "Azure Blob Storage",
+          "阿里云OSS"
+        ],
+        "use_cases": [
+          "基准数据集: EventQA (~2GB), FactConsolidation (~3GB), InfBench (~5GB), LongMemEval (~500MB), RULER (~2GB), ReDial (~500MB)",
+          "嵌入模型权重: Contriever (~440MB), Qwen3-Embedding-4B (~8GB), NV-Embed-v2 (~14GB)",
+          "本地LLM模型缓存 (可选): 50-200GB",
+          "评估结果JSON: 每实验500KB-2MB, 累计5GB+",
+          "知识图谱数据: Cognee/HippoRAG构建的图结构",
+          "FAISS/LanceDB向量索引备份"
+        ],
+        "estimated_storage": "数据集15GB + 模型权重50-200GB + 结果5GB = 70-220GB",
+        "storage_tiers": {
+          "hot": "数据集和最近模型权重 (S3 Standard)",
+          "warm": "历史评估结果 (S3 Intelligent-Tiering)",
+          "cold": "旧实验归档 (S3 Glacier)"
+        },
+        "required": true,
+        "cost_per_month": {
+          "minimal": "$1-2 (仅数据集, 15GB)",
+          "with_embeddings": "$3-5 (含嵌入模型, 30GB)",
+          "full_stack": "$5-10 (含LLM模型缓存, 70-220GB, 使用分层策略)"
+        }
+      },
+      "graph_database": {
+        "required": true,
+        "type": "Cognee内置图引擎 + igraph (Python库)",
+        "use_cases": [
+          "HippoRAG: 知识图谱索引构建",
+          "GraphRAG: 实体关系图谱",
+          "Cognee: 记忆图谱管理"
+        ],
+        "deployment": "内存图结构,无需外部图数据库服务",
+        "memory_requirement": "知识图谱构建需32+GB RAM",
+        "alternatives": [
+          "Neo4j (如需持久化图存储)",
+          "Kuzu (嵌入式图数据库,轻量级)",
+          "Amazon Neptune (托管图数据库)",
+          "Azure Cosmos DB (Gremlin API)"
+        ],
+        "evidence": "requirements.txt包含igraph; cognee/模块实现图引擎; architecture.md提到32+GB RAM需求; HippoRAG和GraphRAG方法使用图结构",
+        "cost": "无额外成本 (使用内存图引擎)"
       }
     },
     "deployment_detail": {

@@ -31,6 +31,44 @@
     "embedding_models": []
   },
   "cloud_needs": {
+    "mandatory_cloud_services": [
+      {
+        "type": "Git Hosting",
+        "providers": [
+          "GitHub",
+          "GitLab",
+          "Gitea",
+          "Huawei CodeArts Repo"
+        ],
+        "purpose": "Distributed issue synchronization and version control",
+        "cost": "$0-100/month",
+        "necessity": "Mandatory"
+      }
+    ],
+    "optional_cloud_services": [
+      {
+        "type": "LLM API",
+        "providers": [
+          "Anthropic Claude API",
+          "OpenAI GPT-4",
+          "Ollama (local)"
+        ],
+        "purpose": "Semantic compression and AI-driven features",
+        "cost": "$10-500/month",
+        "necessity": "Optional"
+      },
+      {
+        "type": "Vector Database",
+        "providers": [
+          "Pinecone",
+          "Weaviate",
+          "Qdrant"
+        ],
+        "purpose": "Optional semantic search (not core feature)",
+        "cost": "$70-280/month",
+        "necessity": "Optional"
+      }
+    ],
     "storage": {
       "types": [
         "Git-backed DB",
@@ -41,7 +79,16 @@
         "Version control",
         "Cell-level merge",
         "Native branching"
-      ]
+      ],
+      "graph_database": {
+        "required": false,
+        "type": "SQL tables (Dolt) emulating graph",
+        "note": "No standalone graph database needed"
+      },
+      "object_storage": {
+        "required": false,
+        "note": "All data stored in Git and Dolt"
+      }
     },
     "compute": {
       "embedding": false,

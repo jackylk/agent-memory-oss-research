@@ -37,6 +37,62 @@
     ]
   },
   "cloud_needs": {
+    "mandatory_cloud_services": [
+      {
+        "type": "PostgreSQL Database",
+        "providers": [
+          "Huawei RDS PostgreSQL",
+          "AWS RDS",
+          "Google Cloud SQL",
+          "Self-hosted"
+        ],
+        "purpose": "Primary database with pgvector extension for vector storage",
+        "cost": "$300-1800/month",
+        "necessity": "Mandatory",
+        "extensions_required": [
+          "pgvector",
+          "pg_trgm"
+        ]
+      },
+      {
+        "type": "LLM API",
+        "providers": [
+          "OpenAI",
+          "Anthropic",
+          "Google Gemini",
+          "Groq",
+          "Ollama (local)"
+        ],
+        "purpose": "Fact extraction, reflection, consolidation",
+        "cost": "$40-500/month",
+        "necessity": "Mandatory"
+      }
+    ],
+    "optional_cloud_services": [
+      {
+        "type": "Object Storage",
+        "providers": [
+          "Huawei OBS",
+          "AWS S3",
+          "Google Cloud Storage"
+        ],
+        "purpose": "Database backup and log archival",
+        "cost": "$10-200/month",
+        "necessity": "Optional"
+      },
+      {
+        "type": "Embedding API",
+        "providers": [
+          "OpenAI Embeddings",
+          "Cohere",
+          "TEI (self-hosted)",
+          "Local models (default)"
+        ],
+        "purpose": "Alternative to local embedding models",
+        "cost": "$0-200/month",
+        "necessity": "Optional"
+      }
+    ],
     "storage": {
       "types": [
         "PostgreSQL",
@@ -46,12 +102,23 @@
       "requirements": [
         "Multi-strategy retrieval",
         "Biomimetic structures"
-      ]
+      ],
+      "graph_database": {
+        "required": false,
+        "type": "PostgreSQL tables (entities, entity_links, memory_links)",
+        "note": "Graph functionality implemented in SQL, no standalone graph DB needed"
+      },
+      "object_storage": {
+        "required": false,
+        "use_case": "Backup only, not core functionality"
+      }
     },
     "compute": {
       "embedding": true,
       "gpu_needed": false,
-      "estimated_requirements": "8-16 vCPUs for learning operations"
+      "gpu_optional": true,
+      "estimated_requirements": "8-16 vCPUs for learning operations",
+      "gpu_acceleration_notes": "Optional for local models (bge-small-en-v1.5, ms-marco-MiniLM), CPU sufficient"
     },
     "deployment": {
       "complexity": 7,

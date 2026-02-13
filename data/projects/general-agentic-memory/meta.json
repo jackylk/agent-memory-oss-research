@@ -75,7 +75,12 @@
         "schema_isolation": "单租户",
         "connection_pool": false
       },
-      "graph_database": {},
+      "graph_database": {
+        "type": "不需要",
+        "required": false,
+        "use_case": "无图数据库需求,使用文件系统+向量索引即可",
+        "note": "项目基于检索系统(BM25+Dense+Index),不涉及图谱查询"
+      },
       "cache": {
         "type": "内存缓存",
         "required_modules": [],
@@ -118,17 +123,20 @@
         "recommended": true,
         "gpu_models": [
           "T4",
-          "L4"
+          "L4",
+          "V100(研究场景)"
         ],
-        "use_case": "仅推理",
+        "use_case": "Embedding推理加速(BAAI/bge-m3)",
         "vram_requirement": "8GB",
+        "performance_gain": "向量化吞吐提升5-10倍,FAISS检索在CPU已足够快",
+        "cost_benefit": "研究评估场景CPU可接受,生产环境建议GPU加速embedding",
         "cuda_dependency": {
           "has_direct_cuda": false,
-          "cuda_version": null,
+          "cuda_version": "11.8+(via PyTorch)",
           "cudnn_required": false,
           "tensorrt_used": false,
           "custom_cuda_kernels": false,
-          "gpu_libraries": []
+          "gpu_libraries": ["PyTorch 2.x(via transformers)"]
         }
       },
       "scalability": {
@@ -226,9 +234,16 @@
       "object_storage": {
         "required": true,
         "use_case": [
-          "数据集存储",
-          "评估数据"
-        ]
+          "数据集存储(HotpotQA, NarrativeQA, LoCoMo等)",
+          "评估数据和基准测试结果",
+          "页面存储备份"
+        ],
+        "recommended_services": {
+          "aws": "S3 Standard (低成本归档可用Glacier)",
+          "gcp": "Cloud Storage Standard",
+          "huawei": "OBS对象存储",
+          "typical_usage": "研究数据管理,支持版本控制"
+        }
       }
     },
     "deployment_detail": {

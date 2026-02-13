@@ -78,7 +78,12 @@
         "schema_isolation": "多租户Schema隔离",
         "connection_pool": true
       },
-      "graph_database": {},
+      "graph_database": {
+        "type": "不需要",
+        "required": false,
+        "use_case": "采用层次化文件系统隐喻组织记忆,无需图数据库",
+        "note": "通过交叉引用和符号链接实现关系,存储在关系型DB的JSONB字段"
+      },
       "cache": {
         "type": "内存缓存",
         "required_modules": [],
@@ -123,15 +128,17 @@
           "T4",
           "L4"
         ],
-        "use_case": "仅推理",
+        "use_case": "Embedding推理加速(可选)",
         "vram_requirement": "4GB",
+        "performance_gain": "向量化速度提升3-5倍,Rust核心已优化CPU性能",
+        "cost_benefit": "Proactive agent持续运行,GPU可提升响应速度但非必需",
         "cuda_dependency": {
           "has_direct_cuda": false,
-          "cuda_version": null,
+          "cuda_version": "11.8+(via PyTorch/lazyllm)",
           "cudnn_required": false,
           "tensorrt_used": false,
           "custom_cuda_kernels": false,
-          "gpu_libraries": []
+          "gpu_libraries": ["PyTorch 2.x(via lazyllm框架)"]
         }
       },
       "scalability": {
@@ -228,7 +235,18 @@
         ]
       },
       "object_storage": {
-        "required": false
+        "required": false,
+        "use_case": [
+          "可选:多模态资源存储(图像/音频/视频)",
+          "大型文档备份"
+        ],
+        "recommended_services": {
+          "aws": "S3 Standard + CloudFront(CDN加速)",
+          "azure": "Blob Storage + CDN",
+          "huawei": "OBS对象存储 + CDN",
+          "typical_usage": "文本存储在PostgreSQL,大文件(>5MB)存储在对象存储"
+        },
+        "note": "主要数据存储在PostgreSQL,对象存储仅用于多模态资源和备份"
       }
     },
     "deployment_detail": {
