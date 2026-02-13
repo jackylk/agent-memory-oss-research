@@ -120,5 +120,15 @@
       "对数据主权和驻留有严格要求的金融/医疗机构",
       "构建多租户AI服务的云平台提供商"
     ]
-  }
+  },
+  "value_propositions": [
+    {
+      "name": "SQL原生企业级记忆",
+      "description": "通过单行代码集成LLM提供商和Advanced Augmentation异步引擎,自动提取事实和语义三元组,支持10+数据库的适配器模式(SQL/NoSQL),利用企业现有数据库基础设施实现零集成成本的持久化记忆。"
+    },
+    {
+      "name": "零延迟异步增强系统",
+      "description": "采用FAISS本地向量索引实现零延迟语义搜索,通过异步后台处理(Advanced Augmentation)不影响主流程响应时间,支持Entity-Process-Session三层灵活归属系统,降低向量数据库托管成本。"
+    }
+  ]
 }

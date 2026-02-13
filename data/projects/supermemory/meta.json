@@ -127,5 +127,15 @@
       "销售团队客户信息管理（客户对话、需求、跟进记录）"
     ],
     "companies": []
-  }
+  },
+  "value_propositions": [
+    {
+      "name": "边缘计算全球低延迟",
+      "description": "通过Cloudflare Workers全球边缘计算部署(300+节点自动分发)和Hyperdrive连接池优化,实现全球低延迟访问(<50ms)和数据库性能提升80%,结合R2对象存储零出口费用,大幅降低运营成本。"
+    },
+    {
+      "name": "统一记忆管理平台",
+      "description": "采用Model Context Protocol(MCP)集成为Claude和Cursor提供记忆能力,支持多渠道统一访问(Web应用、浏览器扩展、Raycast),通过PGVector内置向量搜索和混合检索(向量+全文),实现多平台无缝同步的第二大脑。"
+    }
+  ]
 }

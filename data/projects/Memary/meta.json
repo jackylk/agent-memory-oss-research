@@ -115,5 +115,15 @@
       "研究助手（文献管理、知识图谱构建）"
     ],
     "companies": []
-  }
+  },
+  "value_propositions": [
+    {
+      "name": "人类记忆仿真架构",
+      "description": "通过双层记忆流架构(Memory Stream + Entity Knowledge Store)和递归实体检索(最大深度2层),模拟人类记忆工作原理,实现多跳推理和同义词扩展检索,提供零代码集成的长期记忆能力。"
+    },
+    {
+      "name": "多图隔离与本地部署",
+      "description": "采用FalkorDB多图隔离技术支持多代理场景,结合Ollama本地模型实现零云成本部署,通过Context Window管理和Token蒸馏机制降低智能代理开发门槛,保障隐私数据本地化。"
+    }
+  ]
 }

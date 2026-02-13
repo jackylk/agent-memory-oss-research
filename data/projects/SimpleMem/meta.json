@@ -14,7 +14,10 @@
     "url": "https://arxiv.org/abs/2601.02553"
   },
   "benchmarks": {
-    "locomo": {"score": 43.24, "details": "LoCoMo-10: SimpleMem F1 43.24%（相比 Mem0 提升 26.4%，相比 LightMem 提升 75.6%）"}
+    "locomo": {
+      "score": 43.24,
+      "details": "LoCoMo-10: SimpleMem F1 43.24%（相比 Mem0 提升 26.4%，相比 LightMem 提升 75.6%）"
+    }
   },
   "innovations": {
     "key_features": [
@@ -49,15 +52,32 @@
     ]
   },
   "tech_stack": {
-    "storage": ["Compressed Memory Store", "Vector Database"],
-    "frameworks": ["MCP Server", "Claude Skills", "Python"],
-    "languages": ["Python"],
-    "embedding_models": ["Semantic compression"]
+    "storage": [
+      "Compressed Memory Store",
+      "Vector Database"
+    ],
+    "frameworks": [
+      "MCP Server",
+      "Claude Skills",
+      "Python"
+    ],
+    "languages": [
+      "Python"
+    ],
+    "embedding_models": [
+      "Semantic compression"
+    ]
   },
   "cloud_needs": {
     "storage": {
-      "types": ["Compressed Storage", "Vector DB"],
-      "requirements": ["Semantic synthesis", "Cross-session persistence"]
+      "types": [
+        "Compressed Storage",
+        "Vector DB"
+      ],
+      "requirements": [
+        "Semantic synthesis",
+        "Cross-session persistence"
+      ]
     },
     "compute": {
       "embedding": true,
@@ -67,11 +87,32 @@
     "deployment": {
       "complexity": 5,
       "containerized": true,
-      "orchestration": ["Docker", "MCP Server"]
+      "orchestration": [
+        "Docker",
+        "MCP Server"
+      ]
     }
   },
   "categories": {
-    "tech_approach": ["Compression", "Semantic Synthesis", "Cross-session"],
-    "use_case": ["Claude", "Cursor", "LM Studio"]
-  }
+    "tech_approach": [
+      "Compression",
+      "Semantic Synthesis",
+      "Cross-session"
+    ],
+    "use_case": [
+      "Claude",
+      "Cursor",
+      "LM Studio"
+    ]
+  },
+  "value_propositions": [
+    {
+      "name": "语义压缩与成本极限优化",
+      "description": "通过三阶段流水线(语义压缩→在线合成→意图感知检索)和语义无损压缩技术,实现Token用量降低30倍(约550 tokens),在LoCoMo基准F1分数达到43.24%,相比Mem0提升26.4%的同时检索速度提升50.2%。"
+    },
+    {
+      "name": "多视图索引检索系统",
+      "description": "采用多视图索引架构(语义向量+词汇BM25+符号元数据)和在线语义合成机制,实现实时整合相关上下文为统一抽象表示,支持跨会话记忆持久化,与Claude、Cursor、LM Studio无缝集成。"
+    }
+  ]
 }

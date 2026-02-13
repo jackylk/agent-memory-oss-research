@@ -94,5 +94,15 @@
       "Memory Evaluation",
       "Framework Comparison"
     ]
-  }
+  },
+  "value_propositions": [
+    {
+      "name": "五维记忆能力评估框架",
+      "description": "通过增量多轮交互评估范式全面覆盖准确检索(AR)、测试时学习(TTL)、长程理解(LRU)、冲突解决(CR)和拒绝回答五大核心能力,结合注入一次查询多次设计哲学和GPT-4o LLM判断器,实现首个系统性评估长期记忆的多维标准化基准(ICLR 2026)。"
+    },
+    {
+      "name": "统一代理评估平台",
+      "description": "采用统一代理接口(AgentWrapper)支持15+种记忆方法的一致性评估,提供EventQA(事件时序记忆)和FactConsolidation(冲突信息整合)两个新构建数据集,通过完整的端到端评估流程(从数据加载到指标计算)和灵活的YAML配置驱动架构,简化记忆方法研究与开发。"
+    }
+  ]
 }

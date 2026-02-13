@@ -182,5 +182,15 @@
       "example": "个人助手学习用户偏好（如工作习惯、兴趣爱好），跨会话提供个性化服务；语言学习伙伴追踪学习进度。",
       "technical_requirements": "RedisStore（长期记忆）+ 向量搜索（语义检索）+ 无 TTL 或长 TTL"
     }
+  ],
+  "value_propositions": [
+    {
+      "name": "双实现架构与TTL优化",
+      "description": "通过泛型(Generic[RedisClientType, IndexType])实现同步和异步版本的类型安全代码复用,采用Redis原生TTL机制支持刷新读(refresh_on_read)和动态TTL移除,结合Sorted Set键注册表实现O(log N)检查点查找性能,零额外开销的自动过期管理。"
+    },
+    {
+      "name": "语义缓存与成本优化",
+      "description": "基于向量相似度的LLM响应缓存和工具结果缓存中间件,30%+缓存命中率可节省30%+ LLM费用,支持自适应集群检测(单机、Cluster、Azure/Enterprise代理),避免CROSSSLOT错误,单一代码库兼容所有Redis部署模式。"
+    }
   ]
 }

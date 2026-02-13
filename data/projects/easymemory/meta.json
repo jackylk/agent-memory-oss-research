@@ -43,14 +43,20 @@
     "optional_cloud_services": [
       {
         "type": "LLM API",
-        "providers": ["OpenAI", "Anthropic"],
+        "providers": [
+          "OpenAI",
+          "Anthropic"
+        ],
         "purpose": "Entity extraction (alternative to local Ollama)",
         "cost": "$10-50/month",
         "necessity": "Optional"
       },
       {
         "type": "Cloud Backup",
-        "providers": ["AWS S3", "Google Drive"],
+        "providers": [
+          "AWS S3",
+          "Google Drive"
+        ],
         "purpose": "Data backup and recovery",
         "cost": "$1-5/month",
         "necessity": "Optional"
@@ -89,7 +95,10 @@
       },
       "llm_inference": {
         "default_provider": "Ollama (local)",
-        "optional_providers": ["OpenAI API", "Anthropic API"],
+        "optional_providers": [
+          "OpenAI API",
+          "Anthropic API"
+        ],
         "cloud_needed": false,
         "use_case": "Entity extraction from conversations",
         "frequency": "1-2 calls per conversation turn"
@@ -125,12 +134,21 @@
     "cost_analysis": {
       "fully_offline": {
         "monthly_cost": "$0",
-        "components": ["Local hardware (user-provided)", "Ollama LLM", "ChromaDB", "NetworkX"],
+        "components": [
+          "Local hardware (user-provided)",
+          "Ollama LLM",
+          "ChromaDB",
+          "NetworkX"
+        ],
         "electricity": "$5/month (24x7 server)"
       },
       "hybrid_cloud": {
         "monthly_cost": "$10-50",
-        "components": ["Local storage (free)", "OpenAI API ($30)", "Optional cloud backup ($2)"]
+        "components": [
+          "Local storage (free)",
+          "OpenAI API ($30)",
+          "Optional cloud backup ($2)"
+        ]
       },
       "comparison": {
         "vs_mem0_cloud": "$0 vs $99/month (100% savings)",
@@ -148,9 +166,21 @@
     },
     "integration": {
       "mcp_protocol": "Native support (local server)",
-      "llm_platforms": ["Claude Desktop", "GPT", "Gemini", "Local LLMs"],
-      "knowledge_bases": ["Obsidian", "Notion (export)", "Confluence (export)"],
-      "communication": ["Slack (export)", "Email (MBOX)"],
+      "llm_platforms": [
+        "Claude Desktop",
+        "GPT",
+        "Gemini",
+        "Local LLMs"
+      ],
+      "knowledge_bases": [
+        "Obsidian",
+        "Notion (export)",
+        "Confluence (export)"
+      ],
+      "communication": [
+        "Slack (export)",
+        "Email (MBOX)"
+      ],
       "all_integrations_local": true
     }
   },
@@ -164,5 +194,15 @@
       "Private Deployment",
       "Enterprise Security"
     ]
-  }
+  },
+  "value_propositions": [
+    {
+      "name": "100%本地隐私部署",
+      "description": "采用ChromaDB(本地持久化)、NetworkX+JSON图数据库和内置BM25全文索引,实现零强制云依赖的完全本地化部署,支持空气隔离环境运行,相比Mem0 Cloud节省100%(零月费 vs $99/月),满足GDPR和HIPAA合规要求的完全数据主权控制。"
+    },
+    {
+      "name": "混合检索与MCP集成",
+      "description": "通过Graph+Vector+Keyword三重混合检索实现95ms平均延迟,结合BAAI/bge-m3本地嵌入(CPU 10句/秒、GPU 120句/秒)和Ollama本地LLM,支持Claude Desktop、GPT、Gemini原生MCP协议集成,提供LoCoMo基准测试支持。"
+    }
+  ]
 }

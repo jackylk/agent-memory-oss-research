@@ -15,19 +15,19 @@
   },
   "benchmarks": {
     "locomo": {
-      "score": 90.00,
+      "score": 90.0,
       "details": "State-of-the-art performance: 90.00% overall (89.36% single-hop, 75.00% multi-hop, 91.20% open-domain, 91.90% temporal)",
       "categories": {
         "single_hop": 89.36,
-        "multi_hop": 75.00,
-        "open_domain": 91.20,
-        "temporal_reasoning": 91.90
+        "multi_hop": 75.0,
+        "open_domain": 91.2,
+        "temporal_reasoning": 91.9
       },
       "competitors": {
         "memobase_v0.0.37": 75.78,
         "zep": 75.14,
         "mem0_graph": 68.44,
-        "openai": 52.90
+        "openai": 52.9
       }
     }
   },
@@ -300,11 +300,11 @@
   },
   "performance_metrics": {
     "accuracy": {
-      "overall": 90.00,
+      "overall": 90.0,
       "single_hop": 89.36,
-      "multi_hop": 75.00,
-      "open_domain": 91.20,
-      "temporal": 91.90
+      "multi_hop": 75.0,
+      "open_domain": 91.2,
+      "temporal": 91.9
     },
     "latency": {
       "avg_response_time": "2-4 seconds per question",
@@ -351,5 +351,15 @@
     "chapter_8": "Deployment and Operations - Setup, execution modes, Docker, cloud strategies, monitoring",
     "chapter_9": "Extensions and Customization - Custom judges, dataset extensions, optimizations, alternative backends",
     "chapter_10": "Future Roadmap and Conclusions - Limitations, planned enhancements, research opportunities, recommendations"
-  }
+  },
+  "value_propositions": [
+    {
+      "name": "SOTA级记忆系统性能",
+      "description": "在LoCoMo-MC10基准测试中达到90.00%整体准确率(单跳89.36%、多跳75.00%、开放域91.20%、时序推理91.90%),相比竞品Memobase提升14.22%、Zep提升14.86%、OpenAI原生记忆提升37.10%,实现业界领先的对话AI记忆维度评估。"
+    },
+    {
+      "name": "云原生评估框架",
+      "description": "采用LLM-as-Judge评估(GPT-4.1)和Gemini-2.5-pro对话生成,通过Backboard托管记忆存储和异步I/O(httpx)实现2-4秒/问题响应时间,支持Kubernetes Job并行处理和自动重试逻辑,10-30分钟完成250+问题的多维度评估,完整开源实现保证可复现性。"
+    }
+  ]
 }

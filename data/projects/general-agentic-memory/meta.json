@@ -110,5 +110,15 @@
       "知识管理平台",
       "教育科技公司"
     ]
-  }
+  },
+  "value_propositions": [
+    {
+      "name": "JIT即时记忆优化",
+      "description": "采用即时(JIT)记忆优化超越预先(AOT)系统,通过双智能体协作架构(MemoryAgent+ResearchAgent)结合混合检索机制(BM25+Dense Vector+Page Index),在LoCoMo、HotpotQA、RULER、NarrativeQA等基准达到SOTA,相比A-MEM、Mem0、MemoryOS、LightMem有更优的F1和BLEU-1指标。"
+    },
+    {
+      "name": "深度研究与记忆保持",
+      "description": "通过TTL时间管理支持长期运行应用和基于文件系统的可靠持久化存储,采用模块化插件化设计易于扩展,支持跨模型兼容(GPT-4、Qwen2.5等)和云端API+本地vLLM混合部署,离线保持完整上下文保真度,在线执行深度研究。"
+    }
+  ]
 }

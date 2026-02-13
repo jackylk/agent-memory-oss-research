@@ -161,7 +161,10 @@
     },
     "operational_requirements": {
       "monitoring": {
-        "health_endpoints": ["/health (liveness)", "/ready (Arc connectivity)"],
+        "health_endpoints": [
+          "/health (liveness)",
+          "/ready (Arc connectivity)"
+        ],
         "recommended_metrics": [
           "memtrace_writes_total",
           "memtrace_queries_total",
@@ -237,5 +240,15 @@
       "Windsurf",
       "Temporal Queries"
     ]
-  }
+  },
+  "value_propositions": [
+    {
+      "name": "零嵌入时序记忆架构",
+      "description": "采用Arc时序数据库和无嵌入纯文本架构,消除向量数据库和嵌入API依赖,通过Parquet列式存储实现5-10倍压缩,相比向量解决方案节省50-70%成本(中型部署$153/月 vs Pinecone $120-480/月),零GPU需求和LLM无关设计。"
+    },
+    {
+      "name": "快速结构化时间查询",
+      "description": "基于Arc数据库的SQL时序查询实现10-200ms查询延迟和50-500ms会话上下文聚合,支持MCP Server、Python SDK、TypeScript SDK多接口部署,通过Go运行时效率和写批处理并行化,单实例可处理500-1000写入/秒。"
+    }
+  ]
 }

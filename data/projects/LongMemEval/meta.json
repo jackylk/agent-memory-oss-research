@@ -579,5 +579,15 @@
       "Long-context LLMs",
       "Continual Learning"
     ]
-  }
+  },
+  "value_propositions": [
+    {
+      "name": "五维长期记忆基准",
+      "description": "通过属性控制的Haystack编译流程和五维评估框架(信息提取、多会话推理、知识更新、时间推理、拒绝回答),提供三个难度级别(LongMemEval_S 115k tokens、LongMemEval_M ~500会话、LongMemEval_Oracle),结合LLM-as-Judge自动评估,实现首个系统性长期记忆评估标准(ICLR 2025)。"
+    },
+    {
+      "name": "Chain-of-Notes优化方法",
+      "description": "创新的两阶段生成方法(先为每个检索会话生成阅读笔记,再基于笔记回答),在LongMemEval_S上准确率提升6.7%(vs CoT),通过索引扩展机制(会话摘要、关键短语提取、用户事实提取、时间事件)实现Recall@5提升5-6%,为长上下文处理提供新思路。"
+    }
+  ]
 }

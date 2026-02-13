@@ -51,15 +51,36 @@
     ]
   },
   "tech_stack": {
-    "storage": ["Neo4j", "FalkorDB", "Kuzu", "Amazon Neptune"],
-    "frameworks": ["Python SDK", "Pydantic", "MCP Server"],
-    "languages": ["Python"],
-    "embedding_models": ["Semantic embeddings", "BM25"]
+    "storage": [
+      "Neo4j",
+      "FalkorDB",
+      "Kuzu",
+      "Amazon Neptune"
+    ],
+    "frameworks": [
+      "Python SDK",
+      "Pydantic",
+      "MCP Server"
+    ],
+    "languages": [
+      "Python"
+    ],
+    "embedding_models": [
+      "Semantic embeddings",
+      "BM25"
+    ]
   },
   "cloud_needs": {
     "storage": {
-      "types": ["Graph Database", "Vector Store"],
-      "requirements": ["Temporal data model", "Bi-temporal tracking", "Real-time updates"]
+      "types": [
+        "Graph Database",
+        "Vector Store"
+      ],
+      "requirements": [
+        "Temporal data model",
+        "Bi-temporal tracking",
+        "Real-time updates"
+      ]
     },
     "compute": {
       "embedding": true,
@@ -69,11 +90,32 @@
     "deployment": {
       "complexity": 8,
       "containerized": true,
-      "orchestration": ["Kubernetes", "Graph DB cluster"]
+      "orchestration": [
+        "Kubernetes",
+        "Graph DB cluster"
+      ]
     }
   },
   "categories": {
-    "tech_approach": ["Knowledge Graph", "Temporal Modeling", "Hybrid Retrieval"],
-    "use_case": ["Agent Memory", "Knowledge Management", "Temporal Reasoning"]
-  }
+    "tech_approach": [
+      "Knowledge Graph",
+      "Temporal Modeling",
+      "Hybrid Retrieval"
+    ],
+    "use_case": [
+      "Agent Memory",
+      "Knowledge Management",
+      "Temporal Reasoning"
+    ]
+  },
+  "value_propositions": [
+    {
+      "name": "双时态知识图谱架构",
+      "description": "通过双时态模型(bi-temporal model)追踪事件发生时间和记录时间,结合动态知识图谱实时更新和增量式非破坏性修改机制,在Deep Memory Retrieval基准测试中达到94.8%准确率,超越MemGPT的93.4%。"
+    },
+    {
+      "name": "企业级混合检索引擎",
+      "description": "采用语义嵌入+BM25关键词+图遍历的混合检索策略,支持复杂关系结构的演化追踪和多图数据库后端(Neo4j、FalkorDB、Neptune),实现企业级动态知识整合和历史关系追踪能力。"
+    }
+  ]
 }

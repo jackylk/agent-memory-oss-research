@@ -81,5 +81,15 @@
       "Skill Evolution",
       "Multi-agent Sharing"
     ]
-  }
+  },
+  "value_propositions": [
+    {
+      "name": "技能记忆操作系统",
+      "description": "通过Multi-Cube Knowledge Base实现持久化技能记忆和跨任务技能复用演进,在多个基准测试中表现优异(LoCoMo 75.80、LongMemEval +40.43%、PrefEval-10 +2568%、PersonaMem +40.75%),支持多模态存储(文本、图像、工具追踪、角色信息)。"
+    },
+    {
+      "name": "统一记忆API与调度",
+      "description": "采用统一记忆API和MemScheduler调度器实现多代理共享和记忆优化,通过AI记忆操作系统架构支持跨任务技能演进和持久化,提供Kubernetes容器化部署和内存优化的8-16 vCPUs计算需求估算。"
+    }
+  ]
 }

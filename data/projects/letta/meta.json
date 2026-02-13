@@ -122,5 +122,15 @@
       "Letta AI（开发团队自身）：提供 Letta Cloud 托管服务和企业支持",
       "开源社区贡献者：来自全球的 100+ 开发者为 Letta 项目贡献代码和插件"
     ]
-  }
+  },
+  "value_propositions": [
+    {
+      "name": "操作系统式内存管理",
+      "description": "借鉴OS虚拟内存机制实现三层内存架构(Core Memory当前状态+Recall Memory最近对话+Archival Memory长期知识),通过Agent自主记忆编辑工具突破上下文窗口限制,理论上支持无限对话长度的同时降低50-70% token使用量。"
+    },
+    {
+      "name": "企业级Agent平台",
+      "description": "提供完整的REST API、Python/TypeScript SDK、用户管理和组织隔离,支持OpenAI、Anthropic、Google等20+ LLM提供商,通过流式响应、工具生态系统和MCP集成,实现生产就绪的无缝会话连续性和多租户安全隔离。"
+    }
+  ]
 }

@@ -115,5 +115,15 @@
       "教育科研机构",
       "Claude开发者生态"
     ]
-  }
+  },
+  "value_propositions": [
+    {
+      "name": "LLMlingua-2极限压缩",
+      "description": "通过LLMlingua-2压缩技术实现98% token减少和117倍更低token消耗,在LoCoMo benchmark达到最优F1性能(43.24%),相比传统方案节省98%的token成本(中型部署可节省$173,904/月),运行速度提升12倍,159倍更少API调用(ICLR 2026)。"
+    },
+    {
+      "name": "模块化轻量部署方案",
+      "description": "采用模块化设计支持多种LLM提供商(OpenAI/DeepSeek/Ollama)和MCP Server集成,通过vLLM本地部署降低成本,提供开箱即用的Docker部署方案,在资源受限环境下实现高精度检索和快速响应的最佳平衡。"
+    }
+  ]
 }

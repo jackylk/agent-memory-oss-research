@@ -188,5 +188,15 @@
       ],
       "estimated_cost": "depends_on_scale"
     }
+  ],
+  "value_propositions": [
+    {
+      "name": "模块化多类型记忆",
+      "description": "通过可插拔记忆组件支持个人、任务、工具和工作记忆四种类型,采用5种向量数据库后端(SQLite、Elasticsearch、ChromaDB、Qdrant、PostgreSQL)统一接口,实现从小型部署到企业级规模的灵活记忆管理,在AppWorld、BFCL(v3)、FrozenLake基准测试中验证有效性。"
+    },
+    {
+      "name": "跨实体记忆共享与压缩",
+      "description": "通过统一向量数据库后端实现跨用户、任务和代理的记忆共享和集体学习,采用LLM驱动的记忆操作(提取、摘要、检索)和工作记忆压缩避免token溢出,支持MCP协议、HTTP API和Python SDK多接口部署,实现长期交互的上下文延续。"
+    }
   ]
 }

@@ -51,14 +51,32 @@
     }
   },
   "tech_stack": {
-    "storage": ["Vector Database", "Relational Database", "Object Storage"],
-    "frameworks": ["Python SDK", "JavaScript SDK", "CrewAI", "Langgraph"],
-    "languages": ["Python"],
-    "embedding_models": ["OpenAI", "Custom Models"]
+    "storage": [
+      "Vector Database",
+      "Relational Database",
+      "Object Storage"
+    ],
+    "frameworks": [
+      "Python SDK",
+      "JavaScript SDK",
+      "CrewAI",
+      "Langgraph"
+    ],
+    "languages": [
+      "Python"
+    ],
+    "embedding_models": [
+      "OpenAI",
+      "Custom Models"
+    ]
   },
   "cloud_needs": {
     "storage": {
-      "types": ["Vector Database", "PostgreSQL/MongoDB", "S3"],
+      "types": [
+        "Vector Database",
+        "PostgreSQL/MongoDB",
+        "S3"
+      ],
       "requirements": [
         "Sub-100ms vector retrieval",
         "ACID compliance for metadata",
@@ -73,11 +91,33 @@
     "deployment": {
       "complexity": 7,
       "containerized": true,
-      "orchestration": ["Kubernetes", "Docker Compose"]
+      "orchestration": [
+        "Kubernetes",
+        "Docker Compose"
+      ]
     }
   },
   "categories": {
-    "tech_approach": ["Vector Search", "Multi-level Memory", "Production-Ready"],
-    "use_case": ["Customer Support", "Healthcare", "Productivity", "Personalization"]
-  }
+    "tech_approach": [
+      "Vector Search",
+      "Multi-level Memory",
+      "Production-Ready"
+    ],
+    "use_case": [
+      "Customer Support",
+      "Healthcare",
+      "Productivity",
+      "Personalization"
+    ]
+  },
+  "value_propositions": [
+    {
+      "name": "智能记忆管理与成本优化",
+      "description": "通过多层级记忆管理架构(用户、会话、AI代理三层)和动态记忆整合机制,实现了跨会话的智能记忆保持和个性化交互能力,在LOCOMO基准上相比OpenAI提升26%准确率的同时降低90% token成本。"
+    },
+    {
+      "name": "生产级高性能检索系统",
+      "description": "采用图增强记忆表示和亚秒级检索优化技术,实现了生产就绪的大规模记忆系统,支持26+向量数据库和多LLM提供商,p95延迟降低91%达到企业级性能标准。"
+    }
+  ]
 }

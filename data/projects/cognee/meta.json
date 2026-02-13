@@ -113,5 +113,15 @@
       "Data Integration",
       "Enterprise AI"
     ]
-  }
+  },
+  "value_propositions": [
+    {
+      "name": "6行代码知识引擎",
+      "description": "通过ECL(提取、认知化、加载)流程替代传统RAG,采用知识图谱+向量混合架构(Graph+Vector Hybrid)和Pythonic数据管道,支持30+数据源集成和8种搜索类型,实现6行代码即可构建AI记忆系统的极简开发体验。"
+    },
+    {
+      "name": "多租户混合检索引擎",
+      "description": "支持8+向量数据库(LanceDB等)和3+图数据库(Kuzu、Neo4j等)统一集成,采用10+ LLM提供商(litellm+Instructor)和本地优先设计(SQLite+Kuzu+LanceDB零成本),通过模块化任务系统和多租户隔离实现企业级知识管理和权限控制。"
+    }
+  ]
 }

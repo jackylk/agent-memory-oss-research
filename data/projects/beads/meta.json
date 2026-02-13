@@ -114,5 +114,15 @@
         "Conflict-free merging"
       ]
     }
+  ],
+  "value_propositions": [
+    {
+      "name": "Git原生分布式记忆",
+      "description": "通过Hash-based ID系统防止合并冲突和版本控制数据库(Dolt)实现时间旅行查询和分支管理,采用Git原生分发消除中心服务器依赖,支持离线优先和零冲突合并设计,为AI编码代理提供持久化结构化记忆。"
+    },
+    {
+      "name": "语义压缩与依赖追踪",
+      "description": "采用LLM(Claude Haiku)语义记忆压缩技术处理已关闭问题,结合依赖感知图实现多代理协作协调,通过JSONL同步兼容行级Git合并策略,支持完整审计追踪和依赖可视化。"
+    }
   ]
 }
