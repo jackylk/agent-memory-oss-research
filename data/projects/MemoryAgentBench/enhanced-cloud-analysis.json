@@ -1,0 +1,207 @@
+{
+  "project_name": "MemoryAgentBench",
+  "analysis_date": "2026-02-13",
+  "storage": {
+    "vector_storage": {
+      "solution": "多后端向量存储(FAISS/LanceDB)",
+      "database": "FAISS-GPU / LanceDB / Qdrant",
+      "vector_dimension": 768,
+      "index_type": "FAISS IndexFlatL2 (GPU版本)",
+      "evidence": "requirements.txt: faiss-gpu, lancedb, qdrant_client, pgvector; methods/embedding_retriever.py使用FAISS; methods/memorag/retrieval.py使用GPU加速编码; Contriever 768维"
+    },
+    "primary_database": {
+      "type": "SQLite (Letta) + PostgreSQL (可选) + LanceDB",
+      "min_version": "SQLite 3 (Letta默认) / PostgreSQL (生产环境)",
+      "required_extensions": ["pgvector (可选)"],
+      "connection_pooling": {},
+      "evidence": "architecture.md: Letta使用SQLite本地存储,支持PostgreSQL迁移; cognee模块使用SQLAlchemy + FastAPI; LanceDB用于向量存储"
+    },
+    "graph_database": {
+      "required": true,
+      "type": "Cognee内置图引擎 + igraph",
+      "evidence": "requirements.txt: igraph; cognee/模块实现知识图谱; HippoRAG使用图结构索引; architecture.md提到知识图谱构建需要32+GB RAM"
+    },
+    "cache": {
+      "type": "无外部缓存",
+      "min_version": "不适用",
+      "required_modules": [],
+      "evidence": "无Redis等缓存依赖; 嵌入模型输出可缓存但未实现"
+    },
+    "object_storage": {
+      "required": true,
+      "use_case": ["HuggingFace数据集镜像(~15GB压缩)", "模型权重存储", "评估结果归档"]
+    },
+    "data_scale": {
+      "estimated_total": "数据集15GB + 模型权重50-200GB + 评估结果5GB",
+      "per_user_avg": "不适用(研究基准测试)",
+      "evidence": "architecture.md: EventQA+FactConsolidation 5GB, InfBench+LongmemEval+RULER 8GB; 每次评估产生500KB-2MB JSON"
+    },
+    "performance": {
+      "vector_search_latency": "5-20ms (FAISS GPU)",
+      "qps_target": "不适用(批处理评估)",
+      "p95_latency": "不适用",
+      "concurrent_connections": "8-12 代理实例并行"
+    }
+  },
+  "compute": {
+    "cpu": {
+      "min_vcpu": 8,
+      "recommended_vcpu": 32,
+      "workload_type": "混合(GPU推理+CPU图构建+API调用)"
+    },
+    "memory": {
+      "min_gb": 16,
+      "recommended_gb": 64,
+      "memory_intensive_ops": ["知识图谱构建(Cognee/HippoRAG需32+GB)", "大型模型加载", "FAISS GPU索引", "多代理并行运行"],
+      "oom_risk": "高-多方法并行测试时内存压力大"
+    },
+    "gpu": {
+      "required": true,
+      "recommended": true,
+      "use_case": "仅推理",
+      "cuda_dependency": {
+        "has_direct_cuda": true,
+        "custom_cuda_kernels": true,
+        "gpu_libraries": ["torch", "faiss-gpu", "flash_attn", "bitsandbytes", "deepspeed", "minference", "nvidia-cublas-cu12", "nvidia-cuda-cupti-cu12", "nvidia-cuda-nvrtc-cu12", "nvidia-cuda-runtime-cu12", "nvidia-cudnn-cu12", "nvidia-cufft-cu12", "nvidia-curand-cu12", "nvidia-cusolver-cu12", "nvidia-cusparse-cu12", "nvidia-nccl-cu12"],
+        "evidence": "requirements.txt包含完整NVIDIA CUDA 12运行时栈; faiss-gpu(非cpu版); flash_attn/minference需要CUDA; methods/memorag/memorag.py: torch.cuda.is_available(), torch.cuda.empty_cache(); methods/hipporag/llm/vllm_offline.py: torch.cuda.device_count()"
+      }
+    },
+    "ascend_npu": {
+      "compatibility_level": "困难",
+      "framework_analysis": {
+        "framework": "PyTorch + CUDA 12 + Flash Attention + DeepSpeed",
+        "framework_version": "PyTorch latest, CUDA 12.x",
+        "ascend_support": false,
+        "cann_version": "CANN 8.0+ (需要适配)"
+      },
+      "migration": {
+        "effort_level": "重大工作量",
+        "blockers": [
+          "显式依赖nvidia-cublas-cu12等12个NVIDIA CUDA 12库,完全绑定NVIDIA生态",
+          "faiss-gpu是CUDA专用库,不支持昇腾NPU",
+          "flash_attn/minference包含CUDA自定义内核",
+          "bitsandbytes量化库仅支持CUDA",
+          "deepspeed对昇腾支持有限(需要deepspeed-ascend)",
+          "nvidia-nccl-cu12多卡通信库需替换为昇腾HCCL",
+          "15+种记忆方法中多个方法直接调用torch.cuda API"
+        ],
+        "code_changes_required": [
+          "移除所有nvidia-*-cu12依赖,替换为CANN对应库",
+          "faiss-gpu替换为faiss-cpu或昇腾优化的向量检索方案",
+          "flash_attn替换为CANN FlashAttention实现",
+          "bitsandbytes替换为昇腾量化方案(如MindSpore量化)",
+          "deepspeed替换为deepspeed-ascend或MindSpore并行框架",
+          "修改methods/memorag/memorag.py等文件中所有torch.cuda调用",
+          "修改methods/hipporag中vLLM离线推理为昇腾兼容方案",
+          "minference(微软)需要完全替换为昇腾兼容的长上下文推理方案"
+        ]
+      },
+      "recommendation": "该项目是CUDA依赖最重的项目,包含完整的NVIDIA CUDA 12运行时栈和多个CUDA专用库。迁移到昇腾NPU需要重写大量底层代码。建议: 1) 仅迁移纯API调用的代理方法(如长上下文代理通过API调用OpenAI/Claude); 2) 本地模型推理方法(MemoRAG/HippoRAG)保留在NVIDIA GPU上; 3) 使用华为ModelArts部署标准模型替代本地GPU推理; 4) FAISS-GPU可临时回退到faiss-cpu但性能会下降。"
+    },
+    "scalability": {
+      "horizontal_scaling": true,
+      "stateless": true,
+      "auto_scaling_metrics": ["GPU利用率", "代理任务队列"]
+    },
+    "serverless": {
+      "suitable": false,
+      "cold_start_tolerance": "不可接受",
+      "reasons": ["GPU常驻需求", "模型加载时间长", "单次评估运行数小时", "复杂依赖环境"]
+    },
+    "concurrency": {
+      "model": "多进程并行 + 异步API调用",
+      "async_framework": "多进程(bash脚本) + asyncio(API调用)",
+      "message_queue": {
+        "required": false,
+        "systems": []
+      },
+      "websocket": false,
+      "streaming": false
+    }
+  },
+  "external_services": {
+    "llm": {
+      "providers": ["OpenAI GPT-4o (评估+长上下文代理)", "Anthropic Claude (长上下文代理)", "Google Gemini (长上下文代理)", "Azure OpenAI", "自托管vLLM/HuggingFace模型"],
+      "embedding_models": ["Contriever (Facebook, 768维)", "Qwen3-Embedding-4B", "NV-Embed-v2 (HippoRAG用)"],
+      "local_model_support": true,
+      "cost_optimization": ["BM25零GPU成本检索", "API代理方法避免本地GPU", "批处理评估减少重复计算"]
+    }
+  },
+  "deployment": {
+    "complexity": 8,
+    "docker": {
+      "available": false,
+      "image_size": "~20GB+ (含CUDA运行时+完整ML栈)",
+      "multi_stage_build": false
+    },
+    "kubernetes": {
+      "required": false,
+      "recommended": true,
+      "helm_available": false
+    },
+    "configuration": {
+      "env_vars_count": 5,
+      "secrets_count": 3,
+      "complexity_level": "复杂(YAML配置驱动+多代理方法+GPU环境)"
+    },
+    "observability": {
+      "metrics_export": false,
+      "structured_logging": false,
+      "health_checks": false
+    }
+  },
+  "huawei_cloud": {
+    "overall_difficulty": "困难",
+    "recommended_services": {
+      "database": {
+        "primary": "华为云OBS (数据集+结果) + ECS本地SQLite",
+        "vector_solution": "FAISS-CPU (昇腾环境) 或 华为云CSS向量检索"
+      },
+      "cache": "不需要",
+      "compute": {
+        "primary": "华为云ECS GPU实例 (NVIDIA A100/V100 或 昇腾910B)",
+        "ai_acceleration": "华为云ModelArts (API代理方法可用; 本地推理方法需NVIDIA GPU)"
+      },
+      "middleware": {}
+    },
+    "cost_estimation": {
+      "small_scale": {
+        "description": "单次完整评估(15种方法)",
+        "monthly_cost": "¥8,000-15,000",
+        "breakdown": {
+          "gpu_ecs": "¥5,000 (A100 40GB * 200小时)",
+          "cpu_ecs": "¥500 (32vCPU/64GB)",
+          "openai_api": "¥2,000-8,000 (GPT-4o评估+长上下文代理)",
+          "storage_obs": "¥200 (200GB)",
+          "network": "¥300"
+        }
+      },
+      "medium_scale": {
+        "description": "持续基准测试(每周运行, 多配置)",
+        "monthly_cost": "¥40,000-80,000",
+        "breakdown": {
+          "gpu_ecs": "¥30,000 (4xA100, 持续运行)",
+          "cpu_ecs": "¥2,000",
+          "llm_api": "¥5,000-30,000",
+          "storage_obs": "¥500",
+          "network": "¥500"
+        }
+      }
+    },
+    "special_requirements": [
+      "完整NVIDIA CUDA 12运行时栈,昇腾NPU迁移困难",
+      "faiss-gpu/flash_attn/bitsandbytes/deepspeed均为CUDA专用",
+      "建议保留NVIDIA GPU实例用于本地模型推理方法",
+      "15+种代理方法中约一半可纯API运行(不需GPU)",
+      "需要大量GPU显存: NV-Embed-v2需40GB, MemoRAG需24GB+"
+    ],
+    "architecture_recommendations": [
+      "混合部署: API代理方法使用ECS CPU实例, 本地推理方法使用GPU实例",
+      "优先在华为云上运行不需要GPU的方法(长上下文API代理, BM25检索)",
+      "对于需要GPU的方法,优先使用华为云NVIDIA GPU实例(如A100)",
+      "使用华为云ModelArts部署Contriever/Qwen3嵌入模型替代本地GPU推理",
+      "评估结果存储到华为云OBS,使用DLI(数据湖探索)进行结果分析",
+      "通过华为云SWR预构建包含完整ML栈的Docker镜像,简化部署"
+    ]
+  }
+}

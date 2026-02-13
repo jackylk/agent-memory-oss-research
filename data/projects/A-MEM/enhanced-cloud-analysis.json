@@ -1,0 +1,182 @@
+{
+  "project_name": "A-MEM",
+  "analysis_date": "2026-02-13",
+  "storage": {
+    "vector_storage": {
+      "solution": "ChromaDB",
+      "database": "ChromaDB (内嵌模式或客户端-服务器模式)",
+      "vector_dimension": 384,
+      "index_type": "HNSW",
+      "evidence": "ChromaRetriever使用SentenceTransformerEmbeddingFunction(model_name='all-MiniLM-L6-v2'), 384维向量; chromadb>=0.4.22在requirements.txt中"
+    },
+    "primary_database": {
+      "type": "无独立主数据库",
+      "min_version": "N/A",
+      "required_extensions": [],
+      "connection_pooling": {},
+      "evidence": "项目使用ChromaDB内部SQLite作为底层存储, 无独立关系数据库依赖"
+    },
+    "graph_database": {
+      "required": false,
+      "type": "无",
+      "evidence": "记忆关系通过MemoryNote的links字段在内存中维护, 持久化在ChromaDB元数据中"
+    },
+    "cache": {
+      "type": "无独立缓存",
+      "min_version": "N/A",
+      "required_modules": [],
+      "evidence": "使用Python内置lru_cache进行查询缓存, 无Redis等外部缓存依赖"
+    },
+    "object_storage": {
+      "required": false,
+      "use_case": ["模型文件缓存(SentenceTransformer ~80MB)", "ChromaDB数据备份"]
+    },
+    "data_scale": {
+      "estimated_total": "1万条记忆约35MB, 100万条约3.5GB",
+      "per_user_avg": "每条记忆约3.5KB(内容2KB+嵌入向量1.5KB)",
+      "evidence": "384维 x 4字节 = 1.5KB嵌入向量, 加上元数据约2KB"
+    },
+    "performance": {
+      "vector_search_latency": "<100ms (HNSW索引)",
+      "qps_target": "100-1000 QPS",
+      "p95_latency": "<200ms",
+      "concurrent_connections": "单节点10-50"
+    }
+  },
+  "compute": {
+    "cpu": {
+      "min_vcpu": 4,
+      "recommended_vcpu": 8,
+      "workload_type": "CPU密集(嵌入计算) + IO密集(向量检索)"
+    },
+    "memory": {
+      "min_gb": 8,
+      "recommended_gb": 16,
+      "memory_intensive_ops": ["SentenceTransformer模型加载(~80MB)", "ChromaDB HNSW索引", "记忆字典缓存"],
+      "oom_risk": "低"
+    },
+    "gpu": {
+      "required": false,
+      "recommended": false,
+      "use_case": "不需要",
+      "cuda_dependency": {
+        "has_direct_cuda": false,
+        "custom_cuda_kernels": false,
+        "gpu_libraries": [],
+        "evidence": "代码中无任何cuda/GPU引用; sentence-transformers依赖PyTorch但默认CPU运行; 嵌入模型all-MiniLM-L6-v2在CPU上100句/秒足够; Ollama本地LLM可选GPU但独立于主项目"
+      }
+    },
+    "ascend_npu": {
+      "compatibility_level": "不适用(无GPU需求)",
+      "framework_analysis": {
+        "framework": "sentence-transformers (基于PyTorch)",
+        "framework_version": ">=2.2.2",
+        "ascend_support": true,
+        "cann_version": "CANN 8.0+"
+      },
+      "migration": {
+        "effort_level": "极低",
+        "blockers": [],
+        "code_changes_required": ["如需NPU加速嵌入: 安装torch-npu替代cuda版PyTorch"]
+      },
+      "recommendation": "项目核心无GPU依赖, 完全可在CPU上运行。如需加速嵌入计算, 安装torch-npu后SentenceTransformer可自动使用昇腾NPU, 无需代码修改。"
+    },
+    "scalability": {
+      "horizontal_scaling": false,
+      "stateless": false,
+      "auto_scaling_metrics": ["CPU利用率", "内存使用率"]
+    },
+    "serverless": {
+      "suitable": false,
+      "cold_start_tolerance": "不适合(需加载SentenceTransformer模型)",
+      "reasons": ["模型加载需数秒", "ChromaDB需持久化状态", "内存中维护记忆字典"]
+    },
+    "concurrency": {
+      "model": "同步(可扩展为异步)",
+      "async_framework": "无(代码中有ThreadPoolExecutor示例)",
+      "message_queue": {
+        "required": false,
+        "systems": []
+      },
+      "websocket": false,
+      "streaming": false
+    }
+  },
+  "external_services": {
+    "llm": {
+      "providers": ["OpenAI (GPT-4o-mini/GPT-4)", "Ollama (Llama3/Mistral/Qwen)"],
+      "embedding_models": ["all-MiniLM-L6-v2 (本地, 384维)", "all-mpnet-base-v2 (本地, 768维)", "text-embedding-3-small (OpenAI API, 可选)"],
+      "local_model_support": true,
+      "cost_optimization": ["使用GPT-4o-mini替代GPT-4节省90%成本", "嵌入模型本地运行零成本", "Ollama支持完全本地化部署"]
+    }
+  },
+  "deployment": {
+    "complexity": 3,
+    "docker": {
+      "available": false,
+      "image_size": "约1.5GB(含SentenceTransformer模型)",
+      "multi_stage_build": false
+    },
+    "kubernetes": {
+      "required": false,
+      "recommended": false,
+      "helm_available": false
+    },
+    "configuration": {
+      "env_vars_count": 2,
+      "secrets_count": 1,
+      "complexity_level": "简单"
+    },
+    "observability": {
+      "metrics_export": false,
+      "structured_logging": false,
+      "health_checks": false
+    }
+  },
+  "huawei_cloud": {
+    "overall_difficulty": "容易",
+    "recommended_services": {
+      "database": {
+        "primary": "无需独立数据库",
+        "vector_solution": "ChromaDB自托管 或 华为云GaussDB(向量检索能力)"
+      },
+      "cache": "无需",
+      "compute": {
+        "primary": "华为云ECS (4核8GB)",
+        "ai_acceleration": "无需(CPU足够)"
+      },
+      "middleware": {}
+    },
+    "cost_estimation": {
+      "small_scale": {
+        "description": "1000用户, 每日1万次记忆操作",
+        "monthly_cost": "¥800-1,200",
+        "breakdown": {
+          "ECS_4c8g": "¥400",
+          "EVS_100GB_SSD": "¥60",
+          "OpenAI_API": "¥200",
+          "带宽_10Mbps": "¥150"
+        }
+      },
+      "medium_scale": {
+        "description": "10万用户, 每日100万次操作",
+        "monthly_cost": "¥8,000-12,000",
+        "breakdown": {
+          "ECS_16c32g_x3": "¥4,500",
+          "EVS_500GB_SSD": "¥300",
+          "ELB负载均衡": "¥200",
+          "OpenAI_API": "¥2,000",
+          "带宽_100Mbps": "¥1,500"
+        }
+      }
+    },
+    "special_requirements": [],
+    "architecture_recommendations": [
+      "使用ECS单实例部署即可满足小规模需求",
+      "ChromaDB数据目录挂载EVS持久化卷",
+      "通过华为云NAT网关访问OpenAI API",
+      "如需本地LLM可使用Ollama部署在同一ECS实例",
+      "建议使用华为云OBS定期备份ChromaDB数据"
+    ]
+  }
+}

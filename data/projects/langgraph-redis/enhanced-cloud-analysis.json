@@ -1,0 +1,213 @@
+{
+  "project_name": "langgraph-redis",
+  "analysis_version": "2.0",
+  "analysis_date": "2026-02-13",
+  "storage": {
+    "vector_database": {
+      "type": "RediSearch HNSW",
+      "provider": "Redis (RedisJSON + RediSearch modules)",
+      "embedding_dimensions": "configurable (1536 default with OpenAI)",
+      "estimated_storage_per_1m_vectors": "~6GB (1536-dim float32 + JSON metadata)",
+      "index_type": "HNSW",
+      "distance_metric": "cosine",
+      "code_evidence": {
+        "file": "langgraph/store/redis/base.py",
+        "details": "RedisStore with optional vector index via RediSearch HNSW, supports multi-field vectorization and namespace isolation"
+      }
+    },
+    "primary_database": {
+      "type": "Redis",
+      "version": ">=8.0 (includes RedisJSON + RediSearch) or Redis Stack",
+      "usage": "Checkpoints, store items, write keys, sorted set key registry",
+      "connection_pattern": "Connection pool with sync/async variants, auto-detection of cluster/standalone/proxy mode",
+      "code_evidence": {
+        "file": "pyproject.toml",
+        "details": "redis>=5.2.1, redisvl>=0.11.0 for vector operations"
+      }
+    },
+    "graph_database": {
+      "type": "none",
+      "usage": "N/A"
+    },
+    "cache": {
+      "type": "Redis native",
+      "usage": "Semantic cache middleware (vector similarity LLM response cache), tool result cache middleware, TTL-based expiration with refresh-on-read",
+      "ttl_strategy": "Native Redis TTL with PERSIST command for important threads",
+      "code_evidence": {
+        "file": "langgraph/checkpoint/redis/base.py",
+        "details": "TTL integration throughout: checkpoint TTL, store TTL, refresh_on_read, PERSIST command support"
+      }
+    },
+    "object_storage": {
+      "type": "none",
+      "usage": "All data stored in Redis"
+    },
+    "data_scale": {
+      "estimated_size": "Depends on checkpoint volume; shallow mode saves ~90% storage",
+      "growth_rate": "Proportional to conversation volume and checkpoint frequency",
+      "retention_policy": "TTL-based automatic expiration, ShallowRedisSaver for latest-only"
+    },
+    "performance": {
+      "read_latency": "<1ms for key lookups, 1-10ms for search queries",
+      "write_latency": "<1ms for single writes, pipeline batching for bulk",
+      "throughput": "Redis single-node: 100K+ ops/sec, cluster scales linearly"
+    }
+  },
+  "compute": {
+    "cpu": {
+      "minimum": "2 vCPUs",
+      "recommended": "4-8 vCPUs",
+      "workload_type": "I/O-bound (Redis operations, LLM API calls)",
+      "code_evidence": {
+        "file": "pyproject.toml",
+        "details": "Pure Python with async support, no CPU-intensive local computation"
+      }
+    },
+    "memory": {
+      "minimum": "512MB (application) + Redis memory",
+      "recommended": "2-4GB (application) + Redis memory proportional to data",
+      "peak_usage_scenario": "Concurrent checkpoint writes with large state objects"
+    },
+    "gpu": {
+      "required": false,
+      "usage": "None - embeddings via external API (OpenAI, etc.) or optional local sentence-transformers",
+      "cuda_dependencies": [],
+      "gpu_code_locations": [],
+      "frameworks": [],
+      "code_evidence": {
+        "file": "pyproject.toml",
+        "details": "No torch/cuda/GPU dependencies in production. sentence-transformers in dev dependencies only for testing vector search."
+      }
+    },
+    "ascend_npu": {
+      "compatibility": "not_applicable",
+      "migration_effort": "none",
+      "analysis": "项目不使用本地GPU计算。嵌入通过外部API(OpenAI等)或可选的sentence-transformers生成。生产环境无CUDA依赖。",
+      "required_changes": [],
+      "cann_toolkit_version": "N/A",
+      "torch_ascend_support": "N/A - 无torch依赖",
+      "alternative_solutions": [
+        "使用华为云ModelArts提供的嵌入API替代OpenAI",
+        "如使用本地嵌入,可通过torch_npu运行sentence-transformers"
+      ]
+    },
+    "scalability": {
+      "horizontal": true,
+      "auto_scaling_support": true,
+      "scaling_strategy": "Application层无状态,可水平扩展;Redis Cluster支持自动分片;自适应集群检测避免CROSSSLOT错误",
+      "code_evidence": {
+        "file": "langgraph/checkpoint/redis/base.py",
+        "details": "Automatic cluster detection, cluster-aware operations (pipeline vs individual), CROSSSLOT avoidance"
+      }
+    },
+    "serverless": {
+      "compatible": true,
+      "limitations": "需要持久Redis连接,冷启动延迟,连接池管理",
+      "recommended_services": ["AWS Lambda + ElastiCache", "Azure Functions + Azure Cache for Redis"]
+    },
+    "concurrency": {
+      "model": "Sync + Async dual implementation",
+      "estimated_concurrent_users": "100-1000+ (取决于Redis集群规模)",
+      "bottlenecks": "Redis连接池大小, LLM API速率限制"
+    }
+  },
+  "external_services": {
+    "llm_providers": [
+      {
+        "name": "OpenAI",
+        "usage": "LLM responses, embeddings (text-embedding-3-small)",
+        "required": false,
+        "api_compatible": true,
+        "alternatives": ["Anthropic", "任何LangChain兼容的LLM提供商"]
+      }
+    ],
+    "other_apis": [
+      {
+        "name": "LangSmith",
+        "usage": "可选的追踪和监控",
+        "required": false
+      }
+    ]
+  },
+  "deployment": {
+    "docker": {
+      "has_dockerfile": false,
+      "base_image": "N/A (library, not standalone service)",
+      "multi_stage": false,
+      "size_estimate": "N/A"
+    },
+    "kubernetes": {
+      "ready": true,
+      "helm_chart": false,
+      "resource_limits": {
+        "cpu": "2-8 cores",
+        "memory": "2-8Gi",
+        "gpu": "none"
+      },
+      "notes": "作为库集成到LangGraph应用中,Redis需要独立部署(Redis Cluster或Redis Stack)"
+    },
+    "configuration": {
+      "env_vars": ["REDIS_URL", "OPENAI_API_KEY"],
+      "config_files": ["langgraph.json"],
+      "secrets_management": "环境变量或密钥管理服务"
+    },
+    "observability": {
+      "logging": "Python标准logging",
+      "metrics": "通过LangSmith集成",
+      "tracing": "LangSmith tracing支持",
+      "health_checks": "Redis连接检查"
+    }
+  },
+  "huawei_cloud": {
+    "recommended_services": {
+      "compute": {
+        "service": "CCE (Cloud Container Engine) 或 ECS",
+        "spec": "通用计算型 4vCPU/8GB",
+        "justification": "纯I/O密集型应用,无GPU需求"
+      },
+      "database": {
+        "service": "DCS Redis (分布式缓存服务)",
+        "spec": "DCS Redis 7.0+ 主备实例或集群实例",
+        "justification": "需要RedisJSON和RediSearch模块支持。注意:华为云DCS Redis可能不支持RediSearch模块,需要自建Redis Stack或使用替代方案",
+        "limitations": "华为云DCS标准版不包含RediSearch模块,需确认是否支持Redis Stack或需自建",
+        "alternatives": [
+          "在ECS/CCE上自建Redis Stack (包含RedisJSON + RediSearch)",
+          "使用GaussDB(for Redis)但需验证模块兼容性"
+        ]
+      },
+      "vector_search": {
+        "service": "如DCS不支持RediSearch,可考虑CSS (云搜索服务Elasticsearch)或GaussDB向量检索",
+        "justification": "替代RediSearch的向量搜索能力"
+      },
+      "storage": {
+        "service": "EVS (弹性卷服务) SSD",
+        "justification": "Redis持久化存储"
+      },
+      "networking": {
+        "service": "VPC + ELB",
+        "justification": "内网通信和负载均衡"
+      }
+    },
+    "cost_estimation": {
+      "monthly": {
+        "small": "$80-150 (2vCPU ECS + DCS Redis 4GB主备)",
+        "medium": "$300-600 (4vCPU CCE + DCS Redis 16GB集群)",
+        "large": "$1000-2000 (8vCPU CCE集群 + DCS Redis 64GB集群)"
+      },
+      "notes": "主要成本来自DCS Redis实例大小和LLM API调用"
+    },
+    "special_requirements": {
+      "redis_modules": "需要RedisJSON和RediSearch模块,华为云DCS标准版可能不支持,建议自建Redis Stack",
+      "network": "应用与Redis间低延迟网络(<1ms)",
+      "data_sovereignty": "所有数据存储在Redis中,部署在华为云即满足数据主权要求"
+    },
+    "architecture_recommendations": [
+      "使用CCE部署应用和自建Redis Stack容器",
+      "利用DCS Redis作为缓存层,自建Redis Stack处理搜索需求",
+      "通过ELB实现应用层负载均衡",
+      "使用OBS进行Redis RDB/AOF备份",
+      "集成华为云ModelArts API替代OpenAI嵌入服务",
+      "考虑使用GaussDB向量检索替代RediSearch,需要适配层开发"
+    ]
+  }
+}

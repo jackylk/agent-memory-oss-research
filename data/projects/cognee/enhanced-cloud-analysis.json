@@ -1,0 +1,199 @@
+{
+  "project_name": "cognee",
+  "analysis_date": "2026-02-13",
+  "storage": {
+    "vector_storage": {
+      "solution": "多后端向量数据库(默认LanceDB)",
+      "database": "LanceDB (默认) / ChromaDB / PGVector / Qdrant / Weaviate / Milvus",
+      "vector_dimension": 384,
+      "index_type": "HNSW",
+      "evidence": "pyproject.toml: lancedb>=0.24.0为核心依赖, fastembed<=0.6.0提供本地嵌入(默认384维); 可选pgvector>=0.3.5, chromadb>=0.6; VectorDBInterface抽象层支持6+后端"
+    },
+    "primary_database": {
+      "type": "关系数据库(SQLite默认/PostgreSQL可选)",
+      "min_version": "SQLite 3.x / PostgreSQL 12+",
+      "required_extensions": ["PGVector (PostgreSQL向量扩展, 可选)"],
+      "connection_pooling": {
+        "driver": "SQLAlchemy异步连接 (aiosqlite/asyncpg)",
+        "max_connections": "PostgreSQL默认连接池"
+      },
+      "evidence": "pyproject.toml: sqlalchemy>=2.0.39, aiosqlite>=0.20.0为核心依赖; postgres可选: psycopg2>=2.9.10, asyncpg>=0.30.0; Alembic做数据库迁移"
+    },
+    "graph_database": {
+      "required": true,
+      "type": "Kuzu (默认, 嵌入式) / Neo4j / Neptune",
+      "evidence": "pyproject.toml: kuzu==0.11.3为核心依赖; neo4j>=5.28.0为可选; GraphDBInterface支持3种后端"
+    },
+    "cache": {
+      "type": "Redis (可选) / DiskCache / fakeredis (默认)",
+      "min_version": "Redis 5.0+ (可选)",
+      "required_modules": ["diskcache>=5.6.3", "fakeredis[lua]>=2.32.0 (默认)", "redis>=5.0.3 (可选)"],
+      "evidence": "pyproject.toml: fakeredis为核心依赖(内存模拟Redis); 可选redis>=5.0.3; diskcache>=5.6.3"
+    },
+    "object_storage": {
+      "required": false,
+      "use_case": ["文档原始文件存储", "S3后端(可选, s3fs+boto3)"]
+    },
+    "data_scale": {
+      "estimated_total": "1K用户约90GB, 10K用户约900GB",
+      "per_user_avg": "原始数据+处理后数据+缓存约90MB/用户",
+      "evidence": "架构文档的存储需求分析表"
+    },
+    "performance": {
+      "vector_search_latency": "<100ms (top-10, P99)",
+      "qps_target": "10-500 QPS (按规模)",
+      "p95_latency": "<500ms (含LLM调用)",
+      "concurrent_connections": "50-1000"
+    }
+  },
+  "compute": {
+    "cpu": {
+      "min_vcpu": 4,
+      "recommended_vcpu": 8,
+      "workload_type": "IO密集(多数据库操作) + CPU密集(文档处理和图提取)"
+    },
+    "memory": {
+      "min_gb": 8,
+      "recommended_gb": 16,
+      "memory_intensive_ops": ["Kuzu图遍历", "文档处理管道", "fastembed模型加载", "onnxruntime推理"],
+      "oom_risk": "中等"
+    },
+    "gpu": {
+      "required": false,
+      "recommended": false,
+      "use_case": "不需要",
+      "cuda_dependency": {
+        "has_direct_cuda": false,
+        "custom_cuda_kernels": false,
+        "gpu_libraries": ["onnxruntime (CPU版本, 用于fastembed)"],
+        "evidence": "pyproject.toml: onnxruntime<=1.22.1和fastembed<=0.6.0为核心依赖, 均默认CPU运行; uv.lock中nvidia-*包为PyTorch传递依赖(transformers可选扩展); 核心嵌入使用fastembed(ONNX Runtime CPU); 无直接CUDA代码"
+      }
+    },
+    "ascend_npu": {
+      "compatibility_level": "容易适配",
+      "framework_analysis": {
+        "framework": "ONNX Runtime (fastembed) + 可选PyTorch (transformers)",
+        "framework_version": "onnxruntime<=1.22.1",
+        "ascend_support": true,
+        "cann_version": "CANN 8.0+ (onnxruntime-cann)"
+      },
+      "migration": {
+        "effort_level": "低",
+        "blockers": [],
+        "code_changes_required": [
+          "安装onnxruntime-cann替代onnxruntime以启用昇腾NPU加速fastembed",
+          "如使用transformers可选依赖: 安装torch-npu替代cuda版PyTorch"
+        ]
+      },
+      "recommendation": "Cognee核心使用fastembed(基于ONNX Runtime)做嵌入, ONNX Runtime已有华为昇腾CANN后端支持(onnxruntime-cann)。只需替换onnxruntime包为onnxruntime-cann即可在昇腾NPU上加速嵌入计算, 代码无需修改。LLM调用走外部API不受影响。"
+    },
+    "scalability": {
+      "horizontal_scaling": true,
+      "stateless": true,
+      "auto_scaling_metrics": ["CPU利用率", "请求延迟", "任务队列深度"]
+    },
+    "serverless": {
+      "suitable": false,
+      "cold_start_tolerance": "不适合",
+      "reasons": ["需加载fastembed模型", "需持久数据库连接", "管道处理可能耗时较长"]
+    },
+    "concurrency": {
+      "model": "异步(asyncio)",
+      "async_framework": "FastAPI + asyncio",
+      "message_queue": {
+        "required": false,
+        "systems": ["Redis (可选, 用于缓存)", "Modal (可选, 分布式执行)"]
+      },
+      "websocket": true,
+      "streaming": true
+    }
+  },
+  "external_services": {
+    "llm": {
+      "providers": ["OpenAI (推荐)", "Anthropic Claude", "Google Gemini", "Mistral", "Groq", "Ollama (本地)", "AWS Bedrock"],
+      "embedding_models": ["fastembed/bge-base-en-v1.5 (本地, 384维, 默认)", "text-embedding-3-small/large (OpenAI)", "nomic-embed-text (Ollama本地)"],
+      "local_model_support": true,
+      "cost_optimization": ["默认本地fastembed零成本嵌入", "支持Groq低延迟低成本LLM", "管道缓存避免重复处理", "使用litellm统一API降低切换成本"]
+    }
+  },
+  "deployment": {
+    "complexity": 5,
+    "docker": {
+      "available": true,
+      "image_size": "约1.2GB",
+      "multi_stage_build": true
+    },
+    "kubernetes": {
+      "required": false,
+      "recommended": true,
+      "helm_available": true
+    },
+    "configuration": {
+      "env_vars_count": 25,
+      "secrets_count": 5,
+      "complexity_level": "中等"
+    },
+    "observability": {
+      "metrics_export": true,
+      "structured_logging": true,
+      "health_checks": true
+    }
+  },
+  "huawei_cloud": {
+    "overall_difficulty": "中等",
+    "recommended_services": {
+      "database": {
+        "primary": "华为云RDS for PostgreSQL (生产) / SQLite (开发)",
+        "vector_solution": "LanceDB自托管 或 华为云GaussDB+向量检索 或 PGVector on RDS"
+      },
+      "cache": "华为云DCS Redis (可选, 生产环境推荐)",
+      "compute": {
+        "primary": "华为云ECS (4核8GB起步)",
+        "ai_acceleration": "无需(fastembed CPU足够)"
+      },
+      "middleware": {
+        "load_balancer": "华为云ELB",
+        "object_storage": "华为云OBS (替代S3)"
+      }
+    },
+    "cost_estimation": {
+      "small_scale": {
+        "description": "1000用户, 开发/小型生产",
+        "monthly_cost": "¥1,500-2,500",
+        "breakdown": {
+          "ECS_4c8g": "¥400",
+          "RDS_PostgreSQL_2c4g": "¥300",
+          "EVS_100GB": "¥60",
+          "LLM_API": "¥500",
+          "带宽_10Mbps": "¥150"
+        }
+      },
+      "medium_scale": {
+        "description": "10000用户, 生产环境",
+        "monthly_cost": "¥12,000-18,000",
+        "breakdown": {
+          "ECS_8c16g_x4": "¥3,200",
+          "RDS_PostgreSQL_4c8g": "¥800",
+          "DCS_Redis_2g": "¥200",
+          "ELB": "¥300",
+          "LLM_API": "¥5,000",
+          "OBS_1TB": "¥150",
+          "带宽_50Mbps": "¥750"
+        }
+      }
+    },
+    "special_requirements": [
+      "默认Kuzu图数据库嵌入式运行无需额外服务",
+      "如升级到Neo4j需自托管在ECS上",
+      "S3存储后端需改为华为云OBS(兼容S3 API, 代码修改极少)",
+      "fastembed使用ONNX Runtime, 可使用onnxruntime-cann加速"
+    ],
+    "architecture_recommendations": [
+      "开发阶段使用默认配置: SQLite+LanceDB+Kuzu零成本运行",
+      "生产环境切换到: PostgreSQL+PGVector+Kuzu/Neo4j",
+      "华为云OBS替代AWS S3作为文件存储后端(修改STORAGE_BACKEND配置)",
+      "使用华为云CCE(容器引擎)部署Helm Chart",
+      "如需国内LLM可配置litellm对接华为云盘古大模型"
+    ]
+  }
+}

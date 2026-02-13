@@ -1,0 +1,189 @@
+{
+  "project_name": "beads",
+  "analysis_date": "2026-02-13",
+  "storage": {
+    "vector_storage": {
+      "solution": "无向量存储（可选，非核心功能）",
+      "database": "无",
+      "vector_dimension": 0,
+      "index_type": "N/A",
+      "evidence": "go.mod中无向量数据库依赖；核心使用Dolt SQL + JSONL；architecture.md称向量DB为'可选(不是核心)'"
+    },
+    "primary_database": {
+      "type": "版本控制SQL（Dolt，MySQL兼容语法）",
+      "min_version": "Dolt嵌入式（dolthub/driver v0.2.1+）",
+      "required_extensions": ["全文搜索索引", "JSON路径查询", "ACID事务"],
+      "connection_pooling": {
+        "configured": true,
+        "evidence": "通过Dolt RPC client/server模式或嵌入式引擎，支持Unix域套接字和Windows命名管道连接"
+      },
+      "evidence": "go.mod: dolthub/driver v0.2.1; dolthub/dolt/go v0.40.5; 内部存储层internal/storage/dolt/"
+    },
+    "graph_database": {
+      "required": false,
+      "type": "无（依赖关系通过SQL表实现）",
+      "evidence": "依赖关系(Dependency)通过SQL表存储，包含blocks/related/parent_child等类型，非图数据库"
+    },
+    "cache": {
+      "type": "内存缓存（Go内建）",
+      "min_version": "N/A",
+      "required_modules": [],
+      "evidence": "architecture.md提到Dolt查询缓存、已阻止期缓存、标签/依赖缓存，均为Go内存实现"
+    },
+    "object_storage": {
+      "required": false,
+      "use_case": ["JSONL文件通过Git同步", "可选S3兼容API"]
+    },
+    "data_scale": {
+      "estimated_total": "1000 issues约50MB，100000 issues约5GB",
+      "per_user_avg": "JSONL: 1-5MB/千issues",
+      "evidence": "architecture.md存储规模估算"
+    },
+    "performance": {
+      "vector_search_latency": "N/A",
+      "qps_target": "100-500 QPS（单Dolt实例）",
+      "p95_latency": "<50ms（本地查询）",
+      "concurrent_connections": "多个RPC连接（Dolt服务器模式）"
+    }
+  },
+  "compute": {
+    "cpu": {
+      "min_vcpu": 2,
+      "recommended_vcpu": 4,
+      "workload_type": "CLI工具 + SQL查询 + Git同步"
+    },
+    "memory": {
+      "min_gb": 4,
+      "recommended_gb": 8,
+      "memory_intensive_ops": ["Dolt数据库操作", "JSONL流式导入/导出", "内存压缩（compact）"],
+      "oom_risk": "极低（Go运行时高效内存管理）"
+    },
+    "gpu": {
+      "required": false,
+      "recommended": false,
+      "use_case": "不需要",
+      "cuda_dependency": {
+        "has_direct_cuda": false,
+        "custom_cuda_kernels": false,
+        "gpu_libraries": [],
+        "evidence": "Go语言项目，go.mod无任何GPU/CUDA相关依赖；全部为CPU计算"
+      }
+    },
+    "ascend_npu": {
+      "compatibility_level": "不适用(无GPU需求)",
+      "framework_analysis": {
+        "framework": "Go（无ML框架）",
+        "framework_version": "Go 1.25.6",
+        "ascend_support": false,
+        "cann_version": "N/A"
+      },
+      "migration": {
+        "effort_level": "无需迁移",
+        "blockers": [],
+        "code_changes_required": []
+      },
+      "recommendation": "Beads是纯Go CLI工具，完全不涉及GPU/CUDA计算。AI功能（语义压缩）通过外部API调用（Anthropic Claude API），无本地模型推理需求，完全不需要NPU适配。"
+    },
+    "scalability": {
+      "horizontal_scaling": false,
+      "stateless": false,
+      "auto_scaling_metrics": []
+    },
+    "serverless": {
+      "suitable": false,
+      "cold_start_tolerance": "N/A",
+      "reasons": ["CLI工具，非服务端应用", "依赖本地文件系统和Git仓库", "Dolt数据库需要持久存储"]
+    },
+    "concurrency": {
+      "model": "文件锁防止数据竞争",
+      "async_framework": "Go goroutines",
+      "message_queue": {
+        "required": false,
+        "systems": []
+      },
+      "websocket": false,
+      "streaming": true
+    }
+  },
+  "external_services": {
+    "llm": {
+      "providers": ["Anthropic Claude API（优先，用于压缩）", "OpenAI GPT-4（替代品）", "Ollama（可选本地）"],
+      "embedding_models": ["OpenAI text-embedding-3-small（可选）"],
+      "local_model_support": true,
+      "cost_optimization": ["AI功能可选，基础功能无需LLM", "语义压缩仅用于已关闭issues"]
+    }
+  },
+  "deployment": {
+    "complexity": 3,
+    "docker": {
+      "available": false,
+      "image_size": "N/A（单二进制约30-50MB）",
+      "multi_stage_build": false
+    },
+    "kubernetes": {
+      "required": false,
+      "recommended": false,
+      "helm_available": false
+    },
+    "configuration": {
+      "env_vars_count": 3,
+      "secrets_count": 2,
+      "complexity_level": "低"
+    },
+    "observability": {
+      "metrics_export": false,
+      "structured_logging": true,
+      "health_checks": false
+    }
+  },
+  "huawei_cloud": {
+    "overall_difficulty": "容易",
+    "recommended_services": {
+      "database": {
+        "primary": "Dolt嵌入式（随应用部署）或华为云RDS for MySQL（Dolt服务器模式替代）",
+        "vector_solution": "无需"
+      },
+      "cache": "无需",
+      "compute": {
+        "primary": "华为云ECS s7.large (2vCPU/4GB)（单机）或c7.xlarge（团队）",
+        "ai_acceleration": "无需GPU/NPU"
+      },
+      "middleware": {
+        "git_hosting": "华为云CodeArts Repo（Git托管）"
+      }
+    },
+    "cost_estimation": {
+      "small_scale": {
+        "description": "个人/小团队(1-10人)，Dolt嵌入式，Git同步",
+        "monthly_cost": "¥0-100",
+        "breakdown": {
+          "Git_hosting": "¥0（CodeArts Repo免费）",
+          "AI_API": "¥50-100（可选Claude API）",
+          "compute": "¥0（本地运行）"
+        }
+      },
+      "medium_scale": {
+        "description": "中等团队(10-100人)，Dolt服务器模式",
+        "monthly_cost": "¥500-1,500",
+        "breakdown": {
+          "ECS_dolt_server": "¥300（c7.xlarge）",
+          "Git_hosting": "¥0-100",
+          "AI_API": "¥200-500",
+          "EVS_storage": "¥50（50GB SSD）",
+          "EIP_bandwidth": "¥50"
+        }
+      }
+    },
+    "special_requirements": [
+      "Go二进制跨平台编译，华为云ECS上可直接运行Linux AMD64/ARM64版本",
+      "Dolt嵌入式模式无需额外数据库服务",
+      "Git托管是唯一硬性基础设施需求"
+    ],
+    "architecture_recommendations": [
+      "小团队直接在开发机本地运行bd CLI，通过CodeArts Repo同步",
+      "中等规模可在ECS上部署Dolt服务器模式，支持多用户并发",
+      "使用华为云CodeArts流水线实现CI/CD",
+      "Go单二进制部署极简，可直接在ECS上运行无需容器化"
+    ]
+  }
+}

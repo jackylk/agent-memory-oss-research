@@ -1,0 +1,212 @@
+{
+  "project_name": "memU",
+  "analysis_version": "2.0",
+  "analysis_date": "2026-02-13",
+  "storage": {
+    "vector_database": {
+      "type": "pgvector (PostgreSQL扩展)",
+      "provider": "PostgreSQL + pgvector",
+      "embedding_dimensions": "可配置,取决于嵌入模型",
+      "estimated_storage_per_1m_vectors": "~4-8GB (取决于维度)",
+      "index_type": "HNSW (pgvector)",
+      "distance_metric": "cosine/L2",
+      "code_evidence": {
+        "file": "src/memu/database/postgres/schema.py",
+        "details": "from pgvector.sqlalchemy import VECTOR as Vector; 使用pgvector SQLAlchemy集成"
+      }
+    },
+    "primary_database": {
+      "type": "PostgreSQL (生产) / SQLite (开发)",
+      "version": "PostgreSQL 15+ with pgvector extension",
+      "usage": "记忆存储、用户数据、会话管理、工作流状态;使用SQLModel + Alembic ORM和迁移",
+      "connection_pattern": "SQLAlchemy异步连接池, SQLModel ORM",
+      "code_evidence": {
+        "file": "pyproject.toml",
+        "details": "sqlmodel>=0.0.27, alembic>=1.14.0; optional postgres依赖: pgvector>=0.3.4, sqlalchemy[postgresql-psycopgbinary]"
+      }
+    },
+    "graph_database": {
+      "type": "none",
+      "usage": "N/A"
+    },
+    "cache": {
+      "type": "无独立缓存层",
+      "usage": "依赖数据库和内存缓存",
+      "ttl_strategy": "通过pendulum时间管理支持"
+    },
+    "object_storage": {
+      "type": "none",
+      "usage": "N/A"
+    },
+    "data_scale": {
+      "estimated_size": "取决于用户量和记忆密度,6种记忆类型(知识/技能/行为模式/工具使用/交互/元数据)",
+      "growth_rate": "24/7持续监控产生持续增长",
+      "retention_policy": "层次化文件系统组织,带交叉引用和符号链接"
+    },
+    "performance": {
+      "read_latency": "10-100ms (向量搜索 + SQL查询)",
+      "write_latency": "5-50ms (数据库写入)",
+      "throughput": "取决于PostgreSQL配置和并发连接数"
+    }
+  },
+  "compute": {
+    "cpu": {
+      "minimum": "4 vCPUs",
+      "recommended": "8-16 vCPUs",
+      "workload_type": "混合:I/O-bound(LLM API) + CPU(Rust扩展,工作流编排,24/7监控)",
+      "code_evidence": {
+        "file": "pyproject.toml + Cargo.toml",
+        "details": "Python 3.13+ + Rust扩展(pyo3/maturin),memu._core Rust原生模块"
+      }
+    },
+    "memory": {
+      "minimum": "2GB",
+      "recommended": "4-8GB",
+      "peak_usage_scenario": "24/7工作流运行 + 多用户并发 + Rust扩展内存"
+    },
+    "gpu": {
+      "required": false,
+      "usage": "无 - 嵌入通过外部API生成(OpenAI/Qwen/Voyage AI/OpenRouter)",
+      "cuda_dependencies": [],
+      "gpu_code_locations": [],
+      "frameworks": [],
+      "code_evidence": {
+        "file": "src/memu/embedding/",
+        "details": "HTTPEmbeddingClient和OpenAIEmbeddingSDKClient都通过HTTP API调用外部嵌入服务,无本地嵌入计算。支持OpenAI兼容API格式。"
+      }
+    },
+    "ascend_npu": {
+      "compatibility": "not_applicable",
+      "migration_effort": "none",
+      "analysis": "项目不使用本地GPU/NPU计算。所有嵌入通过外部HTTP API生成(OpenAI/Qwen/Voyage AI/OpenRouter),采用EmbeddingBackend抽象层设计。Rust扩展(pyo3)仅用于CPU性能优化,不涉及GPU计算。",
+      "required_changes": [],
+      "cann_toolkit_version": "N/A",
+      "torch_ascend_support": "N/A - 无torch依赖(numpy用于数据处理,非GPU计算)",
+      "alternative_solutions": [
+        "使用华为云ModelArts API替代OpenAI嵌入服务",
+        "配置OpenAI兼容接口指向华为盘古模型API",
+        "通过OpenRouter路由到华为云模型"
+      ]
+    },
+    "scalability": {
+      "horizontal": true,
+      "auto_scaling_support": true,
+      "scaling_strategy": "应用层可水平扩展,但24/7工作流需要持续运行实例;数据库层通过PostgreSQL主从复制扩展",
+      "code_evidence": {
+        "file": "src/memu/server/",
+        "details": "memu-server CLI入口,支持容器化部署"
+      }
+    },
+    "serverless": {
+      "compatible": false,
+      "limitations": "24/7持续监控需要常驻进程,Rust扩展需要特定构建环境,不适合FaaS",
+      "recommended_services": ["CCE/ECS长期运行容器"]
+    },
+    "concurrency": {
+      "model": "异步Python + Rust扩展",
+      "estimated_concurrent_users": "50-200 (取决于LLM API吞吐量)",
+      "bottlenecks": "LLM API速率限制, 数据库连接池, 24/7工作流资源占用"
+    }
+  },
+  "external_services": {
+    "llm_providers": [
+      {
+        "name": "OpenAI",
+        "usage": "LLM推理 + 嵌入生成",
+        "required": false,
+        "api_compatible": true,
+        "alternatives": ["Qwen", "Voyage AI", "OpenRouter", "Grok", "Doubao"]
+      },
+      {
+        "name": "Qwen (通义千问)",
+        "usage": "可选LLM推理 + 嵌入",
+        "required": false,
+        "api_compatible": true
+      },
+      {
+        "name": "OpenRouter",
+        "usage": "多模型路由网关",
+        "required": false,
+        "api_compatible": true
+      }
+    ],
+    "other_apis": []
+  },
+  "deployment": {
+    "docker": {
+      "has_dockerfile": false,
+      "base_image": "需要Python 3.13+ + Rust编译环境",
+      "multi_stage": false,
+      "size_estimate": "~500MB-1GB (Python + Rust编译产物 + 依赖)",
+      "notes": "需要maturin构建Rust扩展,建议multi-stage Docker构建"
+    },
+    "kubernetes": {
+      "ready": true,
+      "helm_chart": false,
+      "resource_limits": {
+        "cpu": "4-8 cores",
+        "memory": "4-8Gi",
+        "gpu": "none"
+      },
+      "notes": "24/7运行需求,建议Deployment而非Job;需要外部PostgreSQL"
+    },
+    "configuration": {
+      "env_vars": ["OPENAI_API_KEY", "DATABASE_URL", "EMBEDDING_MODEL"],
+      "config_files": [".env"],
+      "secrets_management": "环境变量, python-dotenv"
+    },
+    "observability": {
+      "logging": "Python logging",
+      "metrics": "自定义指标",
+      "tracing": "无内置分布式追踪",
+      "health_checks": "需自定义实现"
+    }
+  },
+  "huawei_cloud": {
+    "recommended_services": {
+      "compute": {
+        "service": "CCE (Cloud Container Engine) 或 ECS",
+        "spec": "通用计算型 8vCPU/16GB RAM (24/7运行)",
+        "justification": "24/7持续运行的工作流引擎,需要稳定的长期运行环境"
+      },
+      "database": {
+        "service": "GaussDB(for PostgreSQL) 或 RDS for PostgreSQL",
+        "spec": "PostgreSQL 15+ 主备实例 4vCPU/16GB, 启用pgvector扩展",
+        "justification": "核心数据存储,需要pgvector支持向量搜索;SQLModel/Alembic兼容PostgreSQL",
+        "limitations": "需确认GaussDB/RDS支持pgvector扩展"
+      },
+      "storage": {
+        "service": "EVS SSD",
+        "justification": "PostgreSQL数据存储"
+      },
+      "networking": {
+        "service": "VPC + NAT Gateway",
+        "justification": "内网通信 + 外部LLM API访问"
+      }
+    },
+    "cost_estimation": {
+      "monthly": {
+        "small": "$150-300 (4vCPU ECS + RDS PostgreSQL 2vCPU)",
+        "medium": "$400-800 (8vCPU CCE + GaussDB 4vCPU + NAT)",
+        "large": "$1000-2000 (CCE集群 + GaussDB主备 + 多实例)"
+      },
+      "notes": "24/7运行导致计算成本较高;LLM API费用为主要外部成本。Rust扩展需要特殊构建环境。"
+    },
+    "special_requirements": {
+      "python_version": "需要Python 3.13+,可能需要自定义容器镜像",
+      "rust_build": "需要Rust工具链 + maturin构建pyo3扩展",
+      "pgvector": "PostgreSQL需安装pgvector扩展",
+      "always_on": "24/7工作流需要持续运行,不适合按需计费实例"
+    },
+    "architecture_recommendations": [
+      "使用CCE部署24/7运行的memU容器",
+      "使用GaussDB(for PostgreSQL)作为核心数据库,启用pgvector",
+      "构建自定义Docker镜像(Python 3.13 + Rust + maturin)",
+      "使用NAT Gateway访问外部LLM API(OpenAI/Qwen等)",
+      "配置华为云ModelArts API替代部分外部嵌入服务",
+      "使用AOM监控24/7工作流健康状态",
+      "考虑使用华为盘古模型API替代OpenAI降低跨境延迟",
+      "配置EIP + 带宽包for外部API调用"
+    ]
+  }
+}

@@ -1,0 +1,208 @@
+{
+  "project_name": "memory-agent",
+  "analysis_version": "2.0",
+  "analysis_date": "2026-02-13",
+  "storage": {
+    "vector_database": {
+      "type": "LangGraph Store (内置向量搜索)",
+      "provider": "LangGraph内置Store,生产环境推荐PostgreSQL + pgvector",
+      "embedding_dimensions": 1536,
+      "estimated_storage_per_1m_vectors": "~6GB (1536-dim float32 + metadata)",
+      "index_type": "HNSW (pgvector) 或内存索引",
+      "distance_metric": "cosine",
+      "code_evidence": {
+        "file": "src/memory_agent/graph.py",
+        "details": "使用LangGraph Store的search方法进行语义检索,通过user_id命名空间隔离"
+      }
+    },
+    "primary_database": {
+      "type": "PostgreSQL (生产) / SQLite (开发)",
+      "version": "PostgreSQL 15+ with pgvector extension",
+      "usage": "检查点存储、记忆持久化、用户命名空间隔离",
+      "connection_pattern": "通过LangGraph框架管理,支持连接池",
+      "code_evidence": {
+        "file": "pyproject.toml",
+        "details": "langgraph>=1.0.0 管理存储后端,langchain-openai/langchain-anthropic提供LLM"
+      }
+    },
+    "graph_database": {
+      "type": "none",
+      "usage": "N/A"
+    },
+    "cache": {
+      "type": "无独立缓存层",
+      "usage": "依赖LangGraph内置状态管理",
+      "ttl_strategy": "无TTL策略,记忆永久保存"
+    },
+    "object_storage": {
+      "type": "none",
+      "usage": "N/A"
+    },
+    "data_scale": {
+      "estimated_size": "取决于用户数和记忆密度,每用户预计KB-MB级别",
+      "growth_rate": "线性增长,每次对话可能产生0-5条记忆",
+      "retention_policy": "无自动过期,通过memory_id更新去重"
+    },
+    "performance": {
+      "read_latency": "10-50ms (向量搜索)",
+      "write_latency": "5-20ms (记忆写入)",
+      "throughput": "20-50并发请求/单实例"
+    }
+  },
+  "compute": {
+    "cpu": {
+      "minimum": "2 vCPUs",
+      "recommended": "4-8 vCPUs",
+      "workload_type": "I/O-bound (LLM API调用, 数据库操作)",
+      "code_evidence": {
+        "file": "src/memory_agent/graph.py",
+        "details": "完全异步架构,asyncio.gather并发记忆保存,主要等待LLM API和数据库I/O"
+      }
+    },
+    "memory": {
+      "minimum": "512MB",
+      "recommended": "2-4GB",
+      "peak_usage_scenario": "并发多用户请求时的消息历史缓冲"
+    },
+    "gpu": {
+      "required": false,
+      "usage": "无 - 嵌入通过OpenAI API生成",
+      "cuda_dependencies": [],
+      "gpu_code_locations": [],
+      "frameworks": [],
+      "code_evidence": {
+        "file": "pyproject.toml",
+        "details": "依赖langchain-openai和langchain-anthropic,无torch/cuda/GPU本地依赖"
+      }
+    },
+    "ascend_npu": {
+      "compatibility": "not_applicable",
+      "migration_effort": "none",
+      "analysis": "项目完全基于API调用(OpenAI/Anthropic),无本地模型推理或嵌入计算。所有计算密集任务由外部LLM API处理。",
+      "required_changes": [],
+      "cann_toolkit_version": "N/A",
+      "torch_ascend_support": "N/A - 无torch依赖",
+      "alternative_solutions": [
+        "使用华为云ModelArts API替代OpenAI/Anthropic",
+        "通过配置langchain自定义LLM替换为华为盘古模型"
+      ]
+    },
+    "scalability": {
+      "horizontal": true,
+      "auto_scaling_support": true,
+      "scaling_strategy": "应用层无状态(状态在PostgreSQL),可水平扩展;通过LangGraph Cloud或自建集群",
+      "code_evidence": {
+        "file": "langgraph.json",
+        "details": "支持LangGraph Cloud部署,天然支持水平扩展"
+      }
+    },
+    "serverless": {
+      "compatible": true,
+      "limitations": "需要数据库连接持久化,冷启动延迟",
+      "recommended_services": ["LangGraph Cloud", "AWS Lambda + RDS", "Azure Functions + PostgreSQL"]
+    },
+    "concurrency": {
+      "model": "完全异步 (asyncio)",
+      "estimated_concurrent_users": "20-50/单实例",
+      "bottlenecks": "LLM API速率限制, 数据库连接池"
+    }
+  },
+  "external_services": {
+    "llm_providers": [
+      {
+        "name": "OpenAI",
+        "usage": "LLM推理 + 嵌入生成(text-embedding-3-small)",
+        "required": true,
+        "api_compatible": true,
+        "alternatives": ["Anthropic (Claude)", "任何LangChain兼容提供商"]
+      },
+      {
+        "name": "Anthropic",
+        "usage": "可选LLM推理",
+        "required": false,
+        "api_compatible": true,
+        "alternatives": ["OpenAI"]
+      }
+    ],
+    "other_apis": [
+      {
+        "name": "LangSmith",
+        "usage": "追踪和调试(可选)",
+        "required": false
+      }
+    ]
+  },
+  "deployment": {
+    "docker": {
+      "has_dockerfile": false,
+      "base_image": "通过LangGraph CLI部署",
+      "multi_stage": false,
+      "size_estimate": "~200MB (Python应用)"
+    },
+    "kubernetes": {
+      "ready": true,
+      "helm_chart": false,
+      "resource_limits": {
+        "cpu": "2-4 cores",
+        "memory": "2-4Gi",
+        "gpu": "none"
+      },
+      "notes": "通过LangGraph Cloud或自建K8s部署,需要外部PostgreSQL"
+    },
+    "configuration": {
+      "env_vars": ["OPENAI_API_KEY", "ANTHROPIC_API_KEY", "LANGSMITH_API_KEY"],
+      "config_files": ["langgraph.json", ".env"],
+      "secrets_management": "环境变量,python-dotenv"
+    },
+    "observability": {
+      "logging": "Python标准logging",
+      "metrics": "LangSmith集成",
+      "tracing": "LangSmith全链路追踪",
+      "health_checks": "LangGraph框架内置"
+    }
+  },
+  "huawei_cloud": {
+    "recommended_services": {
+      "compute": {
+        "service": "CCE (Cloud Container Engine) 或 FunctionGraph",
+        "spec": "通用计算型 2-4vCPU/4-8GB",
+        "justification": "轻量级Python应用,纯I/O密集型"
+      },
+      "database": {
+        "service": "GaussDB(for PostgreSQL) 或 RDS for PostgreSQL",
+        "spec": "PostgreSQL 15+ 主备实例,启用pgvector扩展",
+        "justification": "LangGraph生产环境推荐PostgreSQL + pgvector作为存储后端",
+        "limitations": "需确认华为云RDS/GaussDB支持pgvector扩展安装"
+      },
+      "storage": {
+        "service": "EVS SSD",
+        "justification": "数据库存储"
+      },
+      "networking": {
+        "service": "VPC + ELB",
+        "justification": "应用与数据库内网通信"
+      }
+    },
+    "cost_estimation": {
+      "monthly": {
+        "small": "$50-100 (2vCPU ECS + RDS PostgreSQL 2vCPU)",
+        "medium": "$150-300 (4vCPU CCE + RDS PostgreSQL 4vCPU)",
+        "large": "$500-1000 (CCE集群 + GaussDB主备)"
+      },
+      "notes": "主要成本为LLM API调用费用(OpenAI/Anthropic),基础设施成本较低"
+    },
+    "special_requirements": {
+      "pgvector": "需在PostgreSQL中安装pgvector扩展",
+      "llm_api": "需要可靠的外部LLM API访问(OpenAI/Anthropic)",
+      "langgraph": "需要LangGraph框架运行时支持"
+    },
+    "architecture_recommendations": [
+      "使用GaussDB(for PostgreSQL)启用pgvector扩展作为存储后端",
+      "使用CCE部署LangGraph应用容器",
+      "通过华为云ModelArts API替代OpenAI,降低跨境API延迟",
+      "使用NAT Gateway访问外部LLM API",
+      "配置Auto Scaling based on并发请求数",
+      "使用SMN(消息通知服务)监控异常"
+    ]
+  }
+}

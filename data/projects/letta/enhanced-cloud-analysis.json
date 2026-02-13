@@ -1,0 +1,279 @@
+{
+  "project_name": "letta",
+  "analysis_date": "2026-02-13",
+  "storage": {
+    "vector_storage": {
+      "solution": "混合方案",
+      "database": "PostgreSQL+pgvector(默认) / Pinecone(可选) / TurboPuffer(可选)",
+      "vector_dimension": 4096,
+      "default_embedding_dim": 1024,
+      "common_embedding_dim": 1536,
+      "index_type": "未显式指定(依赖pgvector默认,无HNSW/IVF显式创建)",
+      "evidence": "constants.py: MAX_EMBEDDING_DIM=4096, DEFAULT_EMBEDDING_DIM=1024; passage.py: Vector(MAX_EMBEDDING_DIM)使用pgvector; embedding_config.py: 默认OpenAI text-embedding-3-small维度1536; settings.py: enable_pinecone配置项; 支持TurboPuffer(use_tpuf配置); agent_manager_helper.py: np.pad填充至MAX_EMBEDDING_DIM"
+    },
+    "primary_database": {
+      "type": "PostgreSQL(主要) / SQLite(轻量备选)",
+      "min_version": "14+",
+      "required_extensions": ["pgvector"],
+      "connection_pooling": {
+        "pool_size": 25,
+        "max_overflow": 10,
+        "pool_timeout": 30,
+        "pool_recycle": 1800,
+        "pool_pre_ping": true,
+        "pool_use_lifo": true,
+        "disable_pooling_default": true
+      },
+      "evidence": "settings.py: pg_pool_size=25, pg_max_overflow=10, disable_sqlalchemy_pooling=True(默认使用NullPool); db.py: 使用asyncpg异步驱动+SQLAlchemy AsyncEngine; Dockerfile.simple: CREATE EXTENSION IF NOT EXISTS vector; 支持pg8000和asyncpg两种驱动; startup.sh: alembic upgrade head执行迁移"
+    },
+    "graph_database": {
+      "required": false,
+      "type": "无",
+      "evidence": "代码库中未发现任何图数据库依赖(Neo4j/ArangoDB等),Letta采用三层内存架构(Core/Recall/Archival)而非知识图谱方式"
+    },
+    "cache": {
+      "type": "Redis(可选,含NoopClient降级)",
+      "min_version": "6.2+",
+      "required_modules": ["Redis Streams"],
+      "evidence": "pyproject.toml: redis>=6.2.0作为可选依赖; redis_client.py: AsyncRedisClient实现连接池(max_connections=50)、分布式锁(conversation lock)、Redis Streams(xadd/xread/xrange); NoopAsyncRedisClient提供无Redis时的降级方案; startup.sh: 内置Redis或外部Redis(LETTA_REDIS_HOST); docker-compose.yml: redis:alpine; settings.py: redis_host/redis_port配置"
+    },
+    "object_storage": {
+      "required": false,
+      "use_case": ["文件处理(markitdown解析docx/pdf/pptx)", "工具执行沙盒挂载(LETTA_SANDBOX_MOUNT_PATH)"],
+      "evidence": "pyproject.toml依赖markitdown[docx,pdf,pptx]; 文件存储主要依赖PostgreSQL存储文件元数据和内容; 无S3/OSS显式依赖"
+    },
+    "data_scale": {
+      "estimated_total": "中等规模,主要受Agent数量和消息历史驱动",
+      "per_user_avg": "每Agent约10-100MB(含向量嵌入4096维x4字节=16KB/passage,消息历史约500字节/条)",
+      "evidence": "MAX_EMBEDDING_DIM=4096,每向量16KB; EMBEDDING_BATCH_SIZE=200; 消息历史存储在PostgreSQL; archival_memory通过向量存储; CORE_MEMORY_BLOCK_CHAR_LIMIT=20000字符/block"
+    },
+    "performance": {
+      "vector_search_latency": "<100ms(pgvector) / <50ms(Pinecone)",
+      "qps_target": "依赖部署规模,单实例约100-500 QPS(FastAPI异步)",
+      "p95_latency": "主要受LLM API调用延迟支配(1-30秒),向量搜索本身<100ms",
+      "concurrent_connections": "pg_pool_size=25(默认NullPool无限制); Redis max_connections=50; multi_agent_concurrent_sends=50"
+    }
+  },
+  "compute": {
+    "cpu": {
+      "min_vcpu": 2,
+      "recommended_vcpu": 4,
+      "workload_type": "IO密集型",
+      "evidence": "主要瓶颈在LLM API调用(网络IO)和数据库查询; FastAPI异步框架+asyncio; 无CPU密集型计算(如模型推理); event_loop_threadpool_max_workers=43"
+    },
+    "memory": {
+      "min_gb": 4,
+      "recommended_gb": 8,
+      "memory_intensive_ops": [
+        "Agent状态缓存(Core Memory blocks最大20000字符/block)",
+        "消息历史加载(message_buffer_limit=60条)",
+        "向量嵌入批处理(EMBEDDING_BATCH_SIZE=200, 每批约3.2MB@4096维)",
+        "LLM请求/响应缓冲(上下文窗口最大272K tokens)"
+      ],
+      "oom_risk": "低",
+      "evidence": "settings.py: message_buffer_limit=60, archival_memory_token_limit=8192; 无大型模型加载; 主要内存消耗来自并发Agent会话状态"
+    },
+    "gpu": {
+      "required": false,
+      "recommended": false,
+      "use_case": "不需要",
+      "cuda_dependency": {
+        "has_direct_cuda": false,
+        "custom_cuda_kernels": false,
+        "gpu_libraries": [],
+        "evidence": "代码库中零torch/cuda/cupy/tensorflow依赖; pyproject.toml无任何GPU相关库; 所有LLM推理通过外部API(OpenAI/Anthropic/Google等20+提供商); 所有embedding生成通过外部API(OpenAI/Pinecone/Ollama等); 搜索整个letta目录未发现任何CUDA/GPU引用"
+      }
+    },
+    "ascend_npu": {
+      "compatibility_level": "不适用(无GPU需求)",
+      "framework_analysis": {
+        "framework": "无(纯API调用架构)",
+        "framework_version": "不适用",
+        "ascend_support": true,
+        "cann_version": "不适用"
+      },
+      "migration": {
+        "effort_level": "不适用",
+        "blockers": [],
+        "code_changes_required": [],
+        "notes": "Letta本身不执行任何GPU计算,所有AI推理和嵌入生成均通过外部API完成。如需自托管LLM/Embedding模型(vLLM/Ollama),则需要考虑昇腾NPU兼容性,但这属于外部服务配置,与Letta代码库无关。"
+      },
+      "recommendation": "Letta是纯API调用架构,不涉及GPU/NPU计算,无需迁移。如果在华为云部署时希望使用昇腾NPU加速自托管的LLM推理服务(如vLLM+Llama),需确认vLLM对CANN/昇腾的支持情况。Letta本身通过settings.py中的vllm_api_base/ollama_base_url等配置项连接外部推理服务,与底层硬件解耦。"
+    },
+    "scalability": {
+      "horizontal_scaling": true,
+      "stateless": true,
+      "auto_scaling_metrics": ["CPU利用率", "内存利用率", "活跃连接数", "请求延迟"],
+      "evidence": "FastAPI无状态API服务器; 状态存储在PostgreSQL+Redis; settings.py: uvicorn_workers=1(可调整); Redis分布式锁(conversation lock)支持多实例; db_pool_monitoring监控连接池"
+    },
+    "serverless": {
+      "suitable": false,
+      "cold_start_tolerance": "不适合",
+      "reasons": [
+        "需要持久数据库连接(PostgreSQL连接池)",
+        "Redis连接需要维持",
+        "Agent会话状态需要持久化",
+        "LLM API调用延迟长(1-30秒),超过典型serverless超时",
+        "startup.sh包含PostgreSQL/Redis启动和数据库迁移",
+        "OpenTelemetry Collector后台进程"
+      ]
+    },
+    "concurrency": {
+      "model": "异步",
+      "async_framework": "asyncio + FastAPI + SQLAlchemy AsyncEngine",
+      "message_queue": {
+        "required": true,
+        "systems": ["Redis Streams(内置)", "Temporal(可选,用于文件上传workflow)"],
+        "evidence": "redis_client.py: 完整Redis Streams API(xadd/xread/xrange/xrevrange/xlen/xdel/xtrim); redis_stream_manager.py: SSE流式推送; pyproject.toml: temporalio>=1.8.0; settings.py: use_lettuce_for_file_uploads(Temporal集成)"
+      },
+      "websocket": true,
+      "streaming": true,
+      "evidence": "pyproject.toml: websockets依赖; SSE流式输出(rest_api/utils.py: sse_formatter/sse_async_generator); settings.py: enable_keepalive=True, keepalive_interval=50秒; enable_cancellation_aware_streaming; aiomultiprocess>=0.9.1; async-lru>=2.0.5"
+    }
+  },
+  "external_services": {
+    "llm": {
+      "providers": [
+        "OpenAI(GPT-4.1/GPT-5/o3等)",
+        "Anthropic(Claude 4/4.5)",
+        "Google AI(Gemini 2.5/3.0)",
+        "Google Vertex AI",
+        "Azure OpenAI",
+        "Groq",
+        "Ollama(本地)",
+        "vLLM(自托管)",
+        "SGLang(自托管)",
+        "LM Studio(本地)",
+        "DeepSeek",
+        "xAI(Grok)",
+        "Together AI",
+        "AWS Bedrock",
+        "Mistral AI",
+        "OpenRouter",
+        "ZhipuAI(Z.AI/GLM)",
+        "MiniMax"
+      ],
+      "embedding_models": [
+        "OpenAI text-embedding-3-small(1536维,默认)",
+        "OpenAI text-embedding-ada-002(1536维)",
+        "Letta Free Embedding(1536维)",
+        "Pinecone llama-text-embed-v2",
+        "Ollama本地模型",
+        "Azure OpenAI Embedding",
+        "Google AI Embedding",
+        "TurboPuffer(可选外部服务)"
+      ],
+      "local_model_support": true,
+      "cost_optimization": [
+        "Prompt Caching(Anthropic原生支持)",
+        "多LLM提供商切换(根据成本选择最优模型)",
+        "记忆压缩和汇总(减少token消耗,partial_evict_summarizer_percentage=0.30)",
+        "上下文窗口智能管理(SUMMARIZATION_TRIGGER_MULTIPLIER=1.0)",
+        "批量embedding处理(EMBEDDING_BATCH_SIZE=200)"
+      ],
+      "evidence": "settings.py: 18个LLM提供商的API Key配置; constants.py: LLM_MAX_CONTEXT_WINDOW字典包含100+模型; embedding_config.py: 支持openai/anthropic/bedrock/google_ai/google_vertex/azure/groq/ollama/vllm/pinecone等endpoint类型"
+    }
+  },
+  "deployment": {
+    "complexity": 7,
+    "docker": {
+      "available": true,
+      "image_size": "约1.5-2GB(基于ankane/pgvector,含Python/Node.js/Redis/OTel Collector)",
+      "multi_stage_build": true,
+      "evidence": "Dockerfile: 2阶段构建(builder+runtime); 基于ankane/pgvector:v0.5.1; 内嵌PostgreSQL+Redis+OTel Collector; 暴露端口8283(API)/5432(PG)/6379(Redis)/4317-4318(OTel); 支持ARM64和AMD64架构(TARGETARCH)"
+    },
+    "kubernetes": {
+      "required": false,
+      "recommended": true,
+      "helm_available": false,
+      "evidence": "cloud-needs.md提到K8s生产部署推荐; 无内置Helm chart; 支持水平扩展; Redis分布式锁支持多Pod; 但Dockerfile已包含all-in-one方案(内嵌PG+Redis)"
+    },
+    "configuration": {
+      "env_vars_count": 80,
+      "secrets_count": 15,
+      "complexity_level": "复杂",
+      "evidence": "settings.py: Settings类约50个配置项(LETTA_前缀), ModelSettings约25个API Key配置, ToolSettings约10个配置, TelemetrySettings约15个配置; 关键secrets: 各LLM提供商API Key(openai/anthropic/gemini等), pg_password, redis密码, pinecone_api_key, encryption_key, e2b_api_key, modal_token_secret"
+    },
+    "observability": {
+      "metrics_export": true,
+      "structured_logging": true,
+      "health_checks": true,
+      "evidence": "pyproject.toml: opentelemetry-api/sdk/instrumentation全套; otel/目录: tracing.py/metrics.py/resource.py/db_pool_monitoring.py/metric_registry.py; structlog>=25.4.0; log.py支持JSON格式日志(json_logging配置); health.py: /v1/health端点; Datadog集成(ddtrace>=4.2.1,datadog>=0.49.1); ClickHouse作为OTEL traces后端; Sentry集成(sentry-sdk[fastapi]); OTel Collector内嵌于Docker镜像"
+    }
+  },
+  "huawei_cloud": {
+    "overall_difficulty": "中等",
+    "recommended_services": {
+      "database": {
+        "primary": "RDS PostgreSQL 14+(需开启pgvector扩展)",
+        "vector_solution": "RDS PostgreSQL + pgvector(推荐) 或 外接Pinecone(保持SaaS)",
+        "notes": "华为云RDS PostgreSQL需确认pgvector扩展支持;如不支持,可使用GaussDB或自建PostgreSQL+pgvector容器;asyncpg驱动兼容标准PostgreSQL协议"
+      },
+      "cache": {
+        "service": "DCS Redis 6.x+",
+        "notes": "Letta使用标准Redis协议+Redis Streams,DCS Redis完全兼容;Redis为可选组件,有NoopClient降级;需支持Redis Streams命令(xadd/xread等)"
+      },
+      "compute": {
+        "primary": "ECS通用型s6/c6(2-8 vCPU, 4-16GB RAM)",
+        "container": "CCE(云容器引擎)用于K8s部署",
+        "ai_acceleration": "不需要(Letta本身无GPU计算需求)",
+        "notes": "如需自托管LLM推理服务,可额外部署ModelArts+昇腾NPU运行vLLM/Ollama,Letta通过API连接"
+      },
+      "middleware": {
+        "message_queue": "不需要额外MQ(Redis Streams已满足)",
+        "api_gateway": "APIG(API网关)用于流量管理和鉴权",
+        "load_balancer": "ELB弹性负载均衡",
+        "dns": "云解析DNS",
+        "cdn": "CDN加速(如有前端UI)"
+      },
+      "observability": {
+        "monitoring": "AOM(应用运维管理)或对接OTel Collector到LTS",
+        "logging": "LTS(云日志服务)",
+        "tracing": "APM(应用性能管理)接收OTel数据",
+        "notes": "Letta内嵌OTel Collector,可配置OTLP endpoint指向华为云AOM/APM; 也可配置ClickHouse后端"
+      }
+    },
+    "cost_estimation": {
+      "small_scale": {
+        "description": "100用户/100 Agent,每Agent月500条消息",
+        "monthly_cost": "¥800-1,500",
+        "breakdown": {
+          "compute_ecs": "¥300-500(ECS s6.large.2, 2vCPU/4GB x1)",
+          "database_rds": "¥400-600(RDS PostgreSQL主备版, 2核4GB, 100GB SSD)",
+          "cache_redis": "¥0-100(DCS Redis可选, 基础版2GB)",
+          "llm_api": "¥200-300(外部LLM API成本,非华为云费用)",
+          "network": "¥50-100(EIP+带宽)"
+        }
+      },
+      "medium_scale": {
+        "description": "1000用户/1000 Agent,每Agent月1000条消息",
+        "monthly_cost": "¥3,000-6,000",
+        "breakdown": {
+          "compute_ecs_or_cce": "¥800-1,500(ECS c6.xlarge.2 x2-3台或CCE集群)",
+          "database_rds": "¥1,000-2,000(RDS PostgreSQL高可用版, 4核8GB, 500GB SSD + 只读副本)",
+          "cache_redis": "¥200-400(DCS Redis主备版, 4GB)",
+          "llm_api": "¥3,000-5,000(外部LLM API成本,非华为云费用)",
+          "network_elb": "¥200-400(ELB+EIP+带宽)",
+          "observability": "¥100-200(AOM+LTS基础版)"
+        }
+      }
+    },
+    "special_requirements": [
+      "pgvector扩展支持:华为云RDS PostgreSQL需确认是否支持pgvector扩展,若不支持需使用自建容器化PostgreSQL+pgvector(ankane/pgvector镜像)",
+      "Redis Streams支持:确认DCS Redis版本支持Streams命令(Redis 5.0+)",
+      "OTel Collector集成:Letta Docker镜像内嵌OTel Collector,可配置OTLP endpoint指向华为云APM",
+      "多LLM API连通性:需确保ECS/CCE可访问外部LLM API(OpenAI/Anthropic等),可能需要配置NAT网关或代理",
+      "容器镜像兼容:Letta Dockerfile基于ankane/pgvector(Debian),支持ARM64,可运行在鲲鹏架构上",
+      "数据库迁移:Letta使用Alembic进行数据库迁移,需确保RDS PostgreSQL权限允许CREATE EXTENSION"
+    ],
+    "architecture_recommendations": [
+      "推荐架构:ECS/CCE + RDS PostgreSQL(pgvector) + DCS Redis + ELB + APIG",
+      "开发环境:单台ECS运行Letta Docker镜像(all-in-one,内嵌PG+Redis),成本最低",
+      "生产环境:将PostgreSQL和Redis外置为华为云托管服务,Letta API服务部署在CCE中实现水平扩展",
+      "LLM服务:初期使用外部API(通过NAT网关访问),大规模后可在ModelArts部署自托管模型",
+      "监控体系:利用Letta内嵌的OTel Collector,配置OTLP endpoint到华为云AOM,实现全链路观测",
+      "安全合规:使用APIG进行API鉴权和流量控制;使用DEW(数据加密服务)管理API Key等密钥;配置VPC安全组限制数据库和Redis访问",
+      "灾备方案:RDS PostgreSQL多可用区部署;DCS Redis主备版;ECS/CCE跨可用区调度"
+    ]
+  }
+}

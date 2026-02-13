@@ -94,6 +94,172 @@
         "Kubernetes",
         "Graph DB cluster"
       ]
+    },
+    "storage_detail": {
+      "vector_storage": {
+        "solution": "图数据库内置向量索引",
+        "database": "Neo4j向量索引 / FalkorDB向量搜索 / OpenSearch",
+        "vector_dimension": 1536,
+        "index_type": "HNSW / IVF",
+        "evidence": "OpenAIEmbedder默认text-embedding-3-small(1536维); Neo4j 5.26+支持原生向量索引; neptune_driver使用OpenSearch做向量搜索; 向量存储在EntityNode的name_embedding和summary_embedding字段"
+      },
+      "primary_database": {
+        "type": "图数据库",
+        "min_version": "Neo4j 5.26+ / FalkorDB 1.1.2+ / Kuzu 0.11.3+",
+        "required_extensions": [
+          "APOC (Neo4j可选)"
+        ],
+        "connection_pooling": {
+          "driver": "neo4j-python-driver异步连接池",
+          "max_connections": "默认Neo4j驱动管理"
+        },
+        "evidence": "pyproject.toml: neo4j>=5.26.0; driver/neo4j_driver.py使用AsyncDriver; 支持5种图数据库后端"
+      },
+      "graph_database": {
+        "required": true,
+        "type": "Neo4j (推荐) / FalkorDB / Kuzu / Neptune",
+        "evidence": "核心依赖neo4j>=5.26.0; Graphiti类初始化需要图数据库URI; 所有实体和关系存储在图中"
+      },
+      "cache": {
+        "type": "DiskCache",
+        "min_version": "5.6.3+",
+        "required_modules": [
+          "diskcache"
+        ],
+        "evidence": "pyproject.toml: diskcache>=5.6.3; 用于去重缓存避免重复LLM调用"
+      },
+      "data_scale": {
+        "estimated_total": "实体百万级, 关系千万级, Episode百万级",
+        "per_user_avg": "按group_id隔离, 每用户数千实体和关系",
+        "evidence": "架构文档提到支持百万级实体和千万级关系"
+      },
+      "performance": {
+        "vector_search_latency": "<200ms (p95)",
+        "qps_target": "50-200 QPS",
+        "p95_latency": "<200ms",
+        "concurrent_connections": "50-200"
+      }
+    },
+    "compute_detail": {
+      "cpu": {
+        "min_vcpu": 8,
+        "recommended_vcpu": 16,
+        "workload_type": "IO密集(图查询) + CPU密集(LLM调用编排)"
+      },
+      "memory": {
+        "min_gb": 16,
+        "recommended_gb": 32,
+        "memory_intensive_ops": [
+          "Neo4j图遍历",
+          "DiskCache去重缓存",
+          "并行episode处理"
+        ],
+        "oom_risk": "中等"
+      },
+      "gpu": {
+        "required": false,
+        "recommended": false,
+        "use_case": "不需要",
+        "cuda_dependency": {
+          "has_direct_cuda": false,
+          "custom_cuda_kernels": false,
+          "gpu_libraries": [],
+          "evidence": "代码中无直接CUDA调用; uv.lock中nvidia-*依赖是PyTorch的传递依赖(sentence-transformers可选扩展); 核心功能不使用GPU; BGERerankerClient使用sentence-transformers但默认CPU运行且为可选功能"
+        }
+      },
+      "scalability": {
+        "horizontal_scaling": true,
+        "stateless": true,
+        "auto_scaling_metrics": [
+          "CPU利用率",
+          "API延迟",
+          "活跃连接数"
+        ]
+      },
+      "serverless": {
+        "suitable": false,
+        "cold_start_tolerance": "不适合",
+        "reasons": [
+          "需要持久图数据库连接",
+          "episode处理需长时间运行",
+          "DiskCache需要本地存储"
+        ]
+      },
+      "concurrency": {
+        "model": "异步(asyncio)",
+        "async_framework": "asyncio + FastAPI",
+        "message_queue": {
+          "required": false,
+          "systems": []
+        },
+        "websocket": false,
+        "streaming": false
+      }
+    },
+    "ascend_npu": {
+      "compatibility_level": "不适用(无GPU需求)",
+      "framework_analysis": {
+        "framework": "无核心深度学习框架依赖",
+        "framework_version": "N/A",
+        "ascend_support": true,
+        "cann_version": "N/A"
+      },
+      "migration": {
+        "effort_level": "极低",
+        "blockers": [],
+        "code_changes_required": [
+          "如使用BGERerankerClient(可选): 安装torch-npu替代cuda版PyTorch",
+          "如使用SentenceTransformerEmbedder(可选): 同上"
+        ]
+      },
+      "recommendation": "Graphiti核心功能完全基于API调用(LLM+Embedding), 无GPU需求。可选的BGEReranker和SentenceTransformerEmbedder在CPU上运行良好, 如需NPU加速仅需安装torch-npu即可。"
+    },
+    "external_services": {
+      "llm": {
+        "providers": [
+          "OpenAI (推荐, gpt-4.1/gpt-4.1-mini)",
+          "Anthropic (Claude)",
+          "Google Gemini",
+          "Groq",
+          "Azure OpenAI"
+        ],
+        "embedding_models": [
+          "text-embedding-3-small (OpenAI, 1536维)",
+          "voyage-3 (VoyageAI, 1024维)",
+          "all-MiniLM-L6-v2 (本地可选, 384维)",
+          "text-embedding-004 (Google Vertex AI, 768维)",
+          "amazon.titan-embed-text-v2 (AWS Bedrock, 1024维)"
+        ],
+        "local_model_support": true,
+        "cost_optimization": [
+          "使用gpt-4.1-mini替代gpt-4.1",
+          "DiskCache缓存减少重复LLM调用",
+          "批量episode处理减少API往返"
+        ]
+      }
+    },
+    "deployment_detail": {
+      "complexity": 7,
+      "docker": {
+        "available": true,
+        "image_size": "约800MB",
+        "multi_stage_build": false
+      },
+      "kubernetes": {
+        "required": false,
+        "recommended": true,
+        "helm_available": false
+      },
+      "configuration": {
+        "env_vars_count": 8,
+        "secrets_count": 3,
+        "complexity_level": "中等"
+      },
+      "observability": {
+        "metrics_export": true,
+        "structured_logging": true,
+        "health_checks": true
+      }
     }
   },
   "categories": {
@@ -117,5 +283,59 @@
       "name": "企业级混合检索引擎",
       "description": "采用语义嵌入+BM25关键词+图遍历的混合检索策略,支持复杂关系结构的演化追踪和多图数据库后端(Neo4j、FalkorDB、Neptune),实现企业级动态知识整合和历史关系追踪能力。"
     }
-  ]
+  ],
+  "huawei_cloud": {
+    "overall_difficulty": "中等",
+    "recommended_services": {
+      "database": {
+        "primary": "华为云图引擎服务GES 或 自托管Neo4j on ECS",
+        "vector_solution": "Neo4j内置向量索引(无需独立向量库)"
+      },
+      "cache": "DiskCache(本地磁盘, 无需云缓存服务)",
+      "compute": {
+        "primary": "华为云ECS (8核32GB)",
+        "ai_acceleration": "无需"
+      },
+      "middleware": {
+        "load_balancer": "华为云ELB"
+      }
+    },
+    "cost_estimation": {
+      "small_scale": {
+        "description": "单团队使用, 每日1000个episode",
+        "monthly_cost": "¥3,000-5,000",
+        "breakdown": {
+          "ECS_应用_8c16g": "¥800",
+          "ECS_Neo4j_8c32g": "¥1,200",
+          "EVS_200GB_SSD": "¥120",
+          "OpenAI_API": "¥500",
+          "带宽_20Mbps": "¥300"
+        }
+      },
+      "medium_scale": {
+        "description": "多团队使用, 每日10万个episode",
+        "monthly_cost": "¥15,000-25,000",
+        "breakdown": {
+          "ECS_应用_16c32g_x3": "¥5,400",
+          "ECS_Neo4j_16c64g_x2": "¥5,600",
+          "EVS_1TB_SSD": "¥600",
+          "ELB": "¥300",
+          "OpenAI_API": "¥3,000",
+          "带宽_100Mbps": "¥1,500"
+        }
+      }
+    },
+    "special_requirements": [
+      "Neo4j 5.26+社区版可免费使用, 企业版需商业许可",
+      "华为云GES目前不兼容Neo4j Cypher查询, 需自托管Neo4j",
+      "如使用FalkorDB替代方案, 可降低内存需求"
+    ],
+    "architecture_recommendations": [
+      "Neo4j部署在独立ECS实例, 数据盘使用超高IO EVS",
+      "应用服务器使用ECS多实例+ELB负载均衡",
+      "通过华为云NAT网关访问OpenAI API, 或使用华为云盘古大模型API替代",
+      "使用华为云OBS定期备份Neo4j数据",
+      "建议使用Kuzu嵌入式图数据库简化部署(无需独立服务)"
+    ]
+  }
 }

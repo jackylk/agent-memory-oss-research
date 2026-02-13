@@ -1,0 +1,197 @@
+{
+  "project_name": "Memori",
+  "analysis_date": "2026-02-13",
+  "storage": {
+    "vector_storage": {
+      "solution": "FAISS本地向量索引",
+      "database": "faiss-cpu (内置)",
+      "vector_dimension": 768,
+      "index_type": "IndexFlatL2 (欧氏距离)",
+      "evidence": "pyproject.toml: faiss-cpu>=1.7.0; memori/search/_faiss.py实现; 使用all-MiniLM-L6-v2模型生成768维向量; architecture.md确认IndexFlatL2类型"
+    },
+    "primary_database": {
+      "type": "多数据库适配器模式 (SQL/NoSQL)",
+      "min_version": "PostgreSQL 16 / MySQL 8 / MongoDB 7.0 / SQLite 3",
+      "required_extensions": ["pgvector (可选)"],
+      "connection_pooling": {
+        "method": "SQLAlchemy连接池",
+        "pool_size": 20,
+        "max_overflow": 0,
+        "pool_pre_ping": true
+      },
+      "evidence": "docker-compose.yml: postgres:16, mongo:7.0, mysql:8; 支持SQLAlchemy/Django ORM/PyMongo/DB API 2.0适配器; 还支持CockroachDB, OceanBase, Oracle"
+    },
+    "graph_database": {
+      "required": false,
+      "type": "内置知识图谱(SQL表存储)",
+      "evidence": "memori_knowledge_graph表使用subject_id/predicate_id/object_id存储语义三元组,不依赖外部图数据库如Neo4j"
+    },
+    "cache": {
+      "type": "内存缓存 (内置)",
+      "min_version": "无外部依赖",
+      "required_modules": [],
+      "evidence": "自动缓存entity_id/process_id/session_id; SQLAlchemy连接池; 可选Redis热数据缓存"
+    },
+    "object_storage": {
+      "required": false,
+      "use_case": ["温数据归档(S3/GCS)", "日志存储", "备份"]
+    },
+    "data_scale": {
+      "estimated_total": "1K用户7.5GB, 10K用户75GB, 100K用户750GB",
+      "per_user_avg": "约5-7.5MB/用户(含对话、事实、嵌入)",
+      "evidence": "architecture.md容量估算表; 9个核心SQL表; 向量数据按FAISS内存索引计算"
+    },
+    "performance": {
+      "vector_search_latency": "1-2ms (10K向量), 5-10ms (100K向量)",
+      "qps_target": "500-1000 (10K向量)",
+      "p95_latency": "<200ms端到端",
+      "concurrent_connections": "100-10000 (按部署规模)"
+    }
+  },
+  "compute": {
+    "cpu": {
+      "min_vcpu": 2,
+      "recommended_vcpu": 8,
+      "workload_type": "I/O密集型(LLM转发+异步处理)"
+    },
+    "memory": {
+      "min_gb": 2,
+      "recommended_gb": 8,
+      "memory_intensive_ops": ["FAISS向量索引加载", "sentence-transformers模型(~400MB)", "SQLAlchemy连接池"],
+      "oom_risk": "低-FAISS索引增长到1M+向量时需监控"
+    },
+    "gpu": {
+      "required": false,
+      "recommended": false,
+      "use_case": "不需要",
+      "cuda_dependency": {
+        "has_direct_cuda": false,
+        "custom_cuda_kernels": false,
+        "gpu_libraries": ["faiss-cpu(CPU版本)", "sentence-transformers(CPU可运行)"],
+        "evidence": "pyproject.toml明确使用faiss-cpu>=1.7.0而非faiss-gpu; sentence-transformers默认CPU运行; 代码中无torch.cuda调用"
+      }
+    },
+    "ascend_npu": {
+      "compatibility_level": "不适用(无GPU需求)",
+      "framework_analysis": {
+        "framework": "sentence-transformers + faiss-cpu",
+        "framework_version": "sentence-transformers>=3.0.0",
+        "ascend_support": false,
+        "cann_version": "不适用"
+      },
+      "migration": {
+        "effort_level": "无需迁移",
+        "blockers": [],
+        "code_changes_required": []
+      },
+      "recommendation": "该项目不需要GPU,全部使用CPU运行。sentence-transformers的嵌入模型在CPU上即可高效运行。如果未来需要加速嵌入计算,可考虑将sentence-transformers替换为MindSpore版本,但当前无此需求。"
+    },
+    "scalability": {
+      "horizontal_scaling": true,
+      "stateless": true,
+      "auto_scaling_metrics": ["CPU利用率", "请求队列深度", "数据库连接数"]
+    },
+    "serverless": {
+      "suitable": true,
+      "cold_start_tolerance": "2-5秒(模型加载)",
+      "reasons": ["无状态设计", "Python轻量级", "主要I/O密集型", "但sentence-transformers模型加载需要冷启动时间"]
+    },
+    "concurrency": {
+      "model": "异步IO + 线程池",
+      "async_framework": "asyncio + ThreadPoolExecutor",
+      "message_queue": {
+        "required": false,
+        "systems": ["推荐: Redis/RabbitMQ用于Advanced Augmentation异步任务"]
+      },
+      "websocket": false,
+      "streaming": true
+    }
+  },
+  "external_services": {
+    "llm": {
+      "providers": ["OpenAI (GPT-4o)", "Anthropic (Claude)", "Google (Gemini)", "xAI (Grok)", "AWS Bedrock", "LangChain", "Pydantic AI"],
+      "embedding_models": ["all-MiniLM-L6-v2 (本地, 768维)"],
+      "local_model_support": true,
+      "cost_optimization": ["本地嵌入模型(零成本)", "异步批处理减少API调用", "Advanced Augmentation可配置触发频率"]
+    }
+  },
+  "deployment": {
+    "complexity": 4,
+    "docker": {
+      "available": true,
+      "image_size": "~800MB (Python 3.12-slim + sentence-transformers)",
+      "multi_stage_build": false
+    },
+    "kubernetes": {
+      "required": false,
+      "recommended": true,
+      "helm_available": false
+    },
+    "configuration": {
+      "env_vars_count": 7,
+      "secrets_count": 5,
+      "complexity_level": "中等"
+    },
+    "observability": {
+      "metrics_export": false,
+      "structured_logging": true,
+      "health_checks": false
+    }
+  },
+  "huawei_cloud": {
+    "overall_difficulty": "容易",
+    "recommended_services": {
+      "database": {
+        "primary": "华为云RDS for PostgreSQL 16 / GaussDB",
+        "vector_solution": "FAISS内置(无需外部向量DB); 大规模可考虑华为云CSS(Elasticsearch)向量检索"
+      },
+      "cache": "华为云DCS for Redis (可选,用于热数据缓存)",
+      "compute": {
+        "primary": "华为云CCE (容器引擎) 或 ECS",
+        "ai_acceleration": "不需要GPU/NPU"
+      },
+      "middleware": {
+        "message_queue": "华为云DMS for Kafka/RabbitMQ (可选,用于异步任务)",
+        "secret_management": "华为云DEW (数据加密服务)"
+      }
+    },
+    "cost_estimation": {
+      "small_scale": {
+        "description": "1000活跃用户, 单实例部署",
+        "monthly_cost": "¥800-1,200",
+        "breakdown": {
+          "compute_ecs": "¥200 (2vCPU/4GB)",
+          "database_rds": "¥300 (PostgreSQL基础版)",
+          "storage": "¥50 (50GB SSD)",
+          "llm_api": "¥200-600 (按调用量)",
+          "network": "¥50"
+        }
+      },
+      "medium_scale": {
+        "description": "10000用户, 多实例+读写分离",
+        "monthly_cost": "¥5,000-8,000",
+        "breakdown": {
+          "compute_cce": "¥1,500 (3实例, 4vCPU/8GB)",
+          "database_rds": "¥2,000 (PostgreSQL高可用版)",
+          "cache_dcs": "¥500 (Redis 4GB)",
+          "storage": "¥200 (200GB SSD)",
+          "llm_api": "¥500-3,000",
+          "network_elb": "¥300"
+        }
+      }
+    },
+    "special_requirements": [
+      "需要配置环境变量管理LLM API密钥",
+      "如使用MongoDB需选择华为云DDS服务",
+      "OceanBase适配器已内置,可直接使用华为云上的OceanBase",
+      "sentence-transformers模型需预下载或配置模型镜像"
+    ],
+    "architecture_recommendations": [
+      "使用华为云CCE部署无状态应用层,RDS PostgreSQL作为主数据库",
+      "利用Memori内置的FAISS避免额外向量数据库成本",
+      "通过华为云ELB实现负载均衡和健康检查",
+      "使用华为云OBS存储日志和备份数据",
+      "建议使用华为云ModelArts的在线推理服务替代第三方LLM API以降低成本和延迟"
+    ]
+  }
+}

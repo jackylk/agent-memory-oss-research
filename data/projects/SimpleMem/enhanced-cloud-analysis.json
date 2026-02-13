@@ -1,0 +1,244 @@
+{
+  "project_name": "SimpleMem",
+  "analysis_version": "2.0",
+  "analysis_date": "2026-02-13",
+  "storage": {
+    "vector_database": {
+      "type": "LanceDB",
+      "provider": "LanceDB (嵌入式向量数据库)",
+      "embedding_dimensions": 1024,
+      "estimated_storage_per_1m_vectors": "~4GB (1024-dim float32 + Parquet格式压缩)",
+      "index_type": "IVF-PQ (LanceDB默认)",
+      "distance_metric": "cosine",
+      "code_evidence": {
+        "file": "requirements.txt + config.py.example",
+        "details": "lancedb==0.25.3, EMBEDDING_DIMENSION=1024, LANCEDB_PATH='./lancedb_data'"
+      }
+    },
+    "primary_database": {
+      "type": "LanceDB + SQLite",
+      "version": "LanceDB 0.25.3",
+      "usage": "向量存储(LanceDB) + 元数据/结构化查询(SQLite)",
+      "connection_pattern": "嵌入式数据库,文件系统存储",
+      "code_evidence": {
+        "file": "requirements.txt",
+        "details": "lancedb==0.25.3, pylance==0.39.0, SQLAlchemy==2.0.44"
+      }
+    },
+    "graph_database": {
+      "type": "none",
+      "usage": "N/A"
+    },
+    "cache": {
+      "type": "无独立缓存层",
+      "usage": "依赖LanceDB内置缓存",
+      "ttl_strategy": "无TTL,记忆通过语义压缩和去重管理"
+    },
+    "object_storage": {
+      "type": "本地文件系统",
+      "usage": "LanceDB Parquet数据文件, 可部署到云存储"
+    },
+    "data_scale": {
+      "estimated_size": "语义压缩后极小(~550 tokens/记忆,30x压缩),每用户MB级别",
+      "growth_rate": "低增长(语义压缩+去重)",
+      "retention_policy": "语义压缩自动去重和合并"
+    },
+    "performance": {
+      "read_latency": "10-100ms (LanceDB向量搜索 + BM25检索)",
+      "write_latency": "100-500ms (包含语义压缩LLM调用)",
+      "throughput": "受限于LLM API速率,压缩阶段为瓶颈"
+    }
+  },
+  "compute": {
+    "cpu": {
+      "minimum": "4 vCPUs",
+      "recommended": "8-16 vCPUs",
+      "workload_type": "混合:CPU(本地嵌入模型推理, BM25索引, 并行处理) + I/O(LLM API)",
+      "code_evidence": {
+        "file": "config.py.example",
+        "details": "MAX_PARALLEL_WORKERS=16, MAX_RETRIEVAL_WORKERS=8, ENABLE_PARALLEL_PROCESSING=True"
+      }
+    },
+    "memory": {
+      "minimum": "4GB (含嵌入模型加载)",
+      "recommended": "8-16GB",
+      "peak_usage_scenario": "Qwen3-Embedding-8B加载需~16GB;0.6B版本需~2GB"
+    },
+    "gpu": {
+      "required": false,
+      "usage": "可选 - 本地嵌入模型推理加速;核心功能不依赖GPU",
+      "cuda_dependencies": [
+        "torch==2.8.0 (requirements-gpu.txt)",
+        "nvidia-cublas-cu12==12.8.4.1",
+        "nvidia-cuda-cupti-cu12==12.8.90",
+        "nvidia-cuda-nvrtc-cu12==12.8.93",
+        "nvidia-cuda-runtime-cu12==12.8.90",
+        "nvidia-cudnn-cu12==9.10.2.21",
+        "nvidia-cufft-cu12==11.3.3.83",
+        "nvidia-curand-cu12==10.3.9.90",
+        "nvidia-cusolver-cu12==11.7.3.90",
+        "nvidia-cusparse-cu12==12.5.8.93",
+        "nvidia-nccl-cu12==2.27.3",
+        "triton==3.4.0"
+      ],
+      "gpu_code_locations": [
+        "utils/embedding.py - SentenceTransformers model.encode() 自动使用GPU",
+        "test_locomo10.py - pytorch_cos_sim 使用GPU加速"
+      ],
+      "frameworks": ["PyTorch 2.8.0", "sentence-transformers 5.1.1", "transformers 4.57.0"],
+      "code_evidence": {
+        "file": "requirements-gpu.txt",
+        "details": "独立的GPU依赖文件,包含完整CUDA 12工具包。主requirements.txt使用sentence-transformers(CPU)。GPU为可选加速。"
+      }
+    },
+    "ascend_npu": {
+      "compatibility": "partially_compatible",
+      "migration_effort": "medium",
+      "analysis": "GPU为可选加速(requirements-gpu.txt),核心功能可在CPU上运行。如需NPU加速本地嵌入模型推理,需要以下迁移工作。",
+      "required_changes": [
+        "将torch==2.8.0替换为torch-npu兼容版本",
+        "移除nvidia-*系列CUDA依赖,替换为CANN工具包",
+        "移除triton==3.4.0(NPU不支持)",
+        "验证sentence-transformers在torch_npu上的兼容性",
+        "验证Qwen3-Embedding模型在NPU上的推理正确性",
+        "修改模型加载代码添加NPU设备支持(device='npu:0')"
+      ],
+      "cann_toolkit_version": "CANN 8.0+ (对应PyTorch 2.x)",
+      "torch_ascend_support": "需要torch-npu >= 2.1.0,但torch 2.8.0可能超出当前torch-npu支持范围,需降级或等待兼容版本",
+      "alternative_solutions": [
+        "使用CPU运行sentence-transformers(0.6B模型性能可接受)",
+        "使用OpenRouter API调用远程嵌入服务,完全避免本地推理",
+        "使用华为云ModelArts提供的嵌入API(Qwen3-Embedding)",
+        "使用华为云MindSpore框架替代PyTorch运行嵌入模型"
+      ]
+    },
+    "scalability": {
+      "horizontal": true,
+      "auto_scaling_support": true,
+      "scaling_strategy": "应用层可并行处理(16 workers);LanceDB为嵌入式数据库,扩展需考虑共享存储",
+      "code_evidence": {
+        "file": "config.py.example",
+        "details": "ENABLE_PARALLEL_PROCESSING=True, MAX_PARALLEL_WORKERS=16"
+      }
+    },
+    "serverless": {
+      "compatible": false,
+      "limitations": "嵌入模型加载耗时, LanceDB文件系统依赖, 大内存需求",
+      "recommended_services": ["ECS/CCE容器部署"]
+    },
+    "concurrency": {
+      "model": "并行Worker池 + 异步I/O",
+      "estimated_concurrent_users": "10-50 (受限于LLM API和嵌入计算)",
+      "bottlenecks": "嵌入模型推理延迟, LLM API速率限制, LanceDB单实例写锁"
+    }
+  },
+  "external_services": {
+    "llm_providers": [
+      {
+        "name": "OpenAI",
+        "usage": "LLM推理(语义压缩, 合成, 回答生成)",
+        "required": false,
+        "api_compatible": true,
+        "alternatives": ["Qwen (dashscope)", "任何OpenAI兼容API"]
+      },
+      {
+        "name": "Anthropic",
+        "usage": "可选LLM推理",
+        "required": false,
+        "api_compatible": true,
+        "code_evidence": {
+          "file": "requirements.txt",
+          "details": "langchain-anthropic==1.2.0"
+        }
+      },
+      {
+        "name": "OpenRouter",
+        "usage": "统一API网关(LLM + 嵌入)",
+        "required": false,
+        "api_compatible": true
+      }
+    ],
+    "other_apis": []
+  },
+  "deployment": {
+    "docker": {
+      "has_dockerfile": false,
+      "base_image": "需自建 - Python 3.10+ 或 GPU版本需CUDA base image",
+      "multi_stage": false,
+      "size_estimate": "~2-5GB (含嵌入模型) 或 ~500MB (API嵌入模式)"
+    },
+    "kubernetes": {
+      "ready": true,
+      "helm_chart": false,
+      "resource_limits": {
+        "cpu": "4-16 cores",
+        "memory": "4-16Gi",
+        "gpu": "optional (NVIDIA T4/A10 for local embedding)"
+      },
+      "notes": "需要PersistentVolume for LanceDB数据, MCP Server需独立端口"
+    },
+    "configuration": {
+      "env_vars": ["OPENAI_API_KEY", "OPENAI_BASE_URL", "LLM_MODEL"],
+      "config_files": ["config.py"],
+      "secrets_management": "config.py (不提交版本控制)"
+    },
+    "observability": {
+      "logging": "Python标准logging",
+      "metrics": "无内置指标",
+      "tracing": "无分布式追踪",
+      "health_checks": "需自定义"
+    }
+  },
+  "huawei_cloud": {
+    "recommended_services": {
+      "compute": {
+        "service": "CCE (Cloud Container Engine) 或 ECS",
+        "spec": "通用计算型 8vCPU/16GB RAM (CPU嵌入) 或 GPU实例(如需本地推理加速)",
+        "justification": "并行处理需要多核CPU;本地嵌入模型需要充足内存",
+        "gpu_option": "如需GPU加速: ModelArts Notebook (NVIDIA T4) 或 ECS GPU实例",
+        "npu_option": "如需NPU: Ascend 310/910实例,但需验证torch_npu+sentence-transformers兼容性"
+      },
+      "database": {
+        "service": "SFS Turbo (共享文件系统) for LanceDB",
+        "spec": "SFS Turbo 100GB+",
+        "justification": "LanceDB为嵌入式文件数据库,需要高性能文件系统;多实例部署需共享存储",
+        "alternatives": [
+          "EVS SSD for 单实例部署",
+          "GaussDB(for PostgreSQL) + pgvector替代LanceDB(需代码改造)"
+        ]
+      },
+      "storage": {
+        "service": "OBS (对象存储)",
+        "justification": "模型文件存储, 数据备份"
+      },
+      "networking": {
+        "service": "VPC + NAT Gateway + ELB",
+        "justification": "内网通信 + 外部API访问 + MCP Server负载均衡"
+      }
+    },
+    "cost_estimation": {
+      "monthly": {
+        "small": "$100-200 (4vCPU ECS + SFS 50GB, CPU嵌入Qwen3-0.6B)",
+        "medium": "$300-600 (8vCPU ECS/CCE + SFS 200GB + NAT)",
+        "large": "$800-1500 (CCE集群 + GPU/NPU实例 + SFS Turbo)"
+      },
+      "notes": "使用API嵌入可大幅降低计算成本;使用Qwen3-0.6B本地CPU推理是成本/性能平衡点"
+    },
+    "special_requirements": {
+      "embedding_model": "需下载Qwen3-Embedding模型(~1.2GB for 0.6B, ~16GB for 8B)到持久存储",
+      "lancedb": "LanceDB为嵌入式数据库,多实例部署需共享文件系统(SFS)",
+      "mcp_server": "MCP Server需要独立端口和稳定连接",
+      "tantivy": "BM25检索使用Rust tantivy库,容器需预编译"
+    },
+    "architecture_recommendations": [
+      "使用CCE部署SimpleMem容器,配置SFS Turbo共享LanceDB数据",
+      "选择Qwen3-Embedding-0.6B在CPU上运行嵌入(4vCPU即可,延迟可接受)",
+      "使用华为云ModelArts API替代本地大模型嵌入(4B/8B模型)",
+      "LLM调用使用通义千问API(dashscope)替代OpenAI降低延迟",
+      "MCP Server通过ELB暴露给Claude/Cursor客户端",
+      "使用OBS存储嵌入模型文件,启动时拉取到本地",
+      "考虑将LanceDB替换为GaussDB(for PostgreSQL) + pgvector获得更好的云原生体验",
+      "配置弹性伸缩based on CPU利用率(嵌入计算密集时)"
+    ]
+  }
+}

@@ -1,0 +1,199 @@
+{
+  "project_name": "locomo",
+  "analysis_date": "2026-02-13",
+  "storage": {
+    "vector_storage": {
+      "solution": "pickle文件向量索引 (内存检索)",
+      "database": "无外部向量DB (内存加载pickle)",
+      "vector_dimension": 768,
+      "index_type": "线性扫描 (torch cosine similarity)",
+      "evidence": "task_eval/rag_utils.py: 使用torch计算向量相似度, device=cuda:0; 支持Contriever(768维)/Dragon(768维)/OpenAI(1536维); 向量以pickle格式存储"
+    },
+    "primary_database": {
+      "type": "JSON文件存储",
+      "min_version": "不适用",
+      "required_extensions": [],
+      "connection_pooling": {},
+      "evidence": "data/locomo10.json(~2.8MB)为核心数据集; msc_personas_all.json为角色数据; 无任何数据库依赖"
+    },
+    "graph_database": {
+      "required": false,
+      "type": "无",
+      "evidence": "事件图(因果关系)存储在JSON中,不使用外部图数据库; event_utils.py处理事件图但以JSON格式"
+    },
+    "cache": {
+      "type": "无",
+      "min_version": "不适用",
+      "required_modules": [],
+      "evidence": "无缓存机制"
+    },
+    "object_storage": {
+      "required": false,
+      "use_case": ["数据集存储(约6MB)", "评估结果归档", "模型权重(可选本地HF模型)"]
+    },
+    "data_scale": {
+      "estimated_total": "数据集~6MB; 评估结果~50MB; 模型权重10-140GB(可选本地模型)",
+      "per_user_avg": "不适用(研究基准测试)",
+      "evidence": "locomo10.json: 10个对话~2.8MB; msc_personas_all.json: ~3MB; 10个对话*20会话*15轮=3000个向量"
+    },
+    "performance": {
+      "vector_search_latency": "1-10ms (内存检索, GPU加速)",
+      "qps_target": "不适用(批处理评估)",
+      "p95_latency": "不适用",
+      "concurrent_connections": "不适用"
+    }
+  },
+  "compute": {
+    "cpu": {
+      "min_vcpu": 4,
+      "recommended_vcpu": 8,
+      "workload_type": "混合(GPU可选推理+API调用+评估计算)"
+    },
+    "memory": {
+      "min_gb": 8,
+      "recommended_gb": 16,
+      "memory_intensive_ops": ["本地检索模型加载(Contriever~440MB)", "BLIP图像描述模型", "BERT-Score评估"],
+      "oom_risk": "中-使用大型本地模型时需要更多内存"
+    },
+    "gpu": {
+      "required": false,
+      "recommended": true,
+      "use_case": "仅推理",
+      "cuda_dependency": {
+        "has_direct_cuda": true,
+        "custom_cuda_kernels": false,
+        "gpu_libraries": ["torch (PyTorch 2.0.1)", "torchvision", "sentence-transformers", "transformers", "xformers", "BLIP模型"],
+        "evidence": "requirements.txt(conda环境): pytorch=2.0.1 cuda11.7, xformers=0.0.22.post7; task_eval/rag_utils.py: torch.cuda.is_available(), device='cuda:0'; generative_agents/generate_conversations.py: BlipForConditionalGeneration.to('cuda')"
+      }
+    },
+    "ascend_npu": {
+      "compatibility_level": "需要工作量",
+      "framework_analysis": {
+        "framework": "PyTorch 2.0.1",
+        "framework_version": "2.0.1 + CUDA 11.7",
+        "ascend_support": true,
+        "cann_version": "CANN 7.0+ (PyTorch 2.0适配)"
+      },
+      "migration": {
+        "effort_level": "中等工作量",
+        "blockers": [
+          "xformers仅支持CUDA(但仅用于对话生成的diffusers,非核心功能)",
+          "PyTorch CUDA 11.7版本需更新为昇腾兼容版本",
+          "BLIP图像描述模型需要测试昇腾兼容性"
+        ],
+        "code_changes_required": [
+          "task_eval/rag_utils.py: 将device='cuda:0'改为动态设备检测(torch_npu或cuda)",
+          "generative_agents/generate_conversations.py: 将.to('cuda')改为动态设备",
+          "移除xformers依赖(仅对话生成功能需要,评估功能不需要)",
+          "更新PyTorch版本为昇腾兼容版本(torch_npu)",
+          "BLIP模型可保持torch接口,通过torch_npu插件适配"
+        ]
+      },
+      "recommendation": "该项目的GPU使用相对简单: 主要是标准PyTorch模型推理(Contriever/BLIP/sentence-transformers)和tensor运算。无自定义CUDA内核。迁移步骤: 1) 安装torch_npu替代CUDA版PyTorch; 2) 修改2个文件中的设备硬编码为动态检测; 3) 移除xformers(非核心); 4) 如仅使用API模型(GPT/Claude/Gemini)则完全不需要GPU,只有本地模型和RAG检索需要。"
+    },
+    "scalability": {
+      "horizontal_scaling": false,
+      "stateless": true,
+      "auto_scaling_metrics": []
+    },
+    "serverless": {
+      "suitable": false,
+      "cold_start_tolerance": "不可接受",
+      "reasons": ["模型加载时间长", "批处理评估任务", "GPU需求(本地模型)"]
+    },
+    "concurrency": {
+      "model": "单进程顺序执行",
+      "async_framework": "无(同步脚本)",
+      "message_queue": {
+        "required": false,
+        "systems": []
+      },
+      "websocket": false,
+      "streaming": false
+    }
+  },
+  "external_services": {
+    "llm": {
+      "providers": ["OpenAI GPT-3.5-turbo/GPT-4-turbo (对话生成+评估)", "Anthropic Claude (claude-sonnet/haiku)", "Google Gemini (gemini-pro-1.0)", "HuggingFace本地模型 (Gemma/LLaMA/Mistral)"],
+      "embedding_models": ["Contriever (Facebook, 768维)", "Dragon (768维)", "DPR", "OpenAI text-embedding-ada-002 (1536维)"],
+      "local_model_support": true,
+      "cost_optimization": ["使用GPT-3.5-turbo而非GPT-4降低成本", "本地开源模型零API费用", "选择性评估(每种类型采样)"]
+    }
+  },
+  "deployment": {
+    "complexity": 5,
+    "docker": {
+      "available": false,
+      "image_size": "~8GB (含CUDA运行时+PyTorch+模型依赖)",
+      "multi_stage_build": false
+    },
+    "kubernetes": {
+      "required": false,
+      "recommended": false,
+      "helm_available": false
+    },
+    "configuration": {
+      "env_vars_count": 4,
+      "secrets_count": 3,
+      "complexity_level": "中等(需配置多个LLM API密钥+可选GPU环境)"
+    },
+    "observability": {
+      "metrics_export": false,
+      "structured_logging": false,
+      "health_checks": false
+    }
+  },
+  "huawei_cloud": {
+    "overall_difficulty": "中等",
+    "recommended_services": {
+      "database": {
+        "primary": "华为云OBS (JSON数据集+评估结果)",
+        "vector_solution": "内存检索(无需外部向量DB)"
+      },
+      "cache": "不需要",
+      "compute": {
+        "primary": "华为云ECS (CPU实例用于API模型) 或 GPU实例 (本地模型推理)",
+        "ai_acceleration": "华为云昇腾910B (标准PyTorch推理,需适配) 或 ModelArts在线推理"
+      },
+      "middleware": {}
+    },
+    "cost_estimation": {
+      "small_scale": {
+        "description": "纯API模式评估(GPT/Claude)",
+        "monthly_cost": "¥1,000-3,000",
+        "breakdown": {
+          "compute_ecs": "¥200 (4vCPU/8GB CPU实例)",
+          "openai_api": "¥500-2,000 (GPT-3.5-turbo)",
+          "anthropic_api": "¥200-500 (Claude)",
+          "storage_obs": "¥10"
+        }
+      },
+      "medium_scale": {
+        "description": "本地模型+API混合评估",
+        "monthly_cost": "¥5,000-10,000",
+        "breakdown": {
+          "gpu_ecs": "¥3,000 (昇腾910B 或 V100, 100小时)",
+          "cpu_ecs": "¥200",
+          "llm_api": "¥1,000-5,000",
+          "storage_obs": "¥50",
+          "network": "¥200"
+        }
+      }
+    },
+    "special_requirements": [
+      "PyTorch 2.0.1需适配昇腾NPU版本(torch_npu)",
+      "仅2个Python文件需要修改GPU设备硬编码",
+      "xformers库需移除(昇腾不支持,但非核心功能)",
+      "BLIP图像描述模型需测试昇腾兼容性",
+      "如仅使用API模型(GPT/Claude/Gemini)则完全不需要GPU"
+    ],
+    "architecture_recommendations": [
+      "推荐分两种模式: 纯API模式(零GPU需求)和混合模式(本地模型+API)",
+      "纯API模式: 使用ECS CPU实例即可,成本最低",
+      "混合模式: 使用华为云ModelArts部署Contriever等检索模型",
+      "评估结果存储到华为云OBS,方便长期归档和分析",
+      "可考虑使用华为盘古大模型API替代OpenAI/Claude以减少跨境网络延迟",
+      "BLIP图像描述功能可通过华为云ModelArts的图像理解API替代"
+    ]
+  }
+}

@@ -64,6 +64,181 @@
         "Docker",
         "Lightweight deployment"
       ]
+    },
+    "storage_detail": {
+      "vector_storage": {
+        "solution": "Qdrant向量数据库",
+        "database": "Qdrant",
+        "vector_dimension": 384,
+        "index_type": "HNSW",
+        "evidence": "pyproject.toml: qdrant-client==1.15.1; configs/retriever/embeddingretriever/qdrant.py; architecture.md: '384维(all-MiniLM-L6-v2)'"
+      },
+      "primary_database": {
+        "type": "Qdrant + 内存/文件存储",
+        "min_version": "Qdrant Client 1.15.1",
+        "required_extensions": [],
+        "connection_pooling": {
+          "configured": false,
+          "evidence": "通过qdrant-client Python SDK连接，支持本地嵌入式和远程服务器模式"
+        },
+        "evidence": "pyproject.toml: qdrant-client==1.15.1; 支持qdrant和chroma两种向量存储后端"
+      },
+      "graph_database": {
+        "required": false,
+        "type": "无",
+        "evidence": "核心架构不使用图数据库，记忆以向量+元数据形式存储"
+      },
+      "cache": {
+        "type": "LRU内存缓存",
+        "min_version": "N/A",
+        "required_modules": [],
+        "evidence": "architecture.md: 'LRU缓存:最近1000个查询向量，缓存命中率预期30-50%'"
+      },
+      "data_scale": {
+        "estimated_total": "384维向量：百万条约1.5GB，十亿条约1.5TB",
+        "per_user_avg": "取决于对话量，单个向量约1.5KB",
+        "evidence": "architecture.md: '维度384, 单个向量1.5KB, 百万条1.5GB, 十亿条1.5TB'"
+      },
+      "performance": {
+        "vector_search_latency": "10-50ms（批量嵌入），<100ms（向量检索）",
+        "qps_target": "10,000 RPS（API网关配置）",
+        "p95_latency": "<5s（含LLM处理）",
+        "concurrent_connections": "2-10实例（K8s HPA）"
+      }
+    },
+    "compute_detail": {
+      "cpu": {
+        "min_vcpu": 2,
+        "recommended_vcpu": 8,
+        "workload_type": "ML推理密集型（嵌入生成+LLMlingua-2压缩+LLM调用）"
+      },
+      "memory": {
+        "min_gb": 4,
+        "recommended_gb": 16,
+        "memory_intensive_ops": [
+          "PyTorch模型加载(LLMlingua-2约1GB)",
+          "all-MiniLM-L6-v2嵌入模型(80MB)",
+          "Transformers本地LLM推理(需16-48GB VRAM)",
+          "批量嵌入处理(128条/批)"
+        ],
+        "oom_risk": "高（使用Transformers本地推理时VRAM需求大）"
+      },
+      "gpu": {
+        "required": false,
+        "recommended": true,
+        "use_case": "仅推理",
+        "cuda_dependency": {
+          "has_direct_cuda": true,
+          "custom_cuda_kernels": false,
+          "gpu_libraries": [
+            "torch==2.8.0",
+            "transformers==4.57.0",
+            "accelerate==1.10.1",
+            "sentence-transformers==5.1.1",
+            "llmlingua==0.2.2",
+            "vllm==0.11.0(可选)"
+          ],
+          "evidence": "pyproject.toml: torch==2.8.0; transformers.py: 'torch.cuda.is_available()','device_map=cuda:{self.config.main_gpu}'; vllm_offline.py: 'torch.cuda.device_count()'; llmlingua_2.py config: 'device_map: cuda'; entropy_compress.py: '.to(device)'; examples/run_lightmem_transformers.py: 'cuda:1','cuda:2'"
+        }
+      },
+      "scalability": {
+        "horizontal_scaling": true,
+        "stateless": true,
+        "auto_scaling_metrics": [
+          "CPU利用率(70%阈值)",
+          "请求延迟",
+          "GPU/NPU利用率"
+        ]
+      },
+      "serverless": {
+        "suitable": false,
+        "cold_start_tolerance": "30-60秒（模型加载）",
+        "reasons": [
+          "模型加载耗时30-60秒",
+          "内存需求3-8GB超出大多数Serverless限制",
+          "需要GPU/NPU持久化"
+        ]
+      },
+      "concurrency": {
+        "model": "多线程 + 异步",
+        "async_framework": "concurrent.futures.ThreadPoolExecutor",
+        "message_queue": {
+          "required": false,
+          "systems": []
+        },
+        "websocket": false,
+        "streaming": false
+      }
+    },
+    "ascend_npu": {
+      "compatibility_level": "需要工作量",
+      "framework_analysis": {
+        "framework": "PyTorch",
+        "framework_version": "torch==2.8.0",
+        "ascend_support": true,
+        "cann_version": "CANN 8.0+ (支持PyTorch 2.x适配)"
+      },
+      "migration": {
+        "effort_level": "中等工作量",
+        "blockers": [
+          "vLLM对昇腾NPU的支持尚不完整（vllm==0.11.0），需要验证兼容性或替换为MindSpore推理",
+          "LLMlingua-2库(llmlingua==0.2.2)内部hardcode device_map='cuda'，需要修改配置或fork适配"
+        ],
+        "code_changes_required": [
+          "安装torch_npu替代CUDA版本PyTorch（torch==2.8.0对应torch_npu版本）",
+          "修改configs/pre_compressor/llmlingua_2.py中device_map默认值从'cuda'改为'npu'或'auto'",
+          "修改factory/memory_manager/transformers.py中torch.cuda.is_available()为torch_npu检测逻辑",
+          "修改factory/memory_manager/vllm_offline.py中torch.cuda.device_count()适配NPU",
+          "修改factory/pre_compressor/entropy_compress.py中.to(device)确保NPU设备兼容",
+          "验证sentence-transformers==5.1.1在torch_npu环境下的兼容性",
+          "验证all-MiniLM-L6-v2和LLMlingua-2 BERT模型在NPU上的推理精度",
+          "若vLLM不支持NPU，替换为华为MindSpore Serving或Ollama+NPU方案"
+        ]
+      },
+      "recommendation": "LightMem有较深的PyTorch/CUDA依赖（torch==2.8.0），核心路径包括LLMlingua-2压缩和Transformers本地推理都直接使用CUDA。昇腾NPU通过torch_npu理论上可支持PyTorch 2.x，但需要逐一适配CUDA调用点。主要阻碍是vLLM的NPU支持和LLMlingua库的CUDA硬编码。建议：(1)使用OpenAI/DeepSeek API模式避免本地推理的NPU适配；(2)若需本地推理，使用torch_npu替换+修改约5-8个文件的device检测逻辑；(3)vLLM可替换为华为ModelArts推理服务。"
+    },
+    "external_services": {
+      "llm": {
+        "providers": [
+          "OpenAI (gpt-4o-mini, gpt-4-turbo)",
+          "DeepSeek (deepseek-chat)",
+          "Ollama (mistral, llama-2, qwen)",
+          "vLLM (任何HuggingFace模型)",
+          "Transformers本地推理(Qwen3-30B-A3B-Instruct-2507)"
+        ],
+        "embedding_models": [
+          "all-MiniLM-L6-v2（384维，本地，80MB）"
+        ],
+        "local_model_support": true,
+        "cost_optimization": [
+          "LLMlingua-2压缩减少98% token消耗",
+          "本地推理(Ollama/vLLM)降低API成本",
+          "DeepSeek成本约OpenAI的1/10"
+        ]
+      }
+    },
+    "deployment_detail": {
+      "complexity": 5,
+      "docker": {
+        "available": true,
+        "image_size": "约3-5GB（含PyTorch+模型）",
+        "multi_stage_build": true
+      },
+      "kubernetes": {
+        "required": false,
+        "recommended": true,
+        "helm_available": false
+      },
+      "configuration": {
+        "env_vars_count": 5,
+        "secrets_count": 3,
+        "complexity_level": "中等"
+      },
+      "observability": {
+        "metrics_export": true,
+        "structured_logging": true,
+        "health_checks": true
+      }
     }
   },
   "categories": {
@@ -125,5 +300,71 @@
       "name": "模块化轻量部署方案",
       "description": "采用模块化设计支持多种LLM提供商(OpenAI/DeepSeek/Ollama)和MCP Server集成,通过vLLM本地部署降低成本,提供开箱即用的Docker部署方案,在资源受限环境下实现高精度检索和快速响应的最佳平衡。"
     }
-  ]
+  ],
+  "huawei_cloud": {
+    "overall_difficulty": "中等",
+    "recommended_services": {
+      "database": {
+        "primary": "华为云CSS（Elasticsearch向量搜索）或自建Qdrant on ECS",
+        "vector_solution": "自建Qdrant集群（3节点）on ECS 或 华为云CSS"
+      },
+      "cache": "华为云DCS Redis（可选，用于查询缓存和API配额管理）",
+      "compute": {
+        "primary": "华为云ECS c7.2xlarge (8vCPU/16GB) x3",
+        "ai_acceleration": "华为云Ai1s（昇腾310推理，嵌入生成）或ModelArts在线推理"
+      },
+      "middleware": {
+        "api_gateway": "华为云APIG",
+        "load_balancer": "华为云ELB",
+        "container_orchestration": "华为云CCE (Kubernetes)"
+      }
+    },
+    "cost_estimation": {
+      "small_scale": {
+        "description": "100日活用户，API模式（OpenAI/DeepSeek），无本地推理",
+        "monthly_cost": "¥2,000-3,500",
+        "breakdown": {
+          "ECS_api": "¥500（c7.xlarge）",
+          "ECS_qdrant": "¥500（c7.xlarge，自建Qdrant）",
+          "EVS_storage": "¥100（100GB SSD）",
+          "LLM_API": "¥500-1,500（DeepSeek/OpenAI）",
+          "EIP_bandwidth": "¥100",
+          "OBS_models": "¥50（模型文件存储）",
+          "monitoring": "¥50"
+        }
+      },
+      "medium_scale": {
+        "description": "5000日活用户，混合模式（API+本地推理），Qdrant集群",
+        "monthly_cost": "¥15,000-30,000",
+        "breakdown": {
+          "ECS_api_cluster": "¥3,000（c7.2xlarge x3）",
+          "ECS_qdrant_cluster": "¥3,000（c7.2xlarge x3）",
+          "GPU_NPU_inference": "¥5,000-10,000（Ai1s或GPU实例用于Transformers推理）",
+          "LLM_API": "¥2,000-8,000（混合API+本地）",
+          "EVS_storage": "¥500（1TB SSD）",
+          "DCS_Redis": "¥300",
+          "EIP_bandwidth": "¥300",
+          "OBS_storage": "¥200",
+          "CCE_orchestration": "¥500",
+          "monitoring": "¥200"
+        }
+      }
+    },
+    "special_requirements": [
+      "PyTorch 2.8.0需要torch_npu适配才能使用昇腾NPU",
+      "LLMlingua-2模型需要从HuggingFace预下载到华为云OBS",
+      "vLLM可选依赖在NPU上支持有限，建议使用华为ModelArts推理或Ollama替代",
+      "Qdrant无华为云托管服务，需自建容器化部署",
+      "ICLR 2026论文验证的模型和参数需保持一致以复现性能"
+    ],
+    "architecture_recommendations": [
+      "API模式（推荐）：使用DeepSeek API替代本地推理，避免GPU/NPU适配复杂度，成本仅为OpenAI的1/10",
+      "本地推理模式：使用华为云CCE部署K8s集群，Ai1s实例运行Transformers推理，需修改torch.cuda调用点",
+      "向量数据库：Qdrant部署在ECS StatefulSet上，配合EVS持久卷，3节点保证高可用",
+      "嵌入模型：all-MiniLM-L6-v2仅80MB，可在CPU或NPU上高效运行，无需GPU",
+      "LLMlingua-2压缩：BERT模型约1GB，可在昇腾310上运行，需修改device_map配置",
+      "使用华为云ModelArts托管LLM推理服务，替代vLLM的本地部署方案",
+      "通过CCE HPA自动扩缩容，CPU利用率70%触发扩容"
+    ]
+  }
 }

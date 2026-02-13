@@ -1,0 +1,194 @@
+{
+  "project_name": "Memary",
+  "analysis_date": "2026-02-13",
+  "storage": {
+    "vector_storage": {
+      "solution": "无直接向量数据库，依赖图数据库存储三元组关系",
+      "database": "无（可选集成Pinecone/Weaviate/Milvus）",
+      "vector_dimension": 1536,
+      "index_type": "N/A（图数据库索引）",
+      "evidence": "requirements.txt中无向量数据库依赖；architecture.md明确说明'Memary不直接使用向量数据库,而是用图数据库存储三元组关系'"
+    },
+    "primary_database": {
+      "type": "图数据库",
+      "min_version": "Neo4j 5.17.0 / FalkorDB 1.0.8",
+      "required_extensions": ["llama-index-graph-stores-neo4j==0.3.1", "llama-index-graph-stores-falkordb==0.2.1", "llama-index-graph-stores-nebula==0.3.0"],
+      "connection_pooling": {
+        "configured": false,
+        "evidence": "代码中通过llama-index的graph store适配器连接，无显式连接池配置"
+      },
+      "evidence": "requirements.txt: FalkorDB==1.0.8, neo4j==5.17.0; pyproject.toml列出相同依赖"
+    },
+    "graph_database": {
+      "required": true,
+      "type": "Neo4j 5.17.0 或 FalkorDB 1.0.8",
+      "evidence": "requirements.txt明确列出neo4j==5.17.0和FalkorDB==1.0.8；架构核心基于知识图谱的Memory Stream和Entity Knowledge Store"
+    },
+    "cache": {
+      "type": "无内置缓存",
+      "min_version": "N/A",
+      "required_modules": [],
+      "evidence": "requirements.txt中无Redis/Memcached依赖；architecture.md建议启用Redis但未实现"
+    },
+    "object_storage": {
+      "required": false,
+      "use_case": ["JSON本地文件存储聊天历史", "可选S3备份"]
+    },
+    "data_scale": {
+      "estimated_total": "1MB JSON/用户/年 + 10-100MB图数据/用户",
+      "per_user_avg": "约11-101MB",
+      "evidence": "architecture.md数据规模估算：JSON记忆1MB/用户/年，图数据库10-100MB/用户"
+    },
+    "performance": {
+      "vector_search_latency": "N/A（不使用向量搜索）",
+      "qps_target": "未明确",
+      "p95_latency": "<100ms（图查询），<2s（ReAct推理）",
+      "concurrent_connections": "5-100（取决于规模）"
+    }
+  },
+  "compute": {
+    "cpu": {
+      "min_vcpu": 2,
+      "recommended_vcpu": 8,
+      "workload_type": "图数据库查询密集型 + LLM API调用"
+    },
+    "memory": {
+      "min_gb": 4,
+      "recommended_gb": 16,
+      "memory_intensive_ops": ["Neo4j/FalkorDB图遍历", "多跳推理子图合并", "Context Window管理"],
+      "oom_risk": "低（主要依赖外部LLM API和图数据库）"
+    },
+    "gpu": {
+      "required": false,
+      "recommended": false,
+      "use_case": "不需要",
+      "cuda_dependency": {
+        "has_direct_cuda": false,
+        "custom_cuda_kernels": false,
+        "gpu_libraries": [],
+        "evidence": "requirements.txt无torch/cuda相关依赖；核心代码不涉及GPU操作；仅dev/reranking实验notebook中出现CUDA依赖(llama-index-postprocessor-colbert-rerank)，但非主要功能路径"
+      }
+    },
+    "ascend_npu": {
+      "compatibility_level": "不适用(无GPU需求)",
+      "framework_analysis": {
+        "framework": "无ML框架依赖",
+        "framework_version": "N/A",
+        "ascend_support": false,
+        "cann_version": "N/A"
+      },
+      "migration": {
+        "effort_level": "无需迁移",
+        "blockers": [],
+        "code_changes_required": []
+      },
+      "recommendation": "Memary核心不依赖GPU/CUDA，通过API调用外部LLM（OpenAI/Ollama），无需NPU适配。若使用本地Ollama推理模型，Ollama本身需要NPU适配，但这不属于Memary项目范围。"
+    },
+    "scalability": {
+      "horizontal_scaling": false,
+      "stateless": false,
+      "auto_scaling_metrics": ["CPU利用率", "图查询延迟"]
+    },
+    "serverless": {
+      "suitable": false,
+      "cold_start_tolerance": "不适合",
+      "reasons": ["依赖图数据库持久连接", "Streamlit有状态", "LLM上下文需要保持"]
+    },
+    "concurrency": {
+      "model": "同步",
+      "async_framework": "Streamlit单线程",
+      "message_queue": {
+        "required": false,
+        "systems": []
+      },
+      "websocket": false,
+      "streaming": true
+    }
+  },
+  "external_services": {
+    "llm": {
+      "providers": ["Ollama (Llama3, LLaVA)", "OpenAI (gpt-3.5-turbo, gpt-4-vision)", "Perplexity (mistral-7b-instruct)"],
+      "embedding_models": ["OpenAI text-embedding (通过llama-index)", "Ollama原生嵌入"],
+      "local_model_support": true,
+      "cost_optimization": ["使用Ollama本地模型可降低70-80%成本", "混合方案：本地+云端降级"]
+    }
+  },
+  "deployment": {
+    "complexity": 6,
+    "docker": {
+      "available": false,
+      "image_size": "N/A（无Dockerfile）",
+      "multi_stage_build": false
+    },
+    "kubernetes": {
+      "required": false,
+      "recommended": true,
+      "helm_available": false
+    },
+    "configuration": {
+      "env_vars_count": 6,
+      "secrets_count": 5,
+      "complexity_level": "中等"
+    },
+    "observability": {
+      "metrics_export": false,
+      "structured_logging": false,
+      "health_checks": false
+    }
+  },
+  "huawei_cloud": {
+    "overall_difficulty": "中等",
+    "recommended_services": {
+      "database": {
+        "primary": "华为云GaussDB(for Neo4j)或自建FalkorDB on ECS",
+        "vector_solution": "无需（若未来需要可用CSS/Elasticsearch向量插件）"
+      },
+      "cache": "华为云DCS Redis（建议添加）",
+      "compute": {
+        "primary": "华为云ECS c7.2xlarge (8vCPU/16GB)",
+        "ai_acceleration": "无需GPU/NPU"
+      },
+      "middleware": {
+        "api_gateway": "华为云APIG",
+        "load_balancer": "华为云ELB"
+      }
+    },
+    "cost_estimation": {
+      "small_scale": {
+        "description": "1000活跃用户，FalkorDB自托管+Ollama本地",
+        "monthly_cost": "¥500-800",
+        "breakdown": {
+          "ECS_app": "¥200（c7.large）",
+          "ECS_graph_db": "¥200（c7.large，自建FalkorDB）",
+          "EVS_storage": "¥50（100GB SSD）",
+          "EIP_bandwidth": "¥50",
+          "OBS_backup": "¥5"
+        }
+      },
+      "medium_scale": {
+        "description": "10000用户，Neo4j企业版+Ollama GPU推理",
+        "monthly_cost": "¥8,000-15,000",
+        "breakdown": {
+          "ECS_app": "¥1,500（c7.2xlarge x2）",
+          "ECS_neo4j_cluster": "¥4,500（c7.2xlarge x3）",
+          "ECS_ollama_gpu": "¥2,000（GPU实例，若使用NPU可选Ai1s）",
+          "EVS_storage": "¥500（1TB SSD）",
+          "DCS_Redis": "¥300",
+          "EIP_bandwidth": "¥200",
+          "OBS_backup": "¥50"
+        }
+      }
+    },
+    "special_requirements": [
+      "Neo4j在华为云无托管服务，需自建或使用GaussDB替代",
+      "FalkorDB需要在ECS上自建容器化部署",
+      "Ollama本地部署需要GPU/NPU实例（若选择本地推理）"
+    ],
+    "architecture_recommendations": [
+      "使用华为云CCE(Kubernetes)部署图数据库集群，实现高可用",
+      "LLM推理优先使用华为云ModelArts在线推理服务替代Ollama",
+      "使用OBS存储JSON备份数据，降低存储成本",
+      "通过APIG网关统一管理API访问，配合WAF保护"
+    ]
+  }
+}

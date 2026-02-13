@@ -1,0 +1,207 @@
+{
+  "project_name": "supermemory",
+  "analysis_date": "2026-02-13",
+  "storage": {
+    "vector_storage": {
+      "solution": "PGVector (内置于PostgreSQL)",
+      "database": "PostgreSQL + PGVector扩展",
+      "vector_dimension": 768,
+      "index_type": "HNSW / IVFFLAT",
+      "evidence": "package.json: pg依赖; 架构文档: PGVector内置向量搜索; Cloudflare Workers AI使用@cf/baai/bge-base-en-v1.5模型(768维); drizzle-orm管理数据库schema"
+    },
+    "primary_database": {
+      "type": "PostgreSQL",
+      "min_version": "PostgreSQL 14+ (PGVector支持)",
+      "required_extensions": ["pgvector"],
+      "connection_pooling": {
+        "driver": "Cloudflare Hyperdrive连接池代理",
+        "max_connections": "Hyperdrive自动管理"
+      },
+      "evidence": "package.json: pg, drizzle-orm; 使用Cloudflare Hyperdrive做连接池优化; wrangler配置中绑定Hyperdrive"
+    },
+    "graph_database": {
+      "required": false,
+      "type": "无",
+      "evidence": "使用Memory Graph可视化但基于向量相似度关系计算, 非独立图数据库"
+    },
+    "cache": {
+      "type": "Cloudflare KV Storage",
+      "min_version": "N/A (Cloudflare托管服务)",
+      "required_modules": [],
+      "evidence": "架构文档: KV存储用于用户档案缓存、会话数据、API响应缓存、OAuth令牌"
+    },
+    "object_storage": {
+      "required": true,
+      "use_case": ["文档原始文件存储(PDF/图片)", "缓存资产", "导出数据"]
+    },
+    "data_scale": {
+      "estimated_total": "1K用户约10GB, 10K用户约100GB",
+      "per_user_avg": "约10MB/用户(文档+向量+元数据)",
+      "evidence": "基于R2存储费用和PostgreSQL规模估算"
+    },
+    "performance": {
+      "vector_search_latency": "~100ms (10K向量)",
+      "qps_target": "100-1000+ QPS(全球边缘分布)",
+      "p95_latency": "<50ms (边缘计算)",
+      "concurrent_connections": "无限制(Cloudflare Workers全球分布)"
+    }
+  },
+  "compute": {
+    "cpu": {
+      "min_vcpu": 0,
+      "recommended_vcpu": 0,
+      "workload_type": "Serverless(按请求计算, 无固定vCPU)"
+    },
+    "memory": {
+      "min_gb": 0,
+      "recommended_gb": 0,
+      "memory_intensive_ops": ["Cloudflare Workers每请求128MB", "PostgreSQL需独立配置内存"],
+      "oom_risk": "低(Serverless自动管理)"
+    },
+    "gpu": {
+      "required": false,
+      "recommended": false,
+      "use_case": "不需要",
+      "cuda_dependency": {
+        "has_direct_cuda": false,
+        "custom_cuda_kernels": false,
+        "gpu_libraries": [],
+        "evidence": "TypeScript项目, 无任何GPU/CUDA代码; 嵌入计算由Cloudflare Workers AI托管服务完成; 唯一grep匹配是package-lock.json中base64字符串的误报"
+      }
+    },
+    "ascend_npu": {
+      "compatibility_level": "不适用(无GPU需求)",
+      "framework_analysis": {
+        "framework": "TypeScript/Node.js (无深度学习框架)",
+        "framework_version": "N/A",
+        "ascend_support": false,
+        "cann_version": "N/A"
+      },
+      "migration": {
+        "effort_level": "不适用",
+        "blockers": ["TypeScript项目, 嵌入计算依赖Cloudflare Workers AI托管服务"],
+        "code_changes_required": []
+      },
+      "recommendation": "Supermemory是TypeScript项目, 所有AI计算由Cloudflare Workers AI或外部LLM API完成, 无本地GPU需求。迁移到华为云时需替换Cloudflare Workers AI为华为云盘古嵌入API或自建嵌入服务。"
+    },
+    "scalability": {
+      "horizontal_scaling": true,
+      "stateless": true,
+      "auto_scaling_metrics": ["自动(Cloudflare Workers全球分布)"]
+    },
+    "serverless": {
+      "suitable": true,
+      "cold_start_tolerance": "零冷启动(Cloudflare Workers)",
+      "reasons": ["原生Serverless架构", "无状态Workers", "全球300+节点自动分发"]
+    },
+    "concurrency": {
+      "model": "事件驱动(Cloudflare Workers)",
+      "async_framework": "Hono + Cloudflare Workers",
+      "message_queue": {
+        "required": false,
+        "systems": ["Cloudflare Durable Objects (有状态计算)"]
+      },
+      "websocket": false,
+      "streaming": true
+    }
+  },
+  "external_services": {
+    "llm": {
+      "providers": ["Cloudflare Workers AI (内置)", "OpenAI", "Anthropic", "Google"],
+      "embedding_models": ["@cf/baai/bge-base-en-v1.5 (Cloudflare Workers AI, 768维)"],
+      "local_model_support": false,
+      "cost_optimization": ["Cloudflare Workers AI嵌入$0.011/1K tokens", "R2零出口费用", "按请求付费无空闲成本", "Hyperdrive连接池降低数据库延迟80%"]
+    }
+  },
+  "deployment": {
+    "complexity": 6,
+    "docker": {
+      "available": false,
+      "image_size": "N/A (Cloudflare Workers部署)",
+      "multi_stage_build": false
+    },
+    "kubernetes": {
+      "required": false,
+      "recommended": false,
+      "helm_available": false
+    },
+    "configuration": {
+      "env_vars_count": 15,
+      "secrets_count": 5,
+      "complexity_level": "中等"
+    },
+    "observability": {
+      "metrics_export": true,
+      "structured_logging": true,
+      "health_checks": true
+    }
+  },
+  "huawei_cloud": {
+    "overall_difficulty": "困难",
+    "recommended_services": {
+      "database": {
+        "primary": "华为云RDS for PostgreSQL (含PGVector扩展)",
+        "vector_solution": "PGVector on RDS PostgreSQL"
+      },
+      "cache": "华为云DCS Redis (替代Cloudflare KV)",
+      "compute": {
+        "primary": "华为云函数工作流FunctionGraph (替代Cloudflare Workers) 或 华为云ECS+Node.js",
+        "ai_acceleration": "华为云ModelArts嵌入API (替代Cloudflare Workers AI)"
+      },
+      "middleware": {
+        "object_storage": "华为云OBS (替代Cloudflare R2)",
+        "cdn": "华为云CDN (替代Cloudflare CDN)",
+        "load_balancer": "华为云ELB"
+      }
+    },
+    "cost_estimation": {
+      "small_scale": {
+        "description": "1000用户, 个人知识管理",
+        "monthly_cost": "¥2,000-3,500",
+        "breakdown": {
+          "ECS_4c8g_Node": "¥400",
+          "RDS_PostgreSQL_2c4g": "¥300",
+          "DCS_Redis_1g": "¥100",
+          "OBS_50GB": "¥10",
+          "嵌入API": "¥200",
+          "LLM_API": "¥500",
+          "CDN_100GB": "¥50",
+          "带宽_10Mbps": "¥150"
+        }
+      },
+      "medium_scale": {
+        "description": "10000用户, 团队协作",
+        "monthly_cost": "¥10,000-18,000",
+        "breakdown": {
+          "ECS_8c16g_x3": "¥2,400",
+          "RDS_PostgreSQL_4c16g": "¥1,200",
+          "DCS_Redis_4g": "¥300",
+          "OBS_500GB": "¥75",
+          "嵌入API": "¥2,000",
+          "LLM_API": "¥3,000",
+          "CDN_1TB": "¥500",
+          "ELB": "¥300",
+          "带宽_50Mbps": "¥750"
+        }
+      }
+    },
+    "special_requirements": [
+      "需要完全重构部署架构: 从Cloudflare Workers Serverless迁移到传统服务器或华为云FunctionGraph",
+      "Cloudflare Workers AI嵌入服务需替换为自建或华为云嵌入API",
+      "Cloudflare Hyperdrive连接池需替换为PgBouncer或华为云RDS内置连接池",
+      "Durable Objects有状态计算需替换为Redis或华为云DCS",
+      "Cloudflare KV需替换为华为云DCS Redis",
+      "Cloudflare R2需替换为华为云OBS(S3兼容API)",
+      "Next.js前端可部署在华为云ECS或华为云CCE"
+    ],
+    "architecture_recommendations": [
+      "将Hono API服务部署在华为云ECS(Node.js)或华为云FunctionGraph",
+      "Next.js前端部署在华为云ECS + CDN加速",
+      "使用华为云RDS PostgreSQL + PGVector替代原有PostgreSQL+Hyperdrive",
+      "使用PgBouncer连接池替代Cloudflare Hyperdrive",
+      "部署自建bge-base-en-v1.5嵌入服务(使用ONNX Runtime)替代Cloudflare Workers AI",
+      "使用华为云OBS替代R2, 华为云DCS Redis替代KV Storage",
+      "迁移工作量大, 建议优先评估是否可接受架构重构成本"
+    ]
+  }
+}

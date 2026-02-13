@@ -182,6 +182,164 @@
         "Email (MBOX)"
       ],
       "all_integrations_local": true
+    },
+    "storage_detail": {
+      "vector_storage": {
+        "solution": "ChromaDB本地持久化",
+        "database": "ChromaDB",
+        "vector_dimension": 1024,
+        "index_type": "Chroma默认HNSW",
+        "evidence": "pyproject.toml: chromadb>=0.4.0; memory_store.py: chromadb.PersistentClient(path=data_dir/'chromadb'); 嵌入模型BAAI/bge-m3输出1024维"
+      },
+      "primary_database": {
+        "type": "ChromaDB + JSON文件",
+        "min_version": "ChromaDB >=0.4.0",
+        "required_extensions": [],
+        "connection_pooling": {
+          "configured": false,
+          "evidence": "ChromaDB PersistentClient嵌入式模式，无连接池概念"
+        },
+        "evidence": "memory_store.py使用chromadb.PersistentClient；knowledge_graph.json存储图数据"
+      },
+      "graph_database": {
+        "required": true,
+        "type": "NetworkX + JSON（内存图）",
+        "evidence": "pyproject.toml: networkx>=3.0; meta.json: '~/.easymemory/data/knowledge_graph.json'; 纯Python内存图，非图数据库服务"
+      },
+      "cache": {
+        "type": "无外部缓存",
+        "min_version": "N/A",
+        "required_modules": [],
+        "evidence": "无Redis/Memcached依赖，ChromaDB自身有查询缓存"
+      },
+      "data_scale": {
+        "estimated_total": "ChromaDB约50MB/千对话，知识图约5MB/千实体",
+        "per_user_avg": "50-200MB",
+        "evidence": "meta.json: ChromaDB '50MB per 1k conversations', graph '5MB per 1k entities', BM25索引 '100MB per 1k documents'"
+      },
+      "performance": {
+        "vector_search_latency": "95ms平均（混合检索）",
+        "qps_target": "100 QPS（单机）",
+        "p95_latency": "<200ms",
+        "concurrent_connections": "最多100并发用户（单机限制）"
+      }
+    },
+    "compute_detail": {
+      "cpu": {
+        "min_vcpu": 2,
+        "recommended_vcpu": 4,
+        "workload_type": "嵌入生成(CPU) + 混合检索 + FastAPI服务"
+      },
+      "memory": {
+        "min_gb": 4,
+        "recommended_gb": 8,
+        "memory_intensive_ops": [
+          "BAAI/bge-m3嵌入模型加载(约2GB)",
+          "NetworkX图操作",
+          "ChromaDB索引"
+        ],
+        "oom_risk": "中等（bge-m3模型约2GB内存）"
+      },
+      "gpu": {
+        "required": false,
+        "recommended": true,
+        "use_case": "仅推理",
+        "cuda_dependency": {
+          "has_direct_cuda": false,
+          "custom_cuda_kernels": false,
+          "gpu_libraries": [
+            "sentence-transformers>=2.2.0（间接依赖PyTorch）"
+          ],
+          "evidence": "pyproject.toml: sentence-transformers>=2.2.0; memory_store.py使用SentenceTransformer(model_name)，sentence-transformers间接依赖PyTorch；meta.json称GPU可达120句/秒vs CPU 10句/秒"
+        }
+      },
+      "scalability": {
+        "horizontal_scaling": false,
+        "stateless": false,
+        "auto_scaling_metrics": [
+          "CPU利用率",
+          "嵌入生成延迟"
+        ]
+      },
+      "serverless": {
+        "suitable": false,
+        "cold_start_tolerance": "30-60秒（模型加载）",
+        "reasons": [
+          "bge-m3模型加载需要约30秒",
+          "ChromaDB需要持久化本地存储",
+          "NetworkX图需要持久化"
+        ]
+      },
+      "concurrency": {
+        "model": "异步（FastAPI + uvicorn）",
+        "async_framework": "FastAPI + uvicorn",
+        "message_queue": {
+          "required": false,
+          "systems": []
+        },
+        "websocket": false,
+        "streaming": false
+      }
+    },
+    "ascend_npu": {
+      "compatibility_level": "容易适配",
+      "framework_analysis": {
+        "framework": "PyTorch（通过sentence-transformers间接依赖）",
+        "framework_version": "sentence-transformers>=2.2.0",
+        "ascend_support": true,
+        "cann_version": "CANN 8.0+ (PyTorch 2.x适配)"
+      },
+      "migration": {
+        "effort_level": "低工作量",
+        "blockers": [],
+        "code_changes_required": [
+          "将sentence-transformers的设备从CUDA改为NPU：SentenceTransformer(model, device='npu:0')",
+          "安装torch_npu替代CUDA版本PyTorch",
+          "BAAI/bge-m3模型兼容Transformer架构，可直接在NPU上运行"
+        ]
+      },
+      "recommendation": "EasyMemory的GPU使用仅限于sentence-transformers的嵌入生成（BAAI/bge-m3），这是标准Transformer模型，昇腾NPU通过torch_npu完全支持。只需替换PyTorch为NPU版本并指定device='npu'，无需修改业务逻辑。CPU模式也可正常工作（10句/秒），NPU适配为性能优化选项。"
+    },
+    "external_services": {
+      "llm": {
+        "providers": [
+          "Ollama（默认本地）",
+          "OpenAI API（可选）",
+          "Anthropic API（可选）"
+        ],
+        "embedding_models": [
+          "BAAI/bge-m3（1024维，本地）"
+        ],
+        "local_model_support": true,
+        "cost_optimization": [
+          "100%本地部署零云成本",
+          "Ollama本地LLM替代API",
+          "BAAI/bge-m3本地嵌入替代OpenAI"
+        ]
+      }
+    },
+    "deployment_detail": {
+      "complexity": 3,
+      "docker": {
+        "available": false,
+        "image_size": "N/A（pip install）",
+        "multi_stage_build": false
+      },
+      "kubernetes": {
+        "required": false,
+        "recommended": false,
+        "helm_available": false
+      },
+      "configuration": {
+        "env_vars_count": 3,
+        "secrets_count": 2,
+        "complexity_level": "低"
+      },
+      "observability": {
+        "metrics_export": false,
+        "structured_logging": false,
+        "health_checks": false
+      }
     }
   },
   "categories": {
@@ -204,5 +362,57 @@
       "name": "混合检索与MCP集成",
       "description": "通过Graph+Vector+Keyword三重混合检索实现95ms平均延迟,结合BAAI/bge-m3本地嵌入(CPU 10句/秒、GPU 120句/秒)和Ollama本地LLM,支持Claude Desktop、GPT、Gemini原生MCP协议集成,提供LoCoMo基准测试支持。"
     }
-  ]
+  ],
+  "huawei_cloud": {
+    "overall_difficulty": "容易",
+    "recommended_services": {
+      "database": {
+        "primary": "ChromaDB自托管（ECS上部署）",
+        "vector_solution": "ChromaDB本地部署或华为云CSS（Elasticsearch向量功能）"
+      },
+      "cache": "无需",
+      "compute": {
+        "primary": "华为云ECS c7.xlarge (4vCPU/8GB)",
+        "ai_acceleration": "华为云Ai1s（昇腾310推理，可选加速bge-m3嵌入生成）"
+      },
+      "middleware": {
+        "mcp_server": "FastAPI on ECS"
+      }
+    },
+    "cost_estimation": {
+      "small_scale": {
+        "description": "100%本地部署，个人使用",
+        "monthly_cost": "¥0",
+        "breakdown": {
+          "compute": "¥0（本地运行）",
+          "storage": "¥0（本地存储）",
+          "llm": "¥0（Ollama本地）"
+        }
+      },
+      "medium_scale": {
+        "description": "企业内部署，100并发用户",
+        "monthly_cost": "¥1,000-2,500",
+        "breakdown": {
+          "ECS_app": "¥500（c7.xlarge，4vCPU/8GB）",
+          "ECS_ollama": "¥500-1,000（带GPU/NPU实例）",
+          "EVS_storage": "¥100（200GB SSD）",
+          "EIP_bandwidth": "¥50",
+          "OBS_backup": "¥10"
+        }
+      }
+    },
+    "special_requirements": [
+      "BAAI/bge-m3模型需要约2GB内存，首次需从HuggingFace下载",
+      "ChromaDB本地持久化需要SSD存储",
+      "支持空气隔离环境（离线部署），需提前下载模型文件",
+      "100%数据主权控制，满足GDPR/HIPAA合规"
+    ],
+    "architecture_recommendations": [
+      "保持本地优先架构，在ECS上部署即可满足企业需求",
+      "使用华为云ModelArts下载和管理BAAI/bge-m3模型",
+      "若需规模化，ChromaDB可替换为华为云CSS（Elasticsearch）实现分布式向量搜索",
+      "通过华为云VPC和安全组实现网络隔离，满足隐私合规",
+      "考虑使用昇腾Ai1s实例加速嵌入生成（bge-m3 Transformer架构与NPU兼容）"
+    ]
+  }
 }

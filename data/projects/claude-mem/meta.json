@@ -53,6 +53,156 @@
         "Local installation",
         "Plugin architecture"
       ]
+    },
+    "storage_detail": {
+      "vector_storage": {
+        "solution": "Chroma向量数据库（本地部署）",
+        "database": "ChromaDB",
+        "vector_dimension": 0,
+        "index_type": "Chroma默认HNSW",
+        "evidence": "package.json依赖@modelcontextprotocol/sdk用于Chroma通信；architecture.md说明'通过MCP与Chroma通信，自动同步SQLite数据到Chroma'；数据存储在~/.claude-mem/chroma/"
+      },
+      "primary_database": {
+        "type": "SQLite 3（WAL模式）",
+        "min_version": "bun:sqlite（Bun内置SQLite绑定）",
+        "required_extensions": [
+          "FTS5全文搜索",
+          "WAL模式"
+        ],
+        "connection_pooling": {
+          "configured": false,
+          "evidence": "SQLite为嵌入式数据库，单进程文件锁模式，WAL支持并发读"
+        },
+        "evidence": "src/services/sqlite/目录包含完整SQLite操作；核心表：sdk_sessions, observations, session_summaries, user_prompts, pending_messages"
+      },
+      "graph_database": {
+        "required": false,
+        "type": "无",
+        "evidence": "无图数据库依赖，记忆以观察(observations)和会话摘要(session_summaries)的扁平结构存储"
+      },
+      "cache": {
+        "type": "SQLite pending_messages表（消息队列）",
+        "min_version": "N/A",
+        "required_modules": [],
+        "evidence": "使用SQLite表作为轻量级消息队列，无外部缓存服务"
+      },
+      "data_scale": {
+        "estimated_total": "SQLite数据库+Chroma向量库，单用户约10-100MB",
+        "per_user_avg": "10-100MB",
+        "evidence": "本地优先设计，数据存储在~/.claude-mem/下，包含claude-mem.db、chroma/和logs/"
+      },
+      "performance": {
+        "vector_search_latency": "<1s（Chroma语义搜索）",
+        "qps_target": "单用户使用场景",
+        "p95_latency": "~600ms（混合搜索）",
+        "concurrent_connections": "单用户（IDE插件）"
+      }
+    },
+    "compute_detail": {
+      "cpu": {
+        "min_vcpu": 1,
+        "recommended_vcpu": 2,
+        "workload_type": "轻量级本地服务（Express HTTP + SQLite + Chroma）"
+      },
+      "memory": {
+        "min_gb": 1,
+        "recommended_gb": 2,
+        "memory_intensive_ops": [
+          "Chroma向量索引",
+          "SDK Agent处理"
+        ],
+        "oom_risk": "极低（目标<200MB内存占用，实际约150MB）"
+      },
+      "gpu": {
+        "required": false,
+        "recommended": false,
+        "use_case": "不需要",
+        "cuda_dependency": {
+          "has_direct_cuda": false,
+          "custom_cuda_kernels": false,
+          "gpu_libraries": [],
+          "evidence": "TypeScript/Node.js项目，package.json无任何GPU/CUDA相关依赖；所有AI处理通过Claude Agent SDK远程API完成"
+        }
+      },
+      "scalability": {
+        "horizontal_scaling": false,
+        "stateless": false,
+        "auto_scaling_metrics": []
+      },
+      "serverless": {
+        "suitable": false,
+        "cold_start_tolerance": "N/A",
+        "reasons": [
+          "本地IDE插件，非云服务",
+          "依赖本地SQLite和Chroma",
+          "Worker Service需要持续运行（Express on localhost:37777）"
+        ]
+      },
+      "concurrency": {
+        "model": "单用户事件驱动",
+        "async_framework": "Node.js事件循环 + Express",
+        "message_queue": {
+          "required": false,
+          "systems": [
+            "SQLite pending_messages表"
+          ]
+        },
+        "websocket": false,
+        "streaming": false
+      }
+    },
+    "ascend_npu": {
+      "compatibility_level": "不适用(无GPU需求)",
+      "framework_analysis": {
+        "framework": "Node.js + TypeScript",
+        "framework_version": "Node.js >=18.0.0, Bun >=1.0.0",
+        "ascend_support": false,
+        "cann_version": "N/A"
+      },
+      "migration": {
+        "effort_level": "无需迁移",
+        "blockers": [],
+        "code_changes_required": []
+      },
+      "recommendation": "Claude-Mem是纯TypeScript/Node.js本地IDE插件，不涉及任何GPU计算。所有AI推理通过Claude Agent SDK远程API调用，Chroma向量生成也通过MCP协议调用，无本地模型推理，完全不需要NPU适配。"
+    },
+    "external_services": {
+      "llm": {
+        "providers": [
+          "Anthropic Claude Agent SDK（@anthropic-ai/claude-agent-sdk ^0.1.76）"
+        ],
+        "embedding_models": [
+          "Chroma内置嵌入（通过MCP协议）"
+        ],
+        "local_model_support": false,
+        "cost_optimization": [
+          "3层渐进式上下文注入减少90%无效token",
+          "平均每会话仅3000-5000 tokens（约$0.02-0.05）"
+        ]
+      }
+    },
+    "deployment_detail": {
+      "complexity": 3,
+      "docker": {
+        "available": false,
+        "image_size": "N/A（本地npm/bun安装）",
+        "multi_stage_build": false
+      },
+      "kubernetes": {
+        "required": false,
+        "recommended": false,
+        "helm_available": false
+      },
+      "configuration": {
+        "env_vars_count": 2,
+        "secrets_count": 1,
+        "complexity_level": "低"
+      },
+      "observability": {
+        "metrics_export": false,
+        "structured_logging": true,
+        "health_checks": true
+      }
     }
   },
   "categories": {
@@ -129,5 +279,51 @@
       "name": "本地优先混合搜索架构",
       "description": "采用SQLite FTS5全文搜索(<100ms)+Chroma向量语义搜索(<1s)的混合架构,结合私密标签系统(<private>边缘过滤)和Web Viewer UI实时可视化,实现隐私数据不离开用户设备的本地优先存储方案。"
     }
-  ]
+  ],
+  "huawei_cloud": {
+    "overall_difficulty": "容易",
+    "recommended_services": {
+      "database": {
+        "primary": "无需（本地SQLite）",
+        "vector_solution": "无需（本地Chroma）"
+      },
+      "cache": "无需",
+      "compute": {
+        "primary": "本地开发机运行，无需云计算",
+        "ai_acceleration": "无需GPU/NPU"
+      },
+      "middleware": {}
+    },
+    "cost_estimation": {
+      "small_scale": {
+        "description": "个人开发者本地使用",
+        "monthly_cost": "¥0",
+        "breakdown": {
+          "compute": "¥0（本地运行）",
+          "storage": "¥0（本地SQLite+Chroma）",
+          "llm_api": "¥0-50（Claude API按量付费，每会话约$0.02-0.05）"
+        }
+      },
+      "medium_scale": {
+        "description": "团队共享（需要自定义架构改造）",
+        "monthly_cost": "¥500-1,000",
+        "breakdown": {
+          "ECS_server": "¥300（如需中心化部署）",
+          "RDS_PostgreSQL": "¥200（替代SQLite）",
+          "llm_api": "¥200-500"
+        }
+      }
+    },
+    "special_requirements": [
+      "Claude-Mem设计为本地IDE插件，不是云服务",
+      "若需云端部署需要显著架构改造（SQLite替换为PostgreSQL等）",
+      "Claude Agent SDK依赖Anthropic API，需确保华为云网络可访问"
+    ],
+    "architecture_recommendations": [
+      "保持本地优先架构，无需云迁移",
+      "若需团队协作，可将SQLite替换为华为云RDS for PostgreSQL",
+      "向量搜索可迁移至华为云CSS（Elasticsearch）",
+      "通过华为云NAT网关确保Anthropic API访问连通性"
+    ]
+  }
 }

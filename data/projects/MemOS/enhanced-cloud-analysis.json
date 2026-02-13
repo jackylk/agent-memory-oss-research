@@ -1,0 +1,209 @@
+{
+  "project_name": "MemOS",
+  "analysis_date": "2026-02-13",
+  "storage": {
+    "vector_storage": {
+      "solution": "Qdrant + Milvus双向量库",
+      "database": "Qdrant (文本记忆) + Milvus (偏好记忆)",
+      "vector_dimension": 1024,
+      "index_type": "HNSW (Qdrant) / IVF_FLAT (Milvus)",
+      "evidence": "pyproject.toml: qdrant-client>=1.16.0, pymilvus>=2.6.1; docker-compose: qdrant:v1.15.3; 环境变量EMBEDDING_DIMENSION=1024, 使用bge-m3模型"
+    },
+    "primary_database": {
+      "type": "MySQL (用户管理) + PostgreSQL/PolarDB (可选图存储)",
+      "min_version": "MySQL 5.7+ / PostgreSQL 12+",
+      "required_extensions": [],
+      "connection_pooling": {
+        "driver": "SQLAlchemy + pymysql",
+        "max_connections": "PolarDB最大100连接"
+      },
+      "evidence": "pyproject.toml: pymysql>=1.1.0, sqlalchemy>=2.0.41; 环境变量POLAR_DB_HOST; src/memos/graph_dbs/polardb.py支持PolarDB; UserManager使用MySQL"
+    },
+    "graph_database": {
+      "required": true,
+      "type": "Neo4j (推荐) / NebulaGraph / PolarDB / PostgreSQL",
+      "evidence": "pyproject.toml: neo4j>=5.28.1为tree-mem可选依赖; docker-compose: neo4j:5.26.4; src/memos/graph_dbs/下有neo4j.py, nebula.py, polardb.py, postgres.py四种适配器"
+    },
+    "cache": {
+      "type": "Redis",
+      "min_version": "Redis 6.2+",
+      "required_modules": ["Redis Streams (任务队列)"],
+      "evidence": "pyproject.toml: redis>=6.2.0为mem-scheduler可选依赖; MemScheduler基于Redis Streams实现异步任务调度; 环境变量MEMSCHEDULER_REDIS_HOST"
+    },
+    "object_storage": {
+      "required": false,
+      "use_case": ["文件和媒体存储", "阿里云OSS集成(alibabacloud-oss-v2)"]
+    },
+    "data_scale": {
+      "estimated_total": "按用户规模: 100用户约10GB, 1000用户约100GB",
+      "per_user_avg": "每用户数百条记忆, 约100MB(含图结构+向量+元数据)",
+      "evidence": "基于Neo4j+Qdrant+Milvus综合存储估算"
+    },
+    "performance": {
+      "vector_search_latency": "<100ms (Qdrant HNSW)",
+      "qps_target": "50-500 QPS",
+      "p95_latency": "<500ms (含LLM调用)",
+      "concurrent_connections": "50-500"
+    }
+  },
+  "compute": {
+    "cpu": {
+      "min_vcpu": 4,
+      "recommended_vcpu": 8,
+      "workload_type": "IO密集(多数据库操作) + CPU密集(记忆提取和组织)"
+    },
+    "memory": {
+      "min_gb": 8,
+      "recommended_gb": 16,
+      "memory_intensive_ops": ["Neo4j图遍历", "Qdrant向量检索", "Milvus偏好向量", "MemScheduler线程池(最大10000线程)"],
+      "oom_risk": "中等"
+    },
+    "gpu": {
+      "required": false,
+      "recommended": false,
+      "use_case": "仅推理(可选, NLI模型和本地嵌入)",
+      "cuda_dependency": {
+        "has_direct_cuda": true,
+        "custom_cuda_kernels": false,
+        "gpu_libraries": ["torch (可选, 用于NLI模型和SentenceTransformer)", "transformers (HuggingFace模型)"],
+        "evidence": "src/memos/extras/nli_model/server/handler.py: torch.cuda.is_available()检查, 支持cuda/mps/cpu自动选择; pyproject.toml: torch>=2.7.1为all可选依赖, sentence-transformers>=4.1.0为all可选依赖; src/memos/embedders/sentence_transformer.py使用SentenceTransformer; src/memos/llms/hf.py支持HuggingFace本地推理; 核心功能通过API调用LLM不需要GPU"
+      }
+    },
+    "ascend_npu": {
+      "compatibility_level": "容易适配",
+      "framework_analysis": {
+        "framework": "PyTorch (可选依赖)",
+        "framework_version": ">=2.7.1",
+        "ascend_support": true,
+        "cann_version": "CANN 8.0+ (torch-npu 2.7.x)"
+      },
+      "migration": {
+        "effort_level": "低",
+        "blockers": [],
+        "code_changes_required": [
+          "NLI模型服务: handler.py中torch.cuda引用需修改为支持NPU设备检测(torch_npu导入+device映射)",
+          "SentenceTransformer嵌入: 安装torch-npu后自动支持",
+          "HuggingFace推理: 安装torch-npu后transformers自动支持",
+          "核心功能(API调用LLM)无需任何修改"
+        ]
+      },
+      "recommendation": "MemOS核心功能通过API调用外部LLM, 无GPU需求。可选的NLI模型和SentenceTransformer嵌入使用PyTorch, 已有torch.cuda设备检测代码。适配昇腾NPU需: 1) 安装torch-npu替代CUDA版PyTorch; 2) 修改handler.py中的设备检测逻辑添加NPU支持(约10行代码); 3) SentenceTransformer和transformers库安装torch-npu后自动兼容。"
+    },
+    "scalability": {
+      "horizontal_scaling": true,
+      "stateless": false,
+      "auto_scaling_metrics": ["CPU利用率", "Redis队列深度", "API延迟"]
+    },
+    "serverless": {
+      "suitable": false,
+      "cold_start_tolerance": "不适合",
+      "reasons": ["需多个数据库持久连接", "MemScheduler需长期运行", "模型加载耗时"]
+    },
+    "concurrency": {
+      "model": "混合(同步/异步可切换)",
+      "async_framework": "FastAPI + asyncio + ThreadPoolExecutor",
+      "message_queue": {
+        "required": true,
+        "systems": ["Redis Streams (MemScheduler)", "RabbitMQ (可选, pika)"]
+      },
+      "websocket": false,
+      "streaming": false
+    }
+  },
+  "external_services": {
+    "llm": {
+      "providers": ["OpenAI (GPT-4o-mini, 默认)", "DeepSeek", "Qwen (阿里云通义千问)", "Ollama (本地)", "vLLM (高性能推理)", "HuggingFace Transformers (本地)"],
+      "embedding_models": ["bge-m3 (BAAI/bge-m3, 1024维, 默认)", "bge-reranker-v2-m3 (重排序)", "SentenceTransformer (可选本地)"],
+      "local_model_support": true,
+      "cost_optimization": ["节省35.24% Token消耗(智能记忆检索)", "支持DeepSeek低成本替代", "支持Qwen国产模型", "vLLM高性能批量推理"]
+    }
+  },
+  "deployment": {
+    "complexity": 7,
+    "docker": {
+      "available": true,
+      "image_size": "约1GB (python:3.11-slim)",
+      "multi_stage_build": false
+    },
+    "kubernetes": {
+      "required": false,
+      "recommended": true,
+      "helm_available": false
+    },
+    "configuration": {
+      "env_vars_count": 35,
+      "secrets_count": 8,
+      "complexity_level": "复杂"
+    },
+    "observability": {
+      "metrics_export": true,
+      "structured_logging": true,
+      "health_checks": true
+    }
+  },
+  "huawei_cloud": {
+    "overall_difficulty": "中等",
+    "recommended_services": {
+      "database": {
+        "primary": "华为云RDS for MySQL (用户管理)",
+        "vector_solution": "华为云GaussDB(for Redis) + Qdrant自托管 on ECS"
+      },
+      "cache": "华为云DCS Redis 6.0+ (MemScheduler任务队列)",
+      "compute": {
+        "primary": "华为云ECS (8核16GB)",
+        "ai_acceleration": "华为云ModelArts (可选, 嵌入和NLI模型推理)"
+      },
+      "middleware": {
+        "object_storage": "华为云OBS (替代阿里云OSS)",
+        "graph_database": "自托管Neo4j on ECS"
+      }
+    },
+    "cost_estimation": {
+      "small_scale": {
+        "description": "100用户, 个人AI助手",
+        "monthly_cost": "¥1,500-2,500",
+        "breakdown": {
+          "ECS_API_4c8g": "¥400",
+          "ECS_Neo4j_4c8g": "¥400",
+          "ECS_Qdrant_2c4g": "¥200",
+          "RDS_MySQL_1c2g": "¥100",
+          "DCS_Redis_1g": "¥80",
+          "LLM_API": "¥300",
+          "带宽_10Mbps": "¥150"
+        }
+      },
+      "medium_scale": {
+        "description": "1000用户, 企业AI助手",
+        "monthly_cost": "¥6,000-10,000",
+        "breakdown": {
+          "ECS_API_8c16g": "¥800",
+          "ECS_Neo4j_8c16g": "¥800",
+          "ECS_Qdrant_4c8g": "¥400",
+          "ECS_Milvus_4c8g": "¥400",
+          "RDS_MySQL_2c4g": "¥200",
+          "DCS_Redis_2g": "¥120",
+          "LLM_API": "¥2,000",
+          "ELB": "¥300",
+          "带宽_20Mbps": "¥300"
+        }
+      }
+    },
+    "special_requirements": [
+      "MemOS项目已有中国生态集成: 支持阿里云OSS, DeepSeek, Qwen, PyPI清华镜像源",
+      "Docker镜像中HF_ENDPOINT使用hf-mirror.com中国镜像",
+      "Neo4j需自托管(华为云GES不兼容Bolt协议)",
+      "Qdrant和Milvus需自托管在ECS上",
+      "Redis Streams需要Redis 5.0+, 华为云DCS Redis 6.0+支持",
+      "如使用PolarDB替代Neo4j, 可直接对接华为云GaussDB"
+    ],
+    "architecture_recommendations": [
+      "利用MemOS已有的中国生态支持(DeepSeek/Qwen/阿里云OSS), 迁移华为云工作量较小",
+      "将alibabacloud-oss-v2替换为华为云OBS SDK(或使用S3兼容API)",
+      "Neo4j和Qdrant使用Docker Compose在ECS上部署",
+      "使用华为云DCS Redis替代自建Redis",
+      "使用华为云RDS MySQL替代自建MySQL",
+      "考虑使用PolarDB图数据库适配器对接华为云GaussDB减少Neo4j依赖",
+      "嵌入服务可使用华为云ModelArts部署bge-m3模型"
+    ]
+  }
+}

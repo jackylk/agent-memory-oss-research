@@ -61,6 +61,215 @@
         "PostgreSQL",
         "HTTP API"
       ]
+    },
+    "storage_detail": {
+      "vector_storage": {
+        "solution": "PostgreSQL+pgvector",
+        "database": "pgvector (PostgreSQL扩展)",
+        "vector_dimension": 384,
+        "index_type": "HNSW",
+        "evidence": "config.py: DEFAULT_EMBEDDING_DIMENSION=384, DEFAULT_EMBEDDINGS_LOCAL_MODEL='BAAI/bge-small-en-v1.5'; 初始schema migration中创建VECTOR(384)列; embeddings.py中自动检测维度并调整schema; retrieval.py实现四路并行检索(semantic/BM25/graph/temporal), 向量检索使用pgvector cosine距离; 支持HNSW和IVFFlat索引,默认HNSW"
+      },
+      "primary_database": {
+        "type": "PostgreSQL",
+        "min_version": "14",
+        "recommended_version": "18",
+        "required_extensions": [
+          "pgvector",
+          "pg_trgm"
+        ],
+        "connection_pooling": {
+          "min": 5,
+          "max": 100
+        },
+        "evidence": "config.py: DEFAULT_DB_POOL_MIN_SIZE=5, DEFAULT_DB_POOL_MAX_SIZE=100; docker-compose.yaml使用pgvector/pgvector:pg18镜像; memory_engine.py通过asyncpg.create_pool创建连接池; 初始migration中CREATE EXTENSION IF NOT EXISTS vector和pg_trgm; 24个alembic migration文件管理schema演进; 12+核心表(banks, memory_units, entities, entity_links, memory_links, entity_cooccurrences, documents, chunks, mental_models/observations, learnings, directives, async_operations)"
+      },
+      "graph_database": {
+        "required": false,
+        "type": "PostgreSQL关系表模拟图谱",
+        "evidence": "不使用独立图数据库; 通过entities表+entity_links表+memory_links表在PostgreSQL中实现图谱功能; graph_retrieval.py/mpfp_retrieval.py/link_expansion_retrieval.py三种图检索算法均基于SQL查询实现; entity_links表存储实体间关系(from_entity_id, to_entity_id, link_type, strength); MPFP(Multi-Path Fact Propagation)算法通过SQL递归查询实现图遍历"
+      },
+      "cache": {
+        "type": "内存(会话级)",
+        "min_version": null,
+        "required_modules": [],
+        "evidence": "无Redis/Memcached依赖; entity_resolver.py使用Python dict作为会话级缓存(_entity_cache); 无LLM响应缓存; 嵌入向量存储在PostgreSQL中作为持久缓存; uv.lock中fakeredis仅为transitive dependency(来自fastmcp), 非直接使用"
+      },
+      "data_scale": {
+        "estimated_total": "每1万条记忆约500MB(含向量+索引+实体图谱)",
+        "per_user_avg": "单个memory bank约1000-10000条记忆,50-500MB",
+        "evidence": "VECTOR(384)每条约1.5KB向量数据; 每条记忆还包含TEXT字段、JSONB metadata、实体链接和记忆链接; 图谱数据(entity_links, memory_links)随记忆数线性增长"
+      },
+      "performance": {
+        "vector_search_latency": "<50ms(pgvector HNSW, 10万级数据)",
+        "bm25_search_latency": "<30ms(GIN tsvector索引)",
+        "graph_traversal_latency": "<100ms(MPFP/LinkExpansion)",
+        "total_recall_latency": "<200ms(四路并行+重排序)",
+        "qps_target": "100-500 QPS(取决于实例规格)",
+        "p95_latency": "<500ms(含重排序)",
+        "concurrent_connections": "5-100(asyncpg连接池)"
+      }
+    },
+    "compute_detail": {
+      "cpu": {
+        "min_vcpu": 2,
+        "recommended_vcpu": 8,
+        "workload_type": "IO密集型(API调用)+CPU密集型(本地ML模型推理)",
+        "evidence": "主要工作负载为异步IO(LLM API调用、数据库查询); 本地嵌入模型(bge-small-en-v1.5)和交叉编码器(ms-marco-MiniLM-L-6-v2)在CPU上运行时需要计算资源; cross_encoder.py使用ThreadPoolExecutor限制并发CPU推理(默认max_concurrent=4)"
+      },
+      "memory": {
+        "min_gb": 4,
+        "recommended_gb": 16,
+        "memory_intensive_ops": [
+          "本地嵌入模型加载(bge-small-en-v1.5约130MB)",
+          "交叉编码器模型加载(ms-marco-MiniLM-L-6-v2约80MB)",
+          "T5查询分析器(flan-t5-small约300MB, 可选)",
+          "asyncpg连接池(每连接约10MB, 最大100连接)",
+          "批量事实提取(大文档分块处理)"
+        ],
+        "oom_risk": "中",
+        "evidence": "完整Docker镜像含ML模型约3.5GB; 精简镜像约600-800MB; 连接池最大100连接; 本地模型总计约500MB RAM; Dockerfile预加载模型避免运行时下载"
+      },
+      "gpu": {
+        "required": false,
+        "recommended": false,
+        "use_case": "仅推理(可选加速, 非必需)",
+        "cuda_dependency": {
+          "has_direct_cuda": false,
+          "custom_cuda_kernels": false,
+          "gpu_libraries": [
+            "torch>=2.6.0(依赖项, 非直接CUDA调用)",
+            "sentence-transformers>=3.3.0",
+            "transformers>=4.53.0"
+          ],
+          "evidence": "无.cu文件; 无cupy/triton/torch.compile/torch.jit使用; embeddings.py和cross_encoder.py通过torch.cuda.is_available()检测GPU, 但默认回退到CPU; 支持FORCE_CPU环境变量(HINDSIGHT_API_EMBEDDINGS_LOCAL_FORCE_CPU, HINDSIGHT_API_RERANKER_LOCAL_FORCE_CPU); query_analyzer.py的T5模型默认device='cpu'; 所有模型均为小型推理模型(80-130MB), CPU推理性能已足够(cross-encoder ~80ms/100 pairs on CPU); 可通过TEI/Cohere/OpenAI外部API完全替代本地模型, 消除GPU需求"
+        }
+      },
+      "scalability": {
+        "horizontal_scaling": true,
+        "stateless": true,
+        "auto_scaling_metrics": [
+          "HTTP请求延迟",
+          "CPU利用率",
+          "数据库连接池使用率"
+        ],
+        "evidence": "API层无状态(所有状态在PostgreSQL中); Docker镜像支持多实例部署; Helm chart支持replicaCount配置; 连接池配置支持环境变量调整; Worker模式支持独立部署(hindsight-worker)"
+      },
+      "serverless": {
+        "suitable": false,
+        "cold_start_tolerance": "不适合",
+        "reasons": [
+          "本地ML模型加载需要10-30秒冷启动",
+          "asyncpg连接池需要持久连接",
+          "完整镜像3.5GB超出多数Serverless平台限制",
+          "Worker后台任务需要长时间运行"
+        ]
+      },
+      "concurrency": {
+        "model": "异步",
+        "async_framework": "asyncio + uvloop",
+        "message_queue": {
+          "required": false,
+          "systems": [
+            "PostgreSQL轮询(async_operations表作为任务队列)"
+          ],
+          "evidence": "worker/main.py通过轮询async_operations表获取任务; config.py: DEFAULT_WORKER_POLL_INTERVAL_MS=500; 无Redis/RabbitMQ/Kafka直接依赖; 使用PostgreSQL表模拟任务队列, 支持任务状态追踪(pending/processing/completed/failed)"
+        },
+        "websocket": true,
+        "streaming": true,
+        "evidence": "wsproto>=1.0.0依赖; MCP(Model Context Protocol)使用SSE(text/event-stream)实现; main.py配置ws='wsproto'; api/mcp.py处理SSE响应流; FastAPI ASGI原生支持WebSocket"
+      }
+    },
+    "ascend_npu": {
+      "compatibility_level": "容易适配",
+      "framework_analysis": {
+        "framework": "PyTorch",
+        "framework_version": ">=2.6.0",
+        "ascend_support": true,
+        "cann_version": "CANN 8.0+ (支持PyTorch 2.x)"
+      },
+      "migration": {
+        "effort_level": "低(1-2天)",
+        "blockers": [],
+        "code_changes_required": [
+          "embeddings.py: 添加torch_npu设备检测(torch.npu.is_available()), 约5行代码修改",
+          "cross_encoder.py: 添加NPU设备检测, 约5行代码修改",
+          "query_analyzer.py: 添加NPU设备支持, 约3行代码修改",
+          "config.py: 添加FORCE_NPU环境变量配置(可选)"
+        ]
+      },
+      "recommendation": "Hindsight对GPU/NPU的需求极低,核心功能完全可在CPU上运行。使用的三个本地模型(bge-small-en-v1.5/130MB, ms-marco-MiniLM-L-6-v2/80MB, flan-t5-small/300MB)均为小型模型,CPU推理延迟可接受。若需要NPU加速,只需在设备检测逻辑中添加torch_npu支持,修改量极小(约15行代码)。更推荐的方案是使用外部嵌入/重排序服务(TEI/Cohere/OpenAI),完全消除本地模型依赖,无需考虑NPU适配。昇腾NPU上运行sentence-transformers和small T5模型已有成熟支持,无自定义CUDA kernel阻碍。"
+    },
+    "external_services": {
+      "llm": {
+        "providers": [
+          "OpenAI",
+          "Anthropic",
+          "Google Gemini",
+          "Groq",
+          "Ollama",
+          "LM Studio",
+          "Vertex AI"
+        ],
+        "embedding_models": [
+          "BAAI/bge-small-en-v1.5(默认本地, 384维)",
+          "text-embedding-3-small(OpenAI)",
+          "embed-english-v3.0(Cohere)",
+          "TEI自托管模型",
+          "LiteLLM代理模型"
+        ],
+        "reranking_models": [
+          "cross-encoder/ms-marco-MiniLM-L-6-v2(默认本地)",
+          "rerank-english-v3.0(Cohere)",
+          "FlashRank ms-marco-MiniLM-L-12-v2",
+          "TEI自托管模型",
+          "LiteLLM代理模型"
+        ],
+        "local_model_support": true,
+        "cost_optimization": [
+          "Recall操作零LLM成本(仅本地嵌入+重排序)",
+          "支持per-operation LLM配置(Retain/Reflect/Consolidation可使用不同模型)",
+          "Ollama/LM Studio本地部署消除API成本",
+          "Semaphore限流控制LLM并发(默认max_concurrent=32)",
+          "指数退避重试减少API错误浪费"
+        ]
+      }
+    },
+    "deployment_detail": {
+      "complexity": 6,
+      "docker": {
+        "available": true,
+        "image_size": "完整3.5GB / 精简800MB / API-only 600MB / CP-only 200MB",
+        "multi_stage_build": true,
+        "evidence": "docker/standalone/Dockerfile(402行), 4阶段构建(api-builder, sdk-builder, cp-builder, standalone); 支持INCLUDE_API/INCLUDE_CP/INCLUDE_LOCAL_MODELS/PRELOAD_ML_MODELS构建参数; 预下载tiktoken和ML模型支持air-gapped部署; 多架构支持(amd64, arm64)"
+      },
+      "kubernetes": {
+        "required": false,
+        "recommended": true,
+        "helm_available": true,
+        "evidence": "helm/hindsight/目录包含完整Helm chart; values.yaml配置API资源限制(cpu: 2000m, memory: 4Gi); 内置liveness/readiness探针(/health端点); 支持existingSecret注入; Chart.yaml + templates目录"
+      },
+      "configuration": {
+        "env_vars_count": 115,
+        "secrets_count": 8,
+        "secrets_list": [
+          "HINDSIGHT_API_LLM_API_KEY",
+          "HINDSIGHT_API_RETAIN_LLM_API_KEY(可选)",
+          "HINDSIGHT_API_REFLECT_LLM_API_KEY(可选)",
+          "HINDSIGHT_API_DATABASE_URL(含密码)",
+          "HINDSIGHT_API_JWT_SECRET",
+          "HINDSIGHT_API_EMBEDDINGS_OPENAI_API_KEY(可选)",
+          "HINDSIGHT_API_EMBEDDINGS_COHERE_API_KEY(可选)",
+          "HINDSIGHT_API_RERANKER_COHERE_API_KEY(可选)"
+        ],
+        "complexity_level": "中等"
+      },
+      "observability": {
+        "metrics_export": true,
+        "structured_logging": true,
+        "health_checks": true,
+        "evidence": "完整OpenTelemetry集成(opentelemetry-api/sdk/instrumentation-fastapi/exporter-prometheus/exporter-otlp-proto-http); config.py中OTEL_TRACES_ENABLED配置; 支持JSON格式日志(LOG_FORMAT=json); /health端点用于K8s探针; metrics.py导出数据库连接池指标(pool_size, pool_min_size, pool_max_size); Worker独立健康检查端口(8889)"
+      }
     }
   },
   "categories": {
@@ -128,5 +337,71 @@
       "name": "多策略融合检索引擎",
       "description": "采用多策略融合检索(语义+BM25+图谱+时序)和多路径事实传播(MPFP)图检索算法,结合交叉编码器重排序提升检索精度和Schema隔离实现多租户安全,支持异步I/O高并发处理和本地优先架构降低云成本,提供完整的SDK支持(Python/TypeScript/Rust)。"
     }
-  ]
+  ],
+  "huawei_cloud": {
+    "overall_difficulty": "容易",
+    "recommended_services": {
+      "database": {
+        "primary": "RDS PostgreSQL 14+(推荐16或更高)",
+        "vector_solution": "RDS PostgreSQL + pgvector扩展",
+        "note": "华为云RDS PostgreSQL已支持pgvector扩展; 需同时启用pg_trgm扩展; 推荐开启多AZ部署实现高可用; Schema隔离支持多租户"
+      },
+      "cache": "不需要(无Redis依赖, PostgreSQL已满足所有需求)",
+      "compute": {
+        "primary": "ECS通用计算增强型(c7/c7n) 或 CCE容器集群",
+        "ai_acceleration": "不需要(本地小模型CPU推理足够, 或使用外部API替代)",
+        "note": "推荐CCE(云容器引擎)部署, 利用Helm chart; 若需本地模型加速可考虑ECS AI加速型(Ai1s)配昇腾310推理卡, 但性价比不高(模型仅130-300MB)"
+      },
+      "middleware": {
+        "api_gateway": "APIG(API网关, 用于认证/限流/路由)",
+        "load_balancer": "ELB(弹性负载均衡, 多实例时使用)",
+        "dns": "DNS(云解析, 可选)",
+        "obs": "OBS(对象存储, 仅用于数据库备份)"
+      }
+    },
+    "cost_estimation": {
+      "small_scale": {
+        "description": "100用户, 单实例部署",
+        "monthly_cost": "¥800-1,500",
+        "breakdown": {
+          "compute_ecs": "¥300-500(ECS c7.large 2vCPU/4GB或c7.xlarge 4vCPU/8GB)",
+          "database_rds": "¥300-600(RDS PostgreSQL 2vCPU/4GB, 50GB SSD)",
+          "network_elb": "¥50-100(ELB基础型)",
+          "obs_backup": "¥20-50(OBS备份存储)",
+          "llm_api": "¥70-200(OpenAI API ~$10-30, 按实际使用量)"
+        }
+      },
+      "medium_scale": {
+        "description": "1000用户, 多实例+高可用",
+        "monthly_cost": "¥3,000-5,000",
+        "breakdown": {
+          "compute_cce": "¥1,000-1,500(CCE集群, 3节点 4vCPU/8GB)",
+          "database_rds": "¥1,000-1,800(RDS PostgreSQL主备 4vCPU/16GB, 500GB SSD)",
+          "network_elb": "¥200-300(ELB标准型)",
+          "obs_backup": "¥100-200(OBS备份+日志归档)",
+          "monitoring": "¥100-200(AOM应用运维管理)",
+          "llm_api": "¥700-1,400(OpenAI+Anthropic API ~$100-200)"
+        }
+      }
+    },
+    "special_requirements": [
+      "华为云RDS PostgreSQL需确认pgvector扩展可用性(已在部分区域支持)",
+      "若pgvector不可用,可使用GaussDB(for PostgreSQL)替代",
+      "多租户Schema隔离需要RDS实例具备CREATE SCHEMA权限",
+      "pg_trgm扩展用于BM25全文检索,需一并启用",
+      "Docker镜像需推送至华为云SWR(容器镜像仓库)",
+      "LLM API需通过华为云NAT网关访问外部服务(OpenAI/Anthropic)",
+      "若需国产LLM替代, 可通过Ollama部署本地模型或对接华为盘古大模型API"
+    ],
+    "architecture_recommendations": [
+      "推荐CCE+RDS PostgreSQL+ELB三层架构, 利用现有Helm chart快速部署",
+      "使用APIG API网关实现JWT认证和API限流, 替代应用层实现",
+      "RDS PostgreSQL开启自动备份到OBS, 保留7天增量备份",
+      "CCE配置HPA(水平Pod自动伸缩), 基于CPU利用率80%触发扩容",
+      "本地嵌入/重排序模型可满足大多数场景, 无需额外AI加速服务",
+      "若追求更低延迟, 可将嵌入模型部署到ModelArts推理服务(TEI兼容接口)",
+      "使用华为云DCS Redis作为LLM响应缓存层(项目当前未实现, 可作为优化方向)",
+      "利用AOM+LTS对接OpenTelemetry, 实现全链路可观测性"
+    ]
+  }
 }
