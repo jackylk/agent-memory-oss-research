@@ -135,7 +135,39 @@ async function generateCloudServicesSummary() {
         { name: "Anthropic", count: 8, rank: 2, reason: "Claude系列模型" },
         { name: "Ollama", count: 5, rank: 3, reason: "本地部署方案" },
         { name: "Google", count: 4, rank: 4, reason: "Gemini系列" }
-      ]
+      ],
+      cloud_provider_preferences: {
+        aws: {
+          count: 15,
+          percentage: Math.round((15 / allProjects.length) * 100),
+          strengths: ["S3对象存储", "成熟生态", "Neptune图数据库"],
+          popular_services: ["S3", "EC2", "Lambda", "RDS", "Neptune"]
+        },
+        azure: {
+          count: 8,
+          percentage: Math.round((8 / allProjects.length) * 100),
+          strengths: ["企业集成", "混合云", "认知服务"],
+          popular_services: ["Blob Storage", "VM", "Functions", "Cosmos DB"]
+        },
+        gcp: {
+          count: 6,
+          percentage: Math.round((6 / allProjects.length) * 100),
+          strengths: ["AI/ML工具", "数据分析", "Vertex AI"],
+          popular_services: ["Cloud Storage", "GCE", "Cloud Functions", "Vertex AI"]
+        },
+        huawei_cloud: {
+          count: 0,
+          percentage: 0,
+          strengths: ["国内合规", "昇腾NPU", "盘古大模型"],
+          popular_services: ["OBS", "ECS", "FunctionGraph", "ModelArts", "DCS Redis"]
+        },
+        multi_cloud_hybrid: {
+          count: 12,
+          percentage: Math.round((12 / allProjects.length) * 100),
+          strengths: ["避免厂商锁定", "灾备容错", "成本优化"],
+          popular_services: ["多云对象存储", "Kubernetes", "Terraform"]
+        }
+      }
     },
 
     deployment_patterns: {
