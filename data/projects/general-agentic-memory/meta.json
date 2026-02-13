@@ -1,1 +1,114 @@
-{"name":"general-agentic-memory","repository_url":"https://github.com/VectorSpaceLab/general-agentic-memory","stars":810,"primary_language":"Python","description":"通用智能体记忆系统，采用双智能体架构（记忆构建器+研究智能体）和即时(JIT)优化，结合长期记忆保持与动态深度研究能力","last_updated":"2025-10","paper":{"exists":true,"title":"General Agentic Memory with JIT Optimization","venue":"arXiv","year":2025,"url":"https://arxiv.org/abs/unknown"},"benchmarks":{"locomo":{"score":0,"details":"Superior F1 and BLEU-1 metrics vs A-MEM, Mem0, MemoryOS, LightMem"}},"tech_stack":{"storage":["Memory Store","Deep Research Engine"],"frameworks":["Python","Dual-agent Framework"],"languages":["Python"],"embedding_models":["GPT-4","GPT-4o-mini","Qwen2.5"]},"cloud_needs":{"storage":{"types":["Long-term Memory","Research Cache"],"requirements":["JIT optimization","Dual-agent coordination"]},"compute":{"embedding":true,"gpu_needed":false,"estimated_requirements":"8-16 vCPUs for dual agents"},"deployment":{"complexity":7,"containerized":true,"orchestration":["Docker","Kubernetes"]}},"categories":{"tech_approach":["Dual-agent","JIT Optimization","Deep Research"],"use_case":["Research Agents","Knowledge Discovery"]},"innovations":{"key_features":["即时(JIT)记忆优化，性能超越预先(AOT)系统","双智能体协作架构(MemoryAgent + ResearchAgent)","混合检索机制(BM25 + Dense Vector + Page Index)","TTL时间管理支持长期运行应用","模块化插件化设计易于扩展"],"improvements":["在LoCoMo、HotpotQA、RULER、NarrativeQA等benchmark达到SOTA","相比A-MEM、Mem0、MemoryOS、LightMem有更优的F1和BLEU-1指标","支持跨模型兼容(GPT-4、Qwen2.5等)","同时支持云端API和本地vLLM部署","基于文件系统的可靠持久化存储"],"user_value":["动态检索和合成高效用上下文，提升智能体推理质量","离线保持完整上下文保真度，在线执行深度研究","灵活的部署选项降低成本(云端+本地混合)","强大的基准测试性能保证生产可用性","开源MIT许可，社区活跃支持"]},"use_cases":{"scenarios":["知识发现型智能体，需要深度研究能力","多轮对话场景，需要长期记忆保持","研究助手应用，结合检索和推理","企业知识库智能问答系统","学术文献分析和综述生成"],"companies":["VectorSpaceLab开发团队","研究机构和实验室","AI产品开发团队","知识管理平台","教育科技公司"]}}
+{
+  "name": "general-agentic-memory",
+  "repository_url": "https://github.com/VectorSpaceLab/general-agentic-memory",
+  "stars": 810,
+  "primary_language": "Python",
+  "description": "通用智能体记忆系统，采用双智能体架构（记忆构建器+研究智能体）和即时(JIT)优化，结合长期记忆保持与动态深度研究能力",
+  "last_updated": "2025-10",
+  "paper": {
+    "exists": true,
+    "title": "General Agentic Memory with JIT Optimization",
+    "venue": "arXiv",
+    "year": 2025,
+    "url": "https://arxiv.org/abs/2511.18423"
+  },
+  "benchmarks": {
+    "locomo": {
+      "score": 0,
+      "details": "Superior F1 and BLEU-1 metrics vs A-MEM, Mem0, MemoryOS, LightMem"
+    }
+  },
+  "tech_stack": {
+    "storage": [
+      "Memory Store",
+      "Deep Research Engine"
+    ],
+    "frameworks": [
+      "Python",
+      "Dual-agent Framework"
+    ],
+    "languages": [
+      "Python"
+    ],
+    "embedding_models": [
+      "GPT-4",
+      "GPT-4o-mini",
+      "Qwen2.5"
+    ]
+  },
+  "cloud_needs": {
+    "storage": {
+      "types": [
+        "Long-term Memory",
+        "Research Cache"
+      ],
+      "requirements": [
+        "JIT optimization",
+        "Dual-agent coordination"
+      ]
+    },
+    "compute": {
+      "embedding": true,
+      "gpu_needed": false,
+      "estimated_requirements": "8-16 vCPUs for dual agents"
+    },
+    "deployment": {
+      "complexity": 7,
+      "containerized": true,
+      "orchestration": [
+        "Docker",
+        "Kubernetes"
+      ]
+    }
+  },
+  "categories": {
+    "tech_approach": [
+      "Dual-agent",
+      "JIT Optimization",
+      "Deep Research"
+    ],
+    "use_case": [
+      "Research Agents",
+      "Knowledge Discovery"
+    ]
+  },
+  "innovations": {
+    "key_features": [
+      "即时(JIT)记忆优化，性能超越预先(AOT)系统",
+      "双智能体协作架构(MemoryAgent + ResearchAgent)",
+      "混合检索机制(BM25 + Dense Vector + Page Index)",
+      "TTL时间管理支持长期运行应用",
+      "模块化插件化设计易于扩展"
+    ],
+    "improvements": [
+      "在LoCoMo、HotpotQA、RULER、NarrativeQA等benchmark达到SOTA",
+      "相比A-MEM、Mem0、MemoryOS、LightMem有更优的F1和BLEU-1指标",
+      "支持跨模型兼容(GPT-4、Qwen2.5等)",
+      "同时支持云端API和本地vLLM部署",
+      "基于文件系统的可靠持久化存储"
+    ],
+    "user_value": [
+      "动态检索和合成高效用上下文，提升智能体推理质量",
+      "离线保持完整上下文保真度，在线执行深度研究",
+      "灵活的部署选项降低成本(云端+本地混合)",
+      "强大的基准测试性能保证生产可用性",
+      "开源MIT许可，社区活跃支持"
+    ]
+  },
+  "use_cases": {
+    "scenarios": [
+      "知识发现型智能体，需要深度研究能力",
+      "多轮对话场景，需要长期记忆保持",
+      "研究助手应用，结合检索和推理",
+      "企业知识库智能问答系统",
+      "学术文献分析和综述生成"
+    ],
+    "companies": [
+      "VectorSpaceLab开发团队",
+      "研究机构和实验室",
+      "AI产品开发团队",
+      "知识管理平台",
+      "教育科技公司"
+    ]
+  }
+}

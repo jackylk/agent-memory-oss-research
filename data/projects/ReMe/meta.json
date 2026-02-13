@@ -10,7 +10,7 @@
     "title": "Procedural Memory for Agent Systems",
     "venue": "Research Paper",
     "year": 2025,
-    "url": "https://github.com/agentscope-ai/ReMe"
+    "url": "https://arxiv.org/abs/2512.10696"
   },
   "benchmarks": {
     "appworld": {
@@ -112,56 +112,80 @@
       "title": "Personal AI Assistant",
       "description": "Build long-term user companions that remember preferences, context, and personal history. ReMe's personal memory enables context-aware responses and personalized recommendations.",
       "deployment_scale": "small",
-      "memory_types": ["personal_memory", "working_memory"],
+      "memory_types": [
+        "personal_memory",
+        "working_memory"
+      ],
       "estimated_cost": "$41/month"
     },
     {
       "title": "Enterprise Task Automation",
       "description": "Enable agents to learn from task execution history and apply patterns to new tasks. Task memory captures success/failure patterns and comparative analysis for continuous improvement.",
       "deployment_scale": "medium",
-      "memory_types": ["task_memory", "working_memory"],
+      "memory_types": [
+        "task_memory",
+        "working_memory"
+      ],
       "estimated_cost": "$430/month"
     },
     {
       "title": "Multi-tool Agent Optimization",
       "description": "Optimize tool selection and parameter usage through memory of historical performance. Tool memory enables data-driven decisions for complex multi-tool workflows.",
       "deployment_scale": "medium",
-      "memory_types": ["tool_memory"],
+      "memory_types": [
+        "tool_memory"
+      ],
       "estimated_cost": "$200-400/month"
     },
     {
       "title": "Long-context Conversational AI",
       "description": "Support extended conversations and interactions beyond context window limits. Working memory compression enables seamless multi-turn dialogues with large language models.",
       "deployment_scale": "small",
-      "memory_types": ["working_memory"],
+      "memory_types": [
+        "working_memory"
+      ],
       "estimated_cost": "$100-200/month"
     },
     {
       "title": "Multi-agent Collaborative Systems",
       "description": "Enable knowledge sharing between agents through centralized memory. ReMe's memory sharing allows agents to leverage collective experience and reduce individual training requirements.",
       "deployment_scale": "large",
-      "memory_types": ["personal_memory", "task_memory", "tool_memory"],
+      "memory_types": [
+        "personal_memory",
+        "task_memory",
+        "tool_memory"
+      ],
       "estimated_cost": "$3700+/month"
     },
     {
       "title": "Specialized Agent Swarms",
       "description": "Create task-specific agent teams that share specialized knowledge through ReMe. Each agent team can maintain domain-specific memory while benefiting from cross-team insights.",
       "deployment_scale": "large",
-      "memory_types": ["task_memory", "working_memory"],
+      "memory_types": [
+        "task_memory",
+        "working_memory"
+      ],
       "estimated_cost": "$2000-5000/month"
     },
     {
       "title": "SaaS Agent Platform",
       "description": "Build AI-powered SaaS services with per-user memory isolation. ReMe's multi-tenant capabilities enable building scalable platforms where each customer has isolated memory spaces.",
       "deployment_scale": "large",
-      "memory_types": ["personal_memory", "task_memory", "tool_memory", "working_memory"],
+      "memory_types": [
+        "personal_memory",
+        "task_memory",
+        "tool_memory",
+        "working_memory"
+      ],
       "estimated_cost": "$5000+/month"
     },
     {
       "title": "Benchmark Improvement",
       "description": "Demonstrated performance improvements on standard benchmarks: AppWorld (+3.46%), BFCL-V3 (+6.22%), FrozenLake (+6%), Tool Memory (+14.88%). ReMe memory significantly enhances agent capabilities.",
       "deployment_scale": "any",
-      "memory_types": ["all"],
+      "memory_types": [
+        "all"
+      ],
       "estimated_cost": "depends_on_scale"
     }
   ]

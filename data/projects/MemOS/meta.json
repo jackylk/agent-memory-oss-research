@@ -10,7 +10,7 @@
     "title": "MemOS: AI Memory Operating System",
     "venue": "Research Paper",
     "year": 2025,
-    "url": "https://github.com/MemTensor/MemOS"
+    "url": "https://arxiv.org/abs/2507.03724"
   },
   "benchmarks": {
     "locomo": {
