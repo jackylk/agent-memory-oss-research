@@ -156,6 +156,20 @@ async function generateCloudServicesSummary() {
           network: "5-10%"
         }
       },
+      deployment_size_ranges: {
+        small: {
+          description: "单团队使用，日活1K-10K",
+          total_monthly_cost_range: "¥1,000 - ¥5,000"
+        },
+        medium: {
+          description: "多团队使用，日活10K-100K",
+          total_monthly_cost_range: "¥5,000 - ¥25,000"
+        },
+        large: {
+          description: "企业级部署，日活100K+",
+          total_monthly_cost_range: "¥25,000 - ¥100,000+"
+        }
+      },
       huawei_cloud_cost_estimates: {
         small_scale: {
           min: 1000,

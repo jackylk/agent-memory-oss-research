@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generated_at": "2026-02-13T16:21:06.912Z",
+    "generated_at": "2026-02-13T16:25:44.364Z",
     "total_projects_analyzed": 25,
     "analysis_version": "2.0"
   },
@@ -173,6 +173,20 @@
         "compute": "10-20%",
         "storage": "5-10%",
         "network": "5-10%"
+      }
+    },
+    "deployment_size_ranges": {
+      "small": {
+        "description": "单团队使用，日活1K-10K",
+        "total_monthly_cost_range": "¥1,000 - ¥5,000"
+      },
+      "medium": {
+        "description": "多团队使用，日活10K-100K",
+        "total_monthly_cost_range": "¥5,000 - ¥25,000"
+      },
+      "large": {
+        "description": "企业级部署，日活100K+",
+        "total_monthly_cost_range": "¥25,000 - ¥100,000+"
       }
     },
     "huawei_cloud_cost_estimates": {
