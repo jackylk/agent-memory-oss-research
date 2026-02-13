@@ -1,62 +1,591 @@
 [
   {
-    "name": "Vector Search & Embeddings",
-    "count": 15,
-    "projects": ["mem0", "MemOS", "SimpleMem", "cognee", "supermemory", "hindsight", "A-MEM", "ReMe", "Memori", "general-agentic-memory", "LightMem", "Memary", "easymemory", "memory-agent", "langgraph-redis"],
-    "description": "Projects using vector databases and semantic embeddings for memory retrieval"
+    "name": "Zettelkasten",
+    "count": 1,
+    "projects": [
+      "A-MEM"
+    ],
+    "description": "Projects using Zettelkasten approach"
+  },
+  {
+    "name": "Agentic Organization",
+    "count": 1,
+    "projects": [
+      "A-MEM"
+    ],
+    "description": "Projects using Agentic Organization approach"
+  },
+  {
+    "name": "Knowledge Networks",
+    "count": 1,
+    "projects": [
+      "A-MEM"
+    ],
+    "description": "Projects using Knowledge Networks approach"
+  },
+  {
+    "name": "Benchmark Framework",
+    "count": 1,
+    "projects": [
+      "Backboard-Locomo-Benchmark"
+    ],
+    "description": "Projects using Benchmark Framework approach"
+  },
+  {
+    "name": "State-of-the-Art Performance",
+    "count": 1,
+    "projects": [
+      "Backboard-Locomo-Benchmark"
+    ],
+    "description": "Projects using State-of-the-Art Performance approach"
+  },
+  {
+    "name": "LLM-as-Judge Evaluation",
+    "count": 1,
+    "projects": [
+      "Backboard-Locomo-Benchmark"
+    ],
+    "description": "Projects using LLM-as-Judge Evaluation approach"
+  },
+  {
+    "name": "Multi-Dimensional Assessment",
+    "count": 1,
+    "projects": [
+      "Backboard-Locomo-Benchmark"
+    ],
+    "description": "Projects using Multi-Dimensional Assessment approach"
+  },
+  {
+    "name": "Lightweight",
+    "count": 1,
+    "projects": [
+      "LightMem"
+    ],
+    "description": "Projects using Lightweight approach"
+  },
+  {
+    "name": "Efficient",
+    "count": 1,
+    "projects": [
+      "LightMem"
+    ],
+    "description": "Projects using Efficient approach"
+  },
+  {
+    "name": "ICLR 2026",
+    "count": 2,
+    "projects": [
+      "LightMem",
+      "MemoryAgentBench"
+    ],
+    "description": "Projects using ICLR 2026 approach"
+  },
+  {
+    "name": "Benchmark (基准测试)",
+    "count": 1,
+    "projects": [
+      "LongMemEval"
+    ],
+    "description": "Projects using Benchmark (基准测试) approach"
+  },
+  {
+    "name": "Evaluation (评估工具)",
+    "count": 1,
+    "projects": [
+      "LongMemEval"
+    ],
+    "description": "Projects using Evaluation (评估工具) approach"
+  },
+  {
+    "name": "Research (学术研究)",
+    "count": 1,
+    "projects": [
+      "LongMemEval"
+    ],
+    "description": "Projects using Research (学术研究) approach"
+  },
+  {
+    "name": "RAG (检索增强生成)",
+    "count": 1,
+    "projects": [
+      "LongMemEval"
+    ],
+    "description": "Projects using RAG (检索增强生成) approach"
+  },
+  {
+    "name": "Long-Context (长上下文)",
+    "count": 1,
+    "projects": [
+      "LongMemEval"
+    ],
+    "description": "Projects using Long-Context (长上下文) approach"
+  },
+  {
+    "name": "Memory OS",
+    "count": 1,
+    "projects": [
+      "MemOS"
+    ],
+    "description": "Projects using Memory OS approach"
+  },
+  {
+    "name": "Multi-modal",
+    "count": 1,
+    "projects": [
+      "MemOS"
+    ],
+    "description": "Projects using Multi-modal approach"
+  },
+  {
+    "name": "Skill Memory",
+    "count": 1,
+    "projects": [
+      "MemOS"
+    ],
+    "description": "Projects using Skill Memory approach"
+  },
+  {
+    "name": "Human Memory Simulation",
+    "count": 1,
+    "projects": [
+      "Memary"
+    ],
+    "description": "Projects using Human Memory Simulation approach"
   },
   {
     "name": "Knowledge Graph",
-    "count": 8,
-    "projects": ["graphiti", "cognee", "Memori", "Memary", "beads", "hindsight", "A-MEM", "ReMe"],
-    "description": "Projects leveraging knowledge graphs for structured memory representation"
+    "count": 2,
+    "projects": [
+      "Memary",
+      "graphiti"
+    ],
+    "description": "Projects using Knowledge Graph approach"
   },
   {
-    "name": "Temporal & Time-series",
-    "count": 3,
-    "projects": ["graphiti", "memtrace", "hindsight"],
-    "description": "Projects with explicit temporal modeling and time-series memory"
+    "name": "ReAct Framework",
+    "count": 1,
+    "projects": [
+      "Memary"
+    ],
+    "description": "Projects using ReAct Framework approach"
   },
   {
-    "name": "Compression & Optimization",
-    "count": 4,
-    "projects": ["SimpleMem", "claude-mem", "LightMem", "memU"],
-    "description": "Projects focused on memory compression and token optimization"
+    "name": "SQL-native",
+    "count": 1,
+    "projects": [
+      "Memori"
+    ],
+    "description": "Projects using SQL-native approach"
   },
   {
-    "name": "Production-Ready Platforms",
-    "count": 7,
-    "projects": ["mem0", "letta", "graphiti", "cognee", "MemOS", "Memori", "supermemory"],
-    "description": "Battle-tested frameworks with high adoption and production deployments"
+    "name": "Enterprise",
+    "count": 1,
+    "projects": [
+      "Memori"
+    ],
+    "description": "Projects using Enterprise approach"
   },
   {
-    "name": "Local-First & Privacy",
-    "count": 3,
-    "projects": ["claude-mem", "easymemory", "memtrace"],
-    "description": "Projects emphasizing local deployment and data privacy"
+    "name": "Traditional DB",
+    "count": 1,
+    "projects": [
+      "Memori"
+    ],
+    "description": "Projects using Traditional DB approach"
   },
   {
-    "name": "Research & Benchmarks",
-    "count": 5,
-    "projects": ["LongMemEval", "locomo", "MemoryAgentBench", "Backboard-Locomo-Benchmark", "A-MEM"],
-    "description": "Academic benchmarks and research-focused projects"
+    "name": "Benchmark",
+    "count": 2,
+    "projects": [
+      "MemoryAgentBench",
+      "locomo"
+    ],
+    "description": "Projects using Benchmark approach"
   },
   {
-    "name": "Multi-Agent & Collaborative",
-    "count": 6,
-    "projects": ["MemOS", "ReMe", "Memori", "Memary", "memU", "beads"],
-    "description": "Projects supporting multi-agent memory sharing and collaboration"
+    "name": "Multi-turn",
+    "count": 1,
+    "projects": [
+      "MemoryAgentBench"
+    ],
+    "description": "Projects using Multi-turn approach"
   },
   {
-    "name": "Learning & Self-Improvement",
-    "count": 4,
-    "projects": ["letta", "hindsight", "memU", "general-agentic-memory"],
-    "description": "Systems focused on continual learning and agent improvement"
+    "name": "Modular Memory",
+    "count": 1,
+    "projects": [
+      "ReMe"
+    ],
+    "description": "Projects using Modular Memory approach"
   },
   {
-    "name": "Framework Integration",
-    "count": 8,
-    "projects": ["mem0", "letta", "cognee", "ReMe", "Memori", "memory-agent", "langgraph-redis", "Memary"],
-    "description": "Projects with deep integration into agent frameworks (LangChain, CrewAI, etc.)"
+    "name": "Multi-type Memory",
+    "count": 1,
+    "projects": [
+      "ReMe"
+    ],
+    "description": "Projects using Multi-type Memory approach"
+  },
+  {
+    "name": "MCP Protocol",
+    "count": 1,
+    "projects": [
+      "ReMe"
+    ],
+    "description": "Projects using MCP Protocol approach"
+  },
+  {
+    "name": "Compression",
+    "count": 2,
+    "projects": [
+      "SimpleMem",
+      "claude-mem"
+    ],
+    "description": "Projects using Compression approach"
+  },
+  {
+    "name": "Semantic Synthesis",
+    "count": 1,
+    "projects": [
+      "SimpleMem"
+    ],
+    "description": "Projects using Semantic Synthesis approach"
+  },
+  {
+    "name": "Cross-session",
+    "count": 1,
+    "projects": [
+      "SimpleMem"
+    ],
+    "description": "Projects using Cross-session approach"
+  },
+  {
+    "name": "Git-native",
+    "count": 1,
+    "projects": [
+      "beads"
+    ],
+    "description": "Projects using Git-native approach"
+  },
+  {
+    "name": "Version Control",
+    "count": 1,
+    "projects": [
+      "beads"
+    ],
+    "description": "Projects using Version Control approach"
+  },
+  {
+    "name": "Coding Agents",
+    "count": 1,
+    "projects": [
+      "beads"
+    ],
+    "description": "Projects using Coding Agents approach"
+  },
+  {
+    "name": "Local-first",
+    "count": 1,
+    "projects": [
+      "claude-mem"
+    ],
+    "description": "Projects using Local-first approach"
+  },
+  {
+    "name": "Privacy-focused",
+    "count": 1,
+    "projects": [
+      "claude-mem"
+    ],
+    "description": "Projects using Privacy-focused approach"
+  },
+  {
+    "name": "Graph+Vector Hybrid",
+    "count": 1,
+    "projects": [
+      "cognee"
+    ],
+    "description": "Projects using Graph+Vector Hybrid approach"
+  },
+  {
+    "name": "Easy Integration",
+    "count": 1,
+    "projects": [
+      "cognee"
+    ],
+    "description": "Projects using Easy Integration approach"
+  },
+  {
+    "name": "Multi-source",
+    "count": 1,
+    "projects": [
+      "cognee"
+    ],
+    "description": "Projects using Multi-source approach"
+  },
+  {
+    "name": "100% Local",
+    "count": 1,
+    "projects": [
+      "easymemory"
+    ],
+    "description": "Projects using 100% Local approach"
+  },
+  {
+    "name": "Privacy",
+    "count": 1,
+    "projects": [
+      "easymemory"
+    ],
+    "description": "Projects using Privacy approach"
+  },
+  {
+    "name": "Hybrid Retrieval",
+    "count": 2,
+    "projects": [
+      "easymemory",
+      "graphiti"
+    ],
+    "description": "Projects using Hybrid Retrieval approach"
+  },
+  {
+    "name": "Dual-agent",
+    "count": 1,
+    "projects": [
+      "general-agentic-memory"
+    ],
+    "description": "Projects using Dual-agent approach"
+  },
+  {
+    "name": "JIT Optimization",
+    "count": 1,
+    "projects": [
+      "general-agentic-memory"
+    ],
+    "description": "Projects using JIT Optimization approach"
+  },
+  {
+    "name": "Deep Research",
+    "count": 1,
+    "projects": [
+      "general-agentic-memory"
+    ],
+    "description": "Projects using Deep Research approach"
+  },
+  {
+    "name": "Temporal Modeling",
+    "count": 1,
+    "projects": [
+      "graphiti"
+    ],
+    "description": "Projects using Temporal Modeling approach"
+  },
+  {
+    "name": "Biomimetic",
+    "count": 1,
+    "projects": [
+      "hindsight"
+    ],
+    "description": "Projects using Biomimetic approach"
+  },
+  {
+    "name": "Learning-focused",
+    "count": 1,
+    "projects": [
+      "hindsight"
+    ],
+    "description": "Projects using Learning-focused approach"
+  },
+  {
+    "name": "Reflection",
+    "count": 1,
+    "projects": [
+      "hindsight"
+    ],
+    "description": "Projects using Reflection approach"
+  },
+  {
+    "name": "Redis-native",
+    "count": 1,
+    "projects": [
+      "langgraph-redis"
+    ],
+    "description": "Projects using Redis-native approach"
+  },
+  {
+    "name": "LangGraph Integration",
+    "count": 1,
+    "projects": [
+      "langgraph-redis"
+    ],
+    "description": "Projects using LangGraph Integration approach"
+  },
+  {
+    "name": "Production-grade",
+    "count": 1,
+    "projects": [
+      "langgraph-redis"
+    ],
+    "description": "Projects using Production-grade approach"
+  },
+  {
+    "name": "Stateful Agents",
+    "count": 1,
+    "projects": [
+      "letta"
+    ],
+    "description": "Projects using Stateful Agents approach"
+  },
+  {
+    "name": "Continual Learning",
+    "count": 1,
+    "projects": [
+      "letta"
+    ],
+    "description": "Projects using Continual Learning approach"
+  },
+  {
+    "name": "Self-Improvement",
+    "count": 1,
+    "projects": [
+      "letta"
+    ],
+    "description": "Projects using Self-Improvement approach"
+  },
+  {
+    "name": "ACL 2024",
+    "count": 1,
+    "projects": [
+      "locomo"
+    ],
+    "description": "Projects using ACL 2024 approach"
+  },
+  {
+    "name": "Official",
+    "count": 1,
+    "projects": [
+      "locomo"
+    ],
+    "description": "Projects using Official approach"
+  },
+  {
+    "name": "Vector Search",
+    "count": 1,
+    "projects": [
+      "mem0"
+    ],
+    "description": "Projects using Vector Search approach"
+  },
+  {
+    "name": "Multi-level Memory",
+    "count": 1,
+    "projects": [
+      "mem0"
+    ],
+    "description": "Projects using Multi-level Memory approach"
+  },
+  {
+    "name": "Production-Ready",
+    "count": 1,
+    "projects": [
+      "mem0"
+    ],
+    "description": "Projects using Production-Ready approach"
+  },
+  {
+    "name": "24/7 Proactive",
+    "count": 1,
+    "projects": [
+      "memU"
+    ],
+    "description": "Projects using 24/7 Proactive approach"
+  },
+  {
+    "name": "Hierarchical",
+    "count": 1,
+    "projects": [
+      "memU"
+    ],
+    "description": "Projects using Hierarchical approach"
+  },
+  {
+    "name": "Auto-organized",
+    "count": 1,
+    "projects": [
+      "memU"
+    ],
+    "description": "Projects using Auto-organized approach"
+  },
+  {
+    "name": "ReAct",
+    "count": 1,
+    "projects": [
+      "memory-agent"
+    ],
+    "description": "Projects using ReAct approach"
+  },
+  {
+    "name": "LangChain Official",
+    "count": 1,
+    "projects": [
+      "memory-agent"
+    ],
+    "description": "Projects using LangChain Official approach"
+  },
+  {
+    "name": "Simple Reference",
+    "count": 1,
+    "projects": [
+      "memory-agent"
+    ],
+    "description": "Projects using Simple Reference approach"
+  },
+  {
+    "name": "No Embeddings",
+    "count": 1,
+    "projects": [
+      "memtrace"
+    ],
+    "description": "Projects using No Embeddings approach"
+  },
+  {
+    "name": "Time-series",
+    "count": 1,
+    "projects": [
+      "memtrace"
+    ],
+    "description": "Projects using Time-series approach"
+  },
+  {
+    "name": "Plain Text",
+    "count": 1,
+    "projects": [
+      "memtrace"
+    ],
+    "description": "Projects using Plain Text approach"
+  },
+  {
+    "name": "Fast Retrieval",
+    "count": 1,
+    "projects": [
+      "supermemory"
+    ],
+    "description": "Projects using Fast Retrieval approach"
+  },
+  {
+    "name": "Scalable",
+    "count": 1,
+    "projects": [
+      "supermemory"
+    ],
+    "description": "Projects using Scalable approach"
+  },
+  {
+    "name": "Multi-platform",
+    "count": 1,
+    "projects": [
+      "supermemory"
+    ],
+    "description": "Projects using Multi-platform approach"
   }
 ]

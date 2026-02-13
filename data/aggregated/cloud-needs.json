@@ -1,62 +1,405 @@
 [
   {
+    "need_type": "Vector Store",
+    "frequency": 4,
+    "projects": [
+      "Memori",
+      "claude-mem",
+      "graphiti",
+      "hindsight"
+    ],
+    "priority": "low"
+  },
+  {
+    "need_type": "Vector DB",
+    "frequency": 3,
+    "projects": [
+      "A-MEM",
+      "SimpleMem",
+      "supermemory"
+    ],
+    "priority": "low"
+  },
+  {
     "need_type": "Vector Database",
-    "frequency": 18,
-    "projects": ["mem0", "MemOS", "SimpleMem", "cognee", "supermemory", "hindsight", "A-MEM", "ReMe", "Memori", "general-agentic-memory", "LightMem", "Memary", "easymemory", "memory-agent", "langgraph-redis", "graphiti", "letta", "claude-mem"],
-    "priority": "high"
+    "frequency": 3,
+    "projects": [
+      "ReMe",
+      "easymemory",
+      "mem0"
+    ],
+    "priority": "low"
+  },
+  {
+    "need_type": "Knowledge Graph",
+    "frequency": 2,
+    "projects": [
+      "Memary",
+      "Memori"
+    ],
+    "priority": "low"
+  },
+  {
+    "need_type": "Dataset Storage",
+    "frequency": 2,
+    "projects": [
+      "MemoryAgentBench",
+      "locomo"
+    ],
+    "priority": "low"
   },
   {
     "need_type": "Graph Database",
-    "frequency": 8,
-    "projects": ["graphiti", "cognee", "Memori", "Memary", "beads", "hindsight", "A-MEM", "ReMe"],
-    "priority": "medium"
-  },
-  {
-    "need_type": "Relational/SQL Database",
-    "frequency": 12,
-    "projects": ["mem0", "letta", "Memori", "hindsight", "memU", "langgraph-redis", "MemOS", "SimpleMem", "general-agentic-memory", "LightMem", "memory-agent", "supermemory"],
-    "priority": "high"
-  },
-  {
-    "need_type": "Embedding Generation",
-    "frequency": 22,
-    "projects": ["mem0", "letta", "graphiti", "cognee", "MemOS", "SimpleMem", "memU", "A-MEM", "general-agentic-memory", "Memori", "supermemory", "hindsight", "LongMemEval", "memory-agent", "easymemory", "LightMem", "Memary", "ReMe", "langgraph-redis", "claude-mem", "MemoryAgentBench", "Backboard-Locomo-Benchmark"],
-    "priority": "high"
-  },
-  {
-    "need_type": "GPU Compute",
-    "frequency": 1,
-    "projects": ["LongMemEval"],
-    "priority": "low"
-  },
-  {
-    "need_type": "Kubernetes Orchestration",
-    "frequency": 16,
-    "projects": ["mem0", "letta", "graphiti", "cognee", "MemOS", "memU", "general-agentic-memory", "Memori", "supermemory", "hindsight", "Memary", "ReMe", "LightMem", "SimpleMem", "beads", "memtrace"],
-    "priority": "high"
-  },
-  {
-    "need_type": "Redis/Caching",
-    "frequency": 8,
-    "projects": ["mem0", "langgraph-redis", "MemOS", "memU", "supermemory", "cognee", "ReMe", "SimpleMem"],
-    "priority": "medium"
-  },
-  {
-    "need_type": "Object Storage (S3)",
-    "frequency": 10,
-    "projects": ["mem0", "supermemory", "cognee", "MemOS", "general-agentic-memory", "hindsight", "Memori", "letta", "SimpleMem", "memU"],
-    "priority": "medium"
-  },
-  {
-    "need_type": "Time-series Database",
     "frequency": 2,
-    "projects": ["memtrace", "graphiti"],
+    "projects": [
+      "easymemory",
+      "graphiti"
+    ],
     "priority": "low"
   },
   {
-    "need_type": "Local/Edge Deployment",
-    "frequency": 3,
-    "projects": ["claude-mem", "easymemory", "memtrace"],
+    "need_type": "Database",
+    "frequency": 2,
+    "projects": [
+      "letta",
+      "memory-agent"
+    ],
+    "priority": "low"
+  },
+  {
+    "need_type": "Knowledge Network",
+    "frequency": 1,
+    "projects": [
+      "A-MEM"
+    ],
+    "priority": "low"
+  },
+  {
+    "need_type": "Backboard Cloud Memory Storage (managed)",
+    "frequency": 1,
+    "projects": [
+      "Backboard-Locomo-Benchmark"
+    ],
+    "priority": "low"
+  },
+  {
+    "need_type": "Local SSD for dataset and results",
+    "frequency": 1,
+    "projects": [
+      "Backboard-Locomo-Benchmark"
+    ],
+    "priority": "low"
+  },
+  {
+    "need_type": "Minimal Storage",
+    "frequency": 1,
+    "projects": [
+      "LightMem"
+    ],
+    "priority": "low"
+  },
+  {
+    "need_type": "Resource-efficient",
+    "frequency": 1,
+    "projects": [
+      "LightMem"
+    ],
+    "priority": "low"
+  },
+  {
+    "need_type": "对象存储 (S3/GCS/Azure Blob): 150-1000 GB",
+    "frequency": 1,
+    "projects": [
+      "LongMemEval"
+    ],
+    "priority": "low"
+  },
+  {
+    "need_type": "块存储 (EBS/Persistent Disk): 500 GB - 2 TB",
+    "frequency": 1,
+    "projects": [
+      "LongMemEval"
+    ],
+    "priority": "low"
+  },
+  {
+    "need_type": "共享文件系统 (EFS/Filestore): 500 GB - 1 TB (可选)",
+    "frequency": 1,
+    "projects": [
+      "LongMemEval"
+    ],
+    "priority": "low"
+  },
+  {
+    "need_type": "关系型数据库 (PostgreSQL): 20-100 GB",
+    "frequency": 1,
+    "projects": [
+      "LongMemEval"
+    ],
+    "priority": "low"
+  },
+  {
+    "need_type": "向量数据库: 100 MB - 20 GB (取决于规模)",
+    "frequency": 1,
+    "projects": [
+      "LongMemEval"
+    ],
+    "priority": "low"
+  },
+  {
+    "need_type": "Knowledge Base",
+    "frequency": 1,
+    "projects": [
+      "MemOS"
+    ],
+    "priority": "low"
+  },
+  {
+    "need_type": "Multi-modal storage",
+    "frequency": 1,
+    "projects": [
+      "MemOS"
+    ],
+    "priority": "low"
+  },
+  {
+    "need_type": "Memory Stream",
+    "frequency": 1,
+    "projects": [
+      "Memary"
+    ],
+    "priority": "low"
+  },
+  {
+    "need_type": "Entity Store",
+    "frequency": 1,
+    "projects": [
+      "Memary"
+    ],
+    "priority": "low"
+  },
+  {
+    "need_type": "SQL Database",
+    "frequency": 1,
+    "projects": [
+      "Memori"
+    ],
+    "priority": "low"
+  },
+  {
+    "need_type": "Evaluation Results",
+    "frequency": 1,
+    "projects": [
+      "MemoryAgentBench"
+    ],
+    "priority": "low"
+  },
+  {
+    "need_type": "Search Engine",
+    "frequency": 1,
+    "projects": [
+      "ReMe"
+    ],
+    "priority": "low"
+  },
+  {
+    "need_type": "Compressed Storage",
+    "frequency": 1,
+    "projects": [
+      "SimpleMem"
+    ],
+    "priority": "low"
+  },
+  {
+    "need_type": "Git-backed DB",
+    "frequency": 1,
+    "projects": [
+      "beads"
+    ],
+    "priority": "low"
+  },
+  {
+    "need_type": "JSONL",
+    "frequency": 1,
+    "projects": [
+      "beads"
+    ],
+    "priority": "low"
+  },
+  {
+    "need_type": "Graph",
+    "frequency": 1,
+    "projects": [
+      "beads"
+    ],
+    "priority": "low"
+  },
+  {
+    "need_type": "SQLite",
+    "frequency": 1,
+    "projects": [
+      "claude-mem"
+    ],
+    "priority": "low"
+  },
+  {
+    "need_type": "Graph+Vector Hybrid",
+    "frequency": 1,
+    "projects": [
+      "cognee"
+    ],
+    "priority": "low"
+  },
+  {
+    "need_type": "Multi-format storage",
+    "frequency": 1,
+    "projects": [
+      "cognee"
+    ],
+    "priority": "low"
+  },
+  {
+    "need_type": "Full-text Index",
+    "frequency": 1,
+    "projects": [
+      "easymemory"
+    ],
+    "priority": "low"
+  },
+  {
+    "need_type": "Long-term Memory",
+    "frequency": 1,
+    "projects": [
+      "general-agentic-memory"
+    ],
+    "priority": "low"
+  },
+  {
+    "need_type": "Research Cache",
+    "frequency": 1,
+    "projects": [
+      "general-agentic-memory"
+    ],
+    "priority": "low"
+  },
+  {
+    "need_type": "PostgreSQL",
+    "frequency": 1,
+    "projects": [
+      "hindsight"
+    ],
+    "priority": "low"
+  },
+  {
+    "need_type": "Graph DB",
+    "frequency": 1,
+    "projects": [
+      "hindsight"
+    ],
+    "priority": "low"
+  },
+  {
+    "need_type": "Redis",
+    "frequency": 1,
+    "projects": [
+      "langgraph-redis"
+    ],
+    "priority": "low"
+  },
+  {
+    "need_type": "Key-Value + Vector",
+    "frequency": 1,
+    "projects": [
+      "langgraph-redis"
+    ],
+    "priority": "low"
+  },
+  {
+    "need_type": "File Storage",
+    "frequency": 1,
+    "projects": [
+      "letta"
+    ],
+    "priority": "low"
+  },
+  {
+    "need_type": "RAG DB",
+    "frequency": 1,
+    "projects": [
+      "locomo"
+    ],
+    "priority": "low"
+  },
+  {
+    "need_type": "PostgreSQL/MongoDB",
+    "frequency": 1,
+    "projects": [
+      "mem0"
+    ],
+    "priority": "low"
+  },
+  {
+    "need_type": "S3",
+    "frequency": 1,
+    "projects": [
+      "mem0"
+    ],
+    "priority": "low"
+  },
+  {
+    "need_type": "Hierarchical Database",
+    "frequency": 1,
+    "projects": [
+      "memU"
+    ],
+    "priority": "low"
+  },
+  {
+    "need_type": "Caching Layer",
+    "frequency": 1,
+    "projects": [
+      "memU"
+    ],
+    "priority": "low"
+  },
+  {
+    "need_type": "User-scoped Storage",
+    "frequency": 1,
+    "projects": [
+      "memory-agent"
+    ],
+    "priority": "low"
+  },
+  {
+    "need_type": "Arc Time-Series Database",
+    "frequency": 1,
+    "projects": [
+      "memtrace"
+    ],
+    "priority": "low"
+  },
+  {
+    "need_type": "SQLite Metadata",
+    "frequency": 1,
+    "projects": [
+      "memtrace"
+    ],
+    "priority": "low"
+  },
+  {
+    "need_type": "Block Storage (SSD)",
+    "frequency": 1,
+    "projects": [
+      "memtrace"
+    ],
+    "priority": "low"
+  },
+  {
+    "need_type": "Multi-format Storage",
+    "frequency": 1,
+    "projects": [
+      "supermemory"
+    ],
     "priority": "low"
   }
 ]

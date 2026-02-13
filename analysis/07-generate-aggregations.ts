@@ -47,7 +47,17 @@ async function generateCloudNeeds() {
     const meta = await loadProjectMeta(name);
     if (!meta) continue;
 
-    for (const storageType of meta.cloud_needs.storage.types) {
+    // Handle both old and new storage formats
+    const storageTypes = meta.cloud_needs.storage.types || [];
+
+    // Handle old format (easymemory)
+    if (!meta.cloud_needs.storage.types && meta.cloud_needs.storage.vector_db) {
+      if (meta.cloud_needs.storage.vector_db) storageTypes.push('Vector Database');
+      if (meta.cloud_needs.storage.graph_db) storageTypes.push('Graph Database');
+      if (meta.cloud_needs.storage.full_text_index) storageTypes.push('Full-text Index');
+    }
+
+    for (const storageType of storageTypes) {
       if (!needsMap.has(storageType)) {
         needsMap.set(storageType, new Set());
       }
