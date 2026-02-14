@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generated_at": "2026-02-14T01:46:39.134Z",
+    "generated_at": "2026-02-14T02:25:18.521Z",
     "total_projects_analyzed": 25,
     "analysis_version": "3.0",
     "structure": "按服务类型组织：存储、模型、部署、其他"
@@ -506,22 +506,43 @@
       }
     },
     "object_storage": {
-      "use_cases": {
-        "model_storage": [],
-        "dataset_storage": [],
-        "backup": [
-          "MemOS",
-          "Memori",
-          "cognee",
-          "mem0"
-        ],
-        "file_storage": [
-          "MemOS",
-          "cognee",
-          "mem0"
-        ]
-      },
-      "total_projects": 4,
+      "services": [
+        {
+          "name": "备份归档",
+          "count": 3,
+          "projects": [
+            "MemOS",
+            "cognee",
+            "mem0"
+          ],
+          "use_cases": [
+            "备份归档"
+          ]
+        },
+        {
+          "name": "文件存储",
+          "count": 3,
+          "projects": [
+            "MemOS",
+            "cognee",
+            "mem0"
+          ],
+          "use_cases": [
+            "文件存储"
+          ]
+        },
+        {
+          "name": "媒体存储",
+          "count": 1,
+          "projects": [
+            "cognee"
+          ],
+          "use_cases": [
+            "媒体存储"
+          ]
+        }
+      ],
+      "total_projects": 3,
       "huawei_cloud_support": {
         "service_name": "华为云OBS",
         "supported": true,
@@ -1249,7 +1270,7 @@
   "key_insights": [
     "24种向量数据库被使用，Qdrant/ChromaDB最流行",
     "14个项目需要图数据库，华为云无托管Neo4j",
-    "4个项目使用对象存储，华为云OBS完全兼容",
+    "3个项目使用对象存储，华为云OBS完全兼容",
     "OpenAI是最常用的LLM，华为云MaaS支持OpenAI兼容API",
     "88%项目支持Docker容器化",
     "1个项目强制需要GPU，9个推荐使用GPU加速"

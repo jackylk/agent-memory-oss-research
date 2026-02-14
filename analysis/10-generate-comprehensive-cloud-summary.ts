@@ -94,12 +94,12 @@ interface StorageServiceAnalysis {
     };
   };
   object_storage: {
-    use_cases: {
-      model_storage: string[];
-      dataset_storage: string[];
-      backup: string[];
-      file_storage: string[];
-    };
+    services: Array<{
+      name: string;
+      count: number;
+      projects: string[];
+      use_cases: string[];
+    }>;
     total_projects: number;
     huawei_cloud_support: {
       service_name: string;
@@ -188,12 +188,8 @@ async function analyzeStorageServices(projects: ProjectMeta[]): Promise<StorageS
   const vectorDbMap = new Map<string, { projects: string[], dimensions: number[] }>();
   const graphDbMap = new Map<string, string[]>();
   const relationalDbMap = new Map<string, { projects: string[], extensions: Set<string> }>();
-  const objectStorageUseCases = {
-    model_storage: [] as string[],
-    dataset_storage: [] as string[],
-    backup: [] as string[],
-    file_storage: [] as string[],
-  };
+  const objectStorageProjects = new Set<string>();
+  const objectStorageUseCases = new Map<string, string[]>(); // use_case -> projects
 
   for (const project of projects) {
     // KV数据库（Redis等）
@@ -308,18 +304,30 @@ async function analyzeStorageServices(projects: ProjectMeta[]): Promise<StorageS
 
     // 对象存储
     if (project.cloud_needs.storage_detail?.object_storage) {
-      const useCase = project.cloud_needs.storage_detail.object_storage.use_case || '';
-      if (useCase.includes('模型') || useCase.includes('model')) {
-        objectStorageUseCases.model_storage.push(project.name);
-      }
-      if (useCase.includes('数据集') || useCase.includes('dataset')) {
-        objectStorageUseCases.dataset_storage.push(project.name);
-      }
-      if (useCase.includes('备份') || useCase.includes('backup')) {
-        objectStorageUseCases.backup.push(project.name);
-      }
-      if (useCase.includes('文件') || useCase.includes('file')) {
-        objectStorageUseCases.file_storage.push(project.name);
+      const objStorage = project.cloud_needs.storage_detail.object_storage;
+      if (objStorage.required || objStorage.recommended) {
+        objectStorageProjects.add(project.name);
+
+        // 分析用途
+        const useCase = objStorage.use_case || '';
+        const useCases: string[] = [];
+
+        if (useCase.includes('模型') || useCase.includes('model')) useCases.push('模型存储');
+        if (useCase.includes('数据集') || useCase.includes('dataset')) useCases.push('数据集存储');
+        if (useCase.includes('备份') || useCase.includes('backup') || useCase.includes('归档')) useCases.push('备份归档');
+        if (useCase.includes('文件') || useCase.includes('file') || useCase.includes('附件')) useCases.push('文件存储');
+        if (useCase.includes('媒体') || useCase.includes('media') || useCase.includes('图片') || useCase.includes('视频')) useCases.push('媒体存储');
+
+        // 如果没有匹配到任何用途，归为"其他"
+        if (useCases.length === 0) useCases.push('其他用途');
+
+        // 记录每个用途对应的项目
+        useCases.forEach(uc => {
+          if (!objectStorageUseCases.has(uc)) {
+            objectStorageUseCases.set(uc, []);
+          }
+          objectStorageUseCases.get(uc)!.push(project.name);
+        });
       }
     }
   }
@@ -410,13 +418,15 @@ async function analyzeStorageServices(projects: ProjectMeta[]): Promise<StorageS
       },
     },
     object_storage: {
-      use_cases: objectStorageUseCases,
-      total_projects: new Set([
-        ...objectStorageUseCases.model_storage,
-        ...objectStorageUseCases.dataset_storage,
-        ...objectStorageUseCases.backup,
-        ...objectStorageUseCases.file_storage,
-      ]).size,
+      services: Array.from(objectStorageUseCases.entries())
+        .map(([useCase, projects]) => ({
+          name: useCase,
+          count: projects.length,
+          projects,
+          use_cases: [useCase],
+        }))
+        .sort((a, b) => b.count - a.count),
+      total_projects: objectStorageProjects.size,
       huawei_cloud_support: {
         service_name: '华为云OBS',
         supported: true,
