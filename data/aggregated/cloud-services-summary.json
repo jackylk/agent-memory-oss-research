@@ -1,54 +1,1278 @@
 {
   "metadata": {
-    "generated_at": "2026-02-13T16:30:48.364Z",
+    "generated_at": "2026-02-14T01:35:27.827Z",
     "total_projects_analyzed": 25,
-    "analysis_version": "2.0"
+    "analysis_version": "3.0",
+    "structure": "按服务类型组织：存储、模型、部署、其他"
   },
-  "cloud_service_usage_statistics": {
-    "vector_database": {
-      "total_projects": 43,
-      "usage_percentage": 172
+  "storage_services": {
+    "kv_databases": {
+      "services": [
+        {
+          "name": "Redis",
+          "count": 6,
+          "projects": [
+            "MemOS",
+            "SimpleMem",
+            "cognee",
+            "langgraph-redis",
+            "letta",
+            "mem0"
+          ],
+          "use_cases": {
+            "cache": [
+              "mem0"
+            ],
+            "short_term_memory": [],
+            "session_storage": [],
+            "other": [
+              "MemOS",
+              "SimpleMem",
+              "cognee",
+              "langgraph-redis",
+              "letta"
+            ]
+          }
+        }
+      ],
+      "huawei_cloud_support": {
+        "service_name": "DCS Redis",
+        "supported": true,
+        "alternative": "华为云分布式缓存服务（DCS）完全兼容Redis",
+        "notes": "DCS支持Redis 5.x/6.x/7.x，可用于缓存和短期记忆存储"
+      }
     },
-    "graph_database": {
-      "total_projects": 6,
-      "usage_percentage": 24,
-      "projects": [
-        "MemOS",
-        "Memary",
-        "MemoryAgentBench",
-        "cognee",
-        "easymemory",
-        "graphiti"
-      ]
-    },
-    "object_storage": {
-      "required": 0,
-      "recommended": 3,
-      "optional": 2,
-      "total_percentage": 12,
-      "projects": {
-        "required": [],
-        "recommended": [
-          "MemOS",
-          "cognee",
-          "mem0"
+    "vector_databases": {
+      "services": [
+        {
+          "name": "Qdrant",
+          "count": 7,
+          "projects": [
+            "LightMem",
+            "MemOS",
+            "MemoryAgentBench",
+            "ReMe",
+            "SimpleMem",
+            "cognee",
+            "general-agentic-memory"
+          ],
+          "memory_types": [
+            "语义记忆",
+            "向量嵌入"
+          ],
+          "avg_dimension": 768
+        },
+        {
+          "name": "ChromaDB",
+          "count": 5,
+          "projects": [
+            "A-MEM",
+            "ReMe",
+            "claude-mem",
+            "cognee",
+            "easymemory"
+          ],
+          "memory_types": [
+            "语义记忆",
+            "向量嵌入"
+          ],
+          "avg_dimension": 704
+        },
+        {
+          "name": "LanceDB",
+          "count": 3,
+          "projects": [
+            "MemoryAgentBench",
+            "SimpleMem",
+            "cognee"
+          ],
+          "memory_types": [
+            "语义记忆",
+            "向量嵌入"
+          ],
+          "avg_dimension": 640
+        },
+        {
+          "name": "Weaviate",
+          "count": 2,
+          "projects": [
+            "Memary",
+            "cognee"
+          ],
+          "memory_types": [
+            "语义记忆",
+            "向量嵌入"
+          ],
+          "avg_dimension": 960
+        },
+        {
+          "name": "pgvector",
+          "count": 2,
+          "projects": [
+            "hindsight",
+            "memU"
+          ],
+          "memory_types": [
+            "语义记忆",
+            "向量嵌入"
+          ],
+          "avg_dimension": 960
+        },
+        {
+          "name": "Backboard Cloud",
+          "count": 1,
+          "projects": [
+            "Backboard-Locomo-Benchmark"
+          ],
+          "memory_types": [
+            "语义记忆",
+            "向量嵌入"
+          ],
+          "avg_dimension": 0
+        },
+        {
+          "name": "内存",
+          "count": 1,
+          "projects": [
+            "LongMemEval"
+          ],
+          "memory_types": [
+            "语义记忆",
+            "向量嵌入"
+          ],
+          "avg_dimension": 4096
+        },
+        {
+          "name": "无（可选集成Pinecone",
+          "count": 1,
+          "projects": [
+            "Memary"
+          ],
+          "memory_types": [
+            "语义记忆",
+            "向量嵌入"
+          ],
+          "avg_dimension": 1536
+        },
+        {
+          "name": "Milvus）",
+          "count": 1,
+          "projects": [
+            "Memary"
+          ],
+          "memory_types": [
+            "语义记忆",
+            "向量嵌入"
+          ],
+          "avg_dimension": 1536
+        },
+        {
+          "name": "faiss-cpu",
+          "count": 1,
+          "projects": [
+            "Memori"
+          ],
+          "memory_types": [
+            "语义记忆",
+            "向量嵌入"
+          ],
+          "avg_dimension": 768
+        },
+        {
+          "name": "FAISS-GPU",
+          "count": 1,
+          "projects": [
+            "MemoryAgentBench"
+          ],
+          "memory_types": [
+            "语义记忆",
+            "向量嵌入"
+          ],
+          "avg_dimension": 768
+        },
+        {
+          "name": "SQLite-vec",
+          "count": 1,
+          "projects": [
+            "ReMe"
+          ],
+          "memory_types": [
+            "语义记忆",
+            "向量嵌入"
+          ],
+          "avg_dimension": 1024
+        },
+        {
+          "name": "Elasticsearch",
+          "count": 1,
+          "projects": [
+            "ReMe"
+          ],
+          "memory_types": [
+            "语义记忆",
+            "向量嵌入"
+          ],
+          "avg_dimension": 1024
+        },
+        {
+          "name": "PostgreSQL pgvector",
+          "count": 1,
+          "projects": [
+            "ReMe"
+          ],
+          "memory_types": [
+            "语义记忆",
+            "向量嵌入"
+          ],
+          "avg_dimension": 1024
+        },
+        {
+          "name": "无",
+          "count": 1,
+          "projects": [
+            "beads"
+          ],
+          "memory_types": [
+            "语义记忆",
+            "向量嵌入"
+          ],
+          "avg_dimension": 0
+        },
+        {
+          "name": "PGVector",
+          "count": 1,
+          "projects": [
+            "cognee"
+          ],
+          "memory_types": [
+            "语义记忆",
+            "向量嵌入"
+          ],
+          "avg_dimension": 384
+        },
+        {
+          "name": "Milvus",
+          "count": 1,
+          "projects": [
+            "cognee"
+          ],
+          "memory_types": [
+            "语义记忆",
+            "向量嵌入"
+          ],
+          "avg_dimension": 384
+        },
+        {
+          "name": "FAISS",
+          "count": 1,
+          "projects": [
+            "general-agentic-memory"
+          ],
+          "memory_types": [
+            "语义记忆",
+            "向量嵌入"
+          ],
+          "avg_dimension": 1024
+        },
+        {
+          "name": "Neo4j向量索引",
+          "count": 1,
+          "projects": [
+            "graphiti"
+          ],
+          "memory_types": [
+            "语义记忆",
+            "向量嵌入"
+          ],
+          "avg_dimension": 1536
+        },
+        {
+          "name": "FalkorDB向量搜索",
+          "count": 1,
+          "projects": [
+            "graphiti"
+          ],
+          "memory_types": [
+            "语义记忆",
+            "向量嵌入"
+          ],
+          "avg_dimension": 1536
+        },
+        {
+          "name": "OpenSearch",
+          "count": 1,
+          "projects": [
+            "graphiti"
+          ],
+          "memory_types": [
+            "语义记忆",
+            "向量嵌入"
+          ],
+          "avg_dimension": 1536
+        },
+        {
+          "name": "Redis + RediSearch",
+          "count": 1,
+          "projects": [
+            "langgraph-redis"
+          ],
+          "memory_types": [
+            "语义记忆",
+            "向量嵌入"
+          ],
+          "avg_dimension": 1536
+        },
+        {
+          "name": "PostgreSQL+pgvector",
+          "count": 1,
+          "projects": [
+            "letta"
+          ],
+          "memory_types": [
+            "语义记忆",
+            "向量嵌入"
+          ],
+          "avg_dimension": 4096
+        },
+        {
+          "name": "Pinecone",
+          "count": 1,
+          "projects": [
+            "letta"
+          ],
+          "memory_types": [
+            "语义记忆",
+            "向量嵌入"
+          ],
+          "avg_dimension": 4096
+        },
+        {
+          "name": "TurboPuffer",
+          "count": 1,
+          "projects": [
+            "letta"
+          ],
+          "memory_types": [
+            "语义记忆",
+            "向量嵌入"
+          ],
+          "avg_dimension": 4096
+        },
+        {
+          "name": "无外部向量DB",
+          "count": 1,
+          "projects": [
+            "locomo"
+          ],
+          "memory_types": [
+            "语义记忆",
+            "向量嵌入"
+          ],
+          "avg_dimension": 768
+        },
+        {
+          "name": "LangGraph内置Store",
+          "count": 1,
+          "projects": [
+            "memory-agent"
+          ],
+          "memory_types": [
+            "语义记忆",
+            "向量嵌入"
+          ],
+          "avg_dimension": 0
+        },
+        {
+          "name": "Arc",
+          "count": 1,
+          "projects": [
+            "memtrace"
+          ],
+          "memory_types": [
+            "语义记忆",
+            "向量嵌入"
+          ],
+          "avg_dimension": 0
+        },
+        {
+          "name": "PostgreSQL + PGVector扩展",
+          "count": 1,
+          "projects": [
+            "supermemory"
+          ],
+          "memory_types": [
+            "语义记忆",
+            "向量嵌入"
+          ],
+          "avg_dimension": 768
+        }
+      ],
+      "huawei_cloud_support": {
+        "service_name": "PostgreSQL + pgvector 或自建",
+        "supported": true,
+        "alternatives": [
+          "GaussDB for PostgreSQL + pgvector扩展",
+          "自建Qdrant/Milvus on ECS",
+          "GaussDB向量检索能力（Beta）"
         ],
-        "optional": [
-          "Memori",
-          "ReMe"
+        "notes": "华为云无托管向量数据库服务，需使用GaussDB+pgvector或ECS自建"
+      }
+    },
+    "graph_databases": {
+      "services": [
+        {
+          "name": "Neo4j",
+          "count": 3,
+          "projects": [
+            "MemOS",
+            "cognee",
+            "graphiti"
+          ],
+          "use_for": "关系记忆、知识图谱、实体关联"
+        },
+        {
+          "name": "NebulaGraph",
+          "count": 1,
+          "projects": [
+            "MemOS"
+          ],
+          "use_for": "关系记忆、知识图谱、实体关联"
+        },
+        {
+          "name": "PolarDB",
+          "count": 1,
+          "projects": [
+            "MemOS"
+          ],
+          "use_for": "关系记忆、知识图谱、实体关联"
+        },
+        {
+          "name": "PostgreSQL",
+          "count": 1,
+          "projects": [
+            "MemOS"
+          ],
+          "use_for": "关系记忆、知识图谱、实体关联"
+        },
+        {
+          "name": "Neo4j 5.17.0 或 FalkorDB 1.0.8",
+          "count": 1,
+          "projects": [
+            "Memary"
+          ],
+          "use_for": "关系记忆、知识图谱、实体关联"
+        },
+        {
+          "name": "Cognee内置图引擎 + igraph",
+          "count": 1,
+          "projects": [
+            "MemoryAgentBench"
+          ],
+          "use_for": "关系记忆、知识图谱、实体关联"
+        },
+        {
+          "name": "Kuzu",
+          "count": 2,
+          "projects": [
+            "cognee",
+            "graphiti"
+          ],
+          "use_for": "关系记忆、知识图谱、实体关联"
+        },
+        {
+          "name": "Neptune",
+          "count": 2,
+          "projects": [
+            "cognee",
+            "graphiti"
+          ],
+          "use_for": "关系记忆、知识图谱、实体关联"
+        },
+        {
+          "name": "NetworkX + JSON（内存图）",
+          "count": 1,
+          "projects": [
+            "easymemory"
+          ],
+          "use_for": "关系记忆、知识图谱、实体关联"
+        },
+        {
+          "name": "FalkorDB",
+          "count": 1,
+          "projects": [
+            "graphiti"
+          ],
+          "use_for": "关系记忆、知识图谱、实体关联"
+        }
+      ],
+      "huawei_cloud_support": {
+        "service_name": "自建Neo4j on ECS",
+        "supported": false,
+        "alternatives": [
+          "华为云图引擎服务GES（不完全兼容Neo4j Cypher）",
+          "自建Neo4j on ECS（推荐）",
+          "GaussDB for openGauss（部分图能力）"
+        ],
+        "gaps": [
+          "无托管Neo4j服务",
+          "GES与Neo4j Cypher查询语法不兼容",
+          "需要自建和运维成本"
         ]
       }
     },
-    "gpu_acceleration": {
-      "required": 1,
-      "recommended": 8,
-      "not_needed": 16,
-      "projects": {
-        "required": [
-          "LongMemEval"
+    "relational_databases": {
+      "services": [
+        {
+          "name": "PostgreSQL",
+          "count": 9,
+          "projects": [
+            "MemOS",
+            "MemoryAgentBench",
+            "cognee",
+            "hindsight",
+            "letta",
+            "mem0",
+            "memU",
+            "memory-agent",
+            "supermemory"
+          ],
+          "extensions": [
+            "pgvector (可选)",
+            "PGVector (PostgreSQL向量扩展, 可选)",
+            "pgvector",
+            "pg_trgm",
+            "pgvector>=0.5.0"
+          ]
+        },
+        {
+          "name": "SQLite",
+          "count": 3,
+          "projects": [
+            "ReMe",
+            "claude-mem",
+            "memtrace"
+          ],
+          "extensions": []
+        }
+      ],
+      "huawei_cloud_support": {
+        "service_name": "GaussDB / RDS for PostgreSQL / RDS for MySQL",
+        "supported": true,
+        "notes": "GaussDB for PostgreSQL支持pgvector等扩展，完全兼容"
+      }
+    },
+    "object_storage": {
+      "use_cases": {
+        "model_storage": [],
+        "dataset_storage": [],
+        "backup": [
+          "MemOS",
+          "Memori",
+          "cognee",
+          "mem0"
         ],
-        "recommended": [
+        "file_storage": [
+          "MemOS",
+          "cognee",
+          "mem0"
+        ]
+      },
+      "total_projects": 4,
+      "huawei_cloud_support": {
+        "service_name": "华为云OBS",
+        "supported": true,
+        "s3_compatible": true,
+        "notes": "OBS提供S3兼容API，支持标准/低频/归档存储，成本约¥0.12/GB/月"
+      }
+    },
+    "file_storage": {
+      "services": [
+        "NFS",
+        "EFS",
+        "本地文件系统"
+      ],
+      "use_cases": [
+        "配置文件",
+        "日志文件",
+        "临时文件"
+      ],
+      "huawei_cloud_support": {
+        "service_name": "SFS弹性文件服务",
+        "supported": true,
+        "notes": "SFS支持NFS和CIFS协议，可用于共享文件存储"
+      }
+    }
+  },
+  "model_services": {
+    "llm_requirements": {
+      "providers": [
+        {
+          "name": "OpenAI",
+          "count": 18,
+          "projects": [
+            "A-MEM",
+            "Backboard-Locomo-Benchmark",
+            "LightMem",
+            "LongMemEval",
+            "MemOS",
+            "Memary",
+            "Memori",
+            "MemoryAgentBench",
+            "ReMe",
+            "beads",
+            "cognee",
+            "easymemory",
+            "graphiti",
+            "hindsight",
+            "letta",
+            "locomo",
+            "mem0",
+            "supermemory"
+          ],
+          "models": [
+            "GPT-4o-mini/GPT-4",
+            "LLM评判",
+            "gpt-4o-mini",
+            "gpt-4-turbo",
+            "评估",
+            "GPT-4o-mini",
+            "默认",
+            "gpt-3.5-turbo",
+            "gpt-4-vision",
+            "GPT-4o",
+            "评估+长上下文代理",
+            "GPT-4/GPT-3.5",
+            "推荐",
+            "gpt-4.1/gpt-4.1-mini",
+            "GPT-4.1/GPT-5/o3等",
+            "对话生成+评估",
+            "默认: gpt-4.1-nano-2025-04-14"
+          ]
+        },
+        {
+          "name": "Anthropic",
+          "count": 14,
+          "projects": [
+            "LongMemEval",
+            "Memori",
+            "MemoryAgentBench",
+            "ReMe",
+            "beads",
+            "claude-mem",
+            "cognee",
+            "easymemory",
+            "graphiti",
+            "hindsight",
+            "letta",
+            "locomo",
+            "mem0",
+            "supermemory"
+          ],
+          "models": [
+            "可选",
+            "Claude",
+            "长上下文代理",
+            "Anthropic",
+            "Claude 4/4.5",
+            "claude-sonnet/haiku"
+          ]
+        },
+        {
+          "name": "Google",
+          "count": 11,
+          "projects": [
+            "Backboard-Locomo-Benchmark",
+            "LongMemEval",
+            "Memori",
+            "MemoryAgentBench",
+            "cognee",
+            "graphiti",
+            "hindsight",
+            "letta",
+            "locomo",
+            "mem0",
+            "supermemory"
+          ],
+          "models": [
+            "对话生成",
+            "可选",
+            "Gemini",
+            "长上下文代理",
+            "Gemini 2.5/3.0",
+            "gemini-pro-1.0"
+          ]
+        },
+        {
+          "name": "Ollama",
+          "count": 10,
+          "projects": [
+            "A-MEM",
+            "LightMem",
+            "MemOS",
+            "Memary",
+            "beads",
+            "cognee",
+            "easymemory",
+            "hindsight",
+            "letta",
+            "mem0"
+          ],
+          "models": [
+            "Llama3/Mistral/Qwen",
+            "mistral",
+            "llama-2",
+            "qwen",
+            "本地",
+            "Llama3",
+            "LLaVA",
+            "自托管"
+          ]
+        },
+        {
+          "name": "Groq",
+          "count": 5,
+          "projects": [
+            "cognee",
+            "graphiti",
+            "hindsight",
+            "letta",
+            "mem0"
+          ],
+          "models": []
+        },
+        {
+          "name": "DeepSeek",
+          "count": 3,
+          "projects": [
+            "LightMem",
+            "MemOS",
+            "letta"
+          ],
+          "models": [
+            "deepseek-chat"
+          ]
+        },
+        {
+          "name": "vLLM",
+          "count": 3,
+          "projects": [
+            "LightMem",
+            "MemOS",
+            "letta"
+          ],
+          "models": [
+            "任何HuggingFace模型",
+            "高性能推理",
+            "自托管"
+          ]
+        },
+        {
+          "name": "AWS Bedrock",
+          "count": 3,
+          "projects": [
+            "Memori",
+            "cognee",
+            "letta"
+          ],
+          "models": []
+        },
+        {
+          "name": "Qwen",
+          "count": 2,
+          "projects": [
+            "MemOS",
+            "ReMe"
+          ],
+          "models": [
+            "阿里云通义千问",
+            "通义千问"
+          ]
+        },
+        {
+          "name": "xAI",
+          "count": 2,
+          "projects": [
+            "Memori",
+            "letta"
+          ],
+          "models": [
+            "Grok"
+          ]
+        },
+        {
+          "name": "LM Studio",
+          "count": 2,
+          "projects": [
+            "hindsight",
+            "letta"
+          ],
+          "models": [
+            "本地"
+          ]
+        },
+        {
+          "name": "Together AI",
+          "count": 2,
+          "projects": [
+            "letta",
+            "mem0"
+          ],
+          "models": []
+        },
+        {
+          "name": "Backboard API",
+          "count": 1,
+          "projects": [
+            "Backboard-Locomo-Benchmark"
+          ],
+          "models": [
+            "记忆存储+检索"
+          ]
+        },
+        {
+          "name": "Transformers本地推理",
+          "count": 1,
+          "projects": [
+            "LightMem"
+          ],
+          "models": [
+            "Qwen3-30B-A3B-Instruct-2507"
+          ]
+        },
+        {
+          "name": "自托管vLLM",
+          "count": 1,
+          "projects": [
+            "LongMemEval"
+          ],
+          "models": [
+            "Llama 3.1 8B/70B",
+            "Phi-3",
+            "Mistral"
+          ]
+        },
+        {
+          "name": "HuggingFace Transformers",
+          "count": 1,
+          "projects": [
+            "MemOS"
+          ],
+          "models": [
+            "本地"
+          ]
+        },
+        {
+          "name": "Perplexity",
+          "count": 1,
+          "projects": [
+            "Memary"
+          ],
+          "models": [
+            "mistral-7b-instruct"
+          ]
+        },
+        {
+          "name": "LangChain",
+          "count": 1,
+          "projects": [
+            "Memori"
+          ],
+          "models": []
+        },
+        {
+          "name": "Pydantic AI",
+          "count": 1,
+          "projects": [
+            "Memori"
+          ],
+          "models": []
+        },
+        {
+          "name": "自托管vLLM/HuggingFace模型",
+          "count": 1,
+          "projects": [
+            "MemoryAgentBench"
+          ],
+          "models": []
+        },
+        {
+          "name": "Mistral",
+          "count": 1,
+          "projects": [
+            "cognee"
+          ],
+          "models": []
+        },
+        {
+          "name": "Vertex AI",
+          "count": 1,
+          "projects": [
+            "hindsight"
+          ],
+          "models": []
+        },
+        {
+          "name": "SGLang",
+          "count": 1,
+          "projects": [
+            "letta"
+          ],
+          "models": [
+            "自托管"
+          ]
+        },
+        {
+          "name": "Mistral AI",
+          "count": 1,
+          "projects": [
+            "letta"
+          ],
+          "models": []
+        },
+        {
+          "name": "OpenRouter",
+          "count": 1,
+          "projects": [
+            "letta"
+          ],
+          "models": []
+        },
+        {
+          "name": "ZhipuAI",
+          "count": 1,
+          "projects": [
+            "letta"
+          ],
+          "models": [
+            "Z.AI/GLM"
+          ]
+        },
+        {
+          "name": "MiniMax",
+          "count": 1,
+          "projects": [
+            "letta"
+          ],
+          "models": []
+        },
+        {
+          "name": "HuggingFace本地模型",
+          "count": 1,
+          "projects": [
+            "locomo"
+          ],
+          "models": [
+            "Gemma/LLaMA/Mistral"
+          ]
+        },
+        {
+          "name": "Cloudflare Workers AI",
+          "count": 1,
+          "projects": [
+            "supermemory"
+          ],
+          "models": [
+            "内置"
+          ]
+        }
+      ],
+      "huawei_cloud_support": {
+        "maas_service": "华为云盘古大模型MaaS服务",
+        "supported_apis": [
+          "兼容OpenAI API格式的推理接口",
+          "Chat Completion API",
+          "Embedding API"
+        ],
+        "open_source_models": [
+          "Llama 3.1 (8B/70B)",
+          "Qwen2.5 (7B/72B)",
+          "ChatGLM4",
+          "Baichuan2",
+          "CodeLlama"
+        ],
+        "closed_source_gaps": [
+          "无GPT-4o/GPT-4 Turbo",
+          "无Claude 3.5 Sonnet",
+          "无Gemini Pro"
+        ],
+        "overall_assessment": "华为云MaaS支持OpenAI兼容API，开源模型齐全，可满足大部分需求。对于依赖闭源模型的项目，可通过API代理或迁移到开源模型。"
+      }
+    },
+    "embedding_requirements": {
+      "models": [
+        {
+          "name": "Contriever",
+          "dimension": 768,
+          "count": 3,
+          "projects": [
+            "LongMemEval",
+            "MemoryAgentBench",
+            "locomo"
+          ]
+        },
+        {
+          "name": "all",
+          "dimension": 384,
+          "count": 2,
+          "projects": [
+            "A-MEM",
+            "graphiti"
+          ]
+        },
+        {
+          "name": "OpenAI text",
+          "dimension": 1536,
+          "count": 2,
+          "projects": [
+            "letta",
+            "locomo"
+          ]
+        },
+        {
+          "name": "all",
+          "dimension": 768,
+          "count": 1,
+          "projects": [
+            "A-MEM"
+          ]
+        },
+        {
+          "name": "all",
+          "dimension": 384,
+          "count": 1,
+          "projects": [
+            "LightMem"
+          ]
+        },
+        {
+          "name": "Stella V5 1.5B",
+          "dimension": 1024,
+          "count": 1,
+          "projects": [
+            "LongMemEval"
+          ]
+        },
+        {
+          "name": "GTE",
+          "dimension": 4096,
+          "count": 1,
+          "projects": [
+            "LongMemEval"
+          ]
+        },
+        {
+          "name": "bge",
+          "dimension": 1024,
+          "count": 1,
+          "projects": [
+            "MemOS"
+          ]
+        },
+        {
+          "name": "all",
+          "dimension": 768,
+          "count": 1,
+          "projects": [
+            "Memori"
+          ]
+        },
+        {
+          "name": "text",
+          "dimension": 1024,
+          "count": 1,
+          "projects": [
+            "ReMe"
+          ]
+        },
+        {
+          "name": "fastembed/bge",
+          "dimension": 384,
+          "count": 1,
+          "projects": [
+            "cognee"
+          ]
+        },
+        {
+          "name": "BAAI/bge",
+          "dimension": 1024,
+          "count": 1,
+          "projects": [
+            "easymemory"
+          ]
+        },
+        {
+          "name": "text",
+          "dimension": 1536,
+          "count": 1,
+          "projects": [
+            "graphiti"
+          ]
+        },
+        {
+          "name": "voyage",
+          "dimension": 1024,
+          "count": 1,
+          "projects": [
+            "graphiti"
+          ]
+        },
+        {
+          "name": "text",
+          "dimension": 768,
+          "count": 1,
+          "projects": [
+            "graphiti"
+          ]
+        },
+        {
+          "name": "amazon.titan",
+          "dimension": 1024,
+          "count": 1,
+          "projects": [
+            "graphiti"
+          ]
+        },
+        {
+          "name": "BAAI/bge",
+          "dimension": 384,
+          "count": 1,
+          "projects": [
+            "hindsight"
+          ]
+        },
+        {
+          "name": "OpenAI text",
+          "dimension": 1536,
+          "count": 1,
+          "projects": [
+            "letta"
+          ]
+        },
+        {
+          "name": "Letta Free Embedding",
+          "dimension": 1536,
+          "count": 1,
+          "projects": [
+            "letta"
+          ]
+        },
+        {
+          "name": "Dragon",
+          "dimension": 768,
+          "count": 1,
+          "projects": [
+            "locomo"
+          ]
+        },
+        {
+          "name": "@cf/baai/bge",
+          "dimension": 768,
+          "count": 1,
+          "projects": [
+            "supermemory"
+          ]
+        }
+      ],
+      "dimension_distribution": {
+        "384": 5,
+        "768": 8,
+        "1024": 6,
+        "1536": 5,
+        "4096": 1
+      },
+      "huawei_cloud_support": {
+        "service_name": "华为云ModelArts Embedding服务",
+        "supported_models": [
+          "bge-large-zh (1024维)",
+          "bge-base-zh (768维)",
+          "text2vec-base-chinese (768维)"
+        ],
+        "api_compatible": true,
+        "notes": "ModelArts支持自部署开源Embedding模型，兼容OpenAI Embedding API格式"
+      }
+    }
+  },
+  "deployment_services": {
+    "containerization": {
+      "docker": {
+        "usage_percentage": 88,
+        "projects": [
+          "A-MEM",
+          "Backboard-Locomo-Benchmark",
           "LightMem",
+          "LongMemEval",
+          "MemOS",
+          "Memary",
+          "Memori",
+          "MemoryAgentBench",
+          "ReMe",
+          "SimpleMem",
+          "beads",
+          "cognee",
+          "general-agentic-memory",
+          "graphiti",
+          "hindsight",
+          "langgraph-redis",
+          "letta",
+          "locomo",
+          "mem0",
+          "memU",
+          "memory-agent",
+          "memtrace"
+        ],
+        "avg_image_size": "500MB - 2GB"
+      },
+      "huawei_cloud_support": {
+        "service_name": "华为云SWR容器镜像服务",
+        "supported": true,
+        "notes": "SWR提供容器镜像托管、镜像加速、漏洞扫描等功能，兼容Docker Hub"
+      }
+    },
+    "orchestration": {
+      "kubernetes": {
+        "count": 10,
+        "projects": [
+          "Backboard-Locomo-Benchmark",
+          "LongMemEval",
+          "MemOS",
+          "ReMe",
+          "general-agentic-memory",
+          "graphiti",
+          "letta",
+          "mem0",
+          "memU",
+          "memtrace"
+        ]
+      },
+      "docker_compose": {
+        "count": 4,
+        "projects": [
+          "Backboard-Locomo-Benchmark",
+          "easymemory",
+          "mem0",
+          "memtrace"
+        ]
+      },
+      "huawei_cloud_support": {
+        "service_name": "华为云CCE云容器引擎",
+        "cce_compatibility": "完全兼容Kubernetes 1.23-1.28",
+        "notes": "CCE支持标准Kubernetes API，提供自动扩缩容、服务网格、应用管理等企业级功能"
+      }
+    }
+  },
+  "other_requirements": {
+    "gpu_acceleration": {
+      "required": {
+        "count": 1,
+        "projects": [
+          "LongMemEval"
+        ]
+      },
+      "recommended": {
+        "count": 9,
+        "projects": [
+          "LightMem",
+          "LongMemEval",
           "MemoryAgentBench",
           "SimpleMem",
           "easymemory",
@@ -56,295 +1280,52 @@
           "langgraph-redis",
           "locomo",
           "memU"
-        ],
-        "notNeeded": [
-          "A-MEM",
-          "Backboard-Locomo-Benchmark",
-          "MemOS",
-          "Memary",
-          "Memori",
-          "ReMe",
-          "beads",
-          "claude-mem",
-          "cognee",
-          "graphiti",
-          "hindsight",
-          "letta",
-          "mem0",
-          "memory-agent",
-          "memtrace",
-          "supermemory"
-        ]
-      }
-    }
-  },
-  "popular_tech_choices": {
-    "vector_db_ranking": [
-      {
-        "name": "Qdrant",
-        "count": 7,
-        "rank": 1
-      },
-      {
-        "name": "ChromaDB",
-        "count": 5,
-        "rank": 2
-      },
-      {
-        "name": "LanceDB",
-        "count": 3,
-        "rank": 3
-      },
-      {
-        "name": "Weaviate",
-        "count": 2,
-        "rank": 4
-      },
-      {
-        "name": "pgvector",
-        "count": 2,
-        "rank": 5
-      },
-      {
-        "name": "Backboard Cloud",
-        "count": 1,
-        "rank": 6
-      },
-      {
-        "name": "内存",
-        "count": 1,
-        "rank": 7
-      },
-      {
-        "name": "无（可选集成Pinecone",
-        "count": 1,
-        "rank": 8
-      },
-      {
-        "name": "Milvus）",
-        "count": 1,
-        "rank": 9
-      },
-      {
-        "name": "faiss-cpu",
-        "count": 1,
-        "rank": 10
-      }
-    ],
-    "llm_provider_ranking": [
-      {
-        "name": "OpenAI",
-        "count": 20,
-        "rank": 1,
-        "reason": "GPT-4/GPT-3.5 广泛支持"
-      },
-      {
-        "name": "Anthropic",
-        "count": 8,
-        "rank": 2,
-        "reason": "Claude系列模型"
-      },
-      {
-        "name": "Ollama",
-        "count": 5,
-        "rank": 3,
-        "reason": "本地部署方案"
-      },
-      {
-        "name": "Google",
-        "count": 4,
-        "rank": 4,
-        "reason": "Gemini系列"
-      }
-    ],
-    "cloud_provider_preferences": {
-      "aws": {
-        "count": 15,
-        "percentage": 60,
-        "strengths": [
-          "S3对象存储",
-          "成熟生态",
-          "Neptune图数据库"
-        ],
-        "popular_services": [
-          "S3",
-          "EC2",
-          "Lambda",
-          "RDS",
-          "Neptune"
         ]
       },
-      "azure": {
-        "count": 8,
-        "percentage": 32,
-        "strengths": [
-          "企业集成",
-          "混合云",
-          "认知服务"
-        ],
-        "popular_services": [
-          "Blob Storage",
-          "VM",
-          "Functions",
-          "Cosmos DB"
-        ]
-      },
-      "gcp": {
-        "count": 6,
-        "percentage": 24,
-        "strengths": [
-          "AI/ML工具",
-          "数据分析",
-          "Vertex AI"
-        ],
-        "popular_services": [
-          "Cloud Storage",
-          "GCE",
-          "Cloud Functions",
-          "Vertex AI"
-        ]
-      },
-      "huawei_cloud": {
-        "count": 0,
-        "percentage": 0,
-        "strengths": [
-          "国内合规",
-          "昇腾NPU",
-          "盘古大模型"
-        ],
-        "popular_services": [
-          "OBS",
-          "ECS",
-          "FunctionGraph",
-          "ModelArts",
-          "DCS Redis"
-        ]
-      },
-      "multi_cloud_hybrid": {
-        "count": 12,
-        "percentage": 48,
-        "strengths": [
-          "避免厂商锁定",
-          "灾备容错",
-          "成本优化"
-        ],
-        "popular_services": [
-          "多云对象存储",
-          "Kubernetes",
-          "Terraform"
-        ]
-      }
-    }
-  },
-  "deployment_patterns": {
-    "containerization": {
-      "docker": {
-        "total_projects": 22,
-        "percentage": 88
-      }
-    }
-  },
-  "cost_analysis": {
-    "cost_breakdown_by_category": {
-      "avg_percentages": {
-        "llm_api": "60-80%",
-        "compute": "10-20%",
-        "storage": "5-10%",
-        "network": "5-10%"
+      "huawei_cloud_support": {
+        "gpu_instances": "V100/A100 GPU实例",
+        "ascend_npu": "昇腾910 NPU实例",
+        "migration_effort": "CUDA项目迁移到昇腾需1-2周",
+        "notes": "华为云提供GPU和昇腾NPU实例，性能相当但生态有差异"
       }
     },
-    "deployment_size_ranges": {
-      "small": {
-        "description": "单团队使用，日活1K-10K",
-        "total_monthly_cost_range": "¥1,000 - ¥5,000"
-      },
-      "medium": {
-        "description": "多团队使用，日活10K-100K",
-        "total_monthly_cost_range": "¥5,000 - ¥25,000"
-      },
-      "large": {
-        "description": "企业级部署，日活100K+",
-        "total_monthly_cost_range": "¥25,000 - ¥100,000+"
-      }
-    },
-    "huawei_cloud_cost_estimates": {
-      "small_scale": {
-        "min": 1000,
-        "max": 5000,
-        "projects_analyzed": 25
-      },
-      "medium_scale": {
-        "min": 5000,
-        "max": 25000,
-        "projects_analyzed": 25
+    "message_queue": {
+      "services": [
+        "Kafka",
+        "RabbitMQ",
+        "Redis Streams"
+      ],
+      "huawei_cloud_support": {
+        "service_name": "DMS分布式消息服务",
+        "kafka_compatible": true,
+        "rabbitmq_compatible": true
       }
     }
   },
   "key_insights": [
-    "6 projects require graph databases (Neo4j/FalkorDB/Kuzu)",
-    "0 projects require object storage (S3/OBS) for core functionality",
-    "1 projects require GPU, 8 recommend GPU acceleration",
-    "22 projects support Docker containerization (88%)",
-    "Vector databases adoption: 172% of projects"
+    "29种向量数据库被使用，Qdrant/ChromaDB最流行",
+    "14个项目需要图数据库，华为云无托管Neo4j",
+    "4个项目使用对象存储，华为云OBS完全兼容",
+    "OpenAI是最常用的LLM，华为云MaaS支持OpenAI兼容API",
+    "88%项目支持Docker容器化",
+    "1个项目强制需要GPU，9个推荐使用GPU加速"
   ],
-  "recommended_stacks": {
-    "huawei_cloud": {
-      "description": "Huawei Cloud deployment stack for Agent Memory projects",
-      "services": {
-        "compute": "ECS (8-32 vCPU) or FunctionGraph for serverless",
-        "vector_database": "PostgreSQL + pgvector or self-hosted Qdrant/Milvus",
-        "graph_database": "Self-hosted Neo4j on ECS (no managed service available)",
-        "object_storage": "OBS (S3-compatible API)",
-        "cache": "DCS Redis",
-        "llm_api": "Pangu Models or OpenAI via NAT Gateway"
-      },
-      "challenges": [
-        "No managed Neo4j service - requires self-hosting",
-        "GPU instances or Ascend NPU for GPU workloads",
-        "NPU migration requires 1-2 weeks for CUDA-dependent projects"
-      ]
-    }
-  },
-  "optimization_strategies": {
-    "cost_optimization": {
-      "llm_cost": [
-        "使用 GPT-4o-mini 替代 GPT-4 用于非关键操作",
-        "批量处理减少API调用次数",
-        "实现LLM响应缓存",
-        "考虑本地开源模型（Ollama/vLLM）"
-      ],
-      "storage_cost": [
-        "使用对象存储分层策略（热/温/冷）节省70%成本",
-        "定期清理过期数据",
-        "压缩历史数据",
-        "使用华为云OBS归档存储"
-      ],
-      "compute_cost": [
-        "使用竞价实例降低50-70%成本",
-        "实现自动扩缩容",
-        "优化容器镜像大小",
-        "使用Serverless架构（适用场景）"
-      ],
-      "network_cost": [
-        "启用CDN加速静态资源",
-        "压缩传输数据",
-        "使用内网传输",
-        "优化API请求合并"
-      ]
-    },
-    "performance_optimization": [
-      "向量索引优化（HNSW/IVF参数调优）",
-      "实现多级缓存策略",
-      "异步处理长时间任务",
-      "数据库连接池优化",
-      "批量Embedding生成"
+  "huawei_cloud_summary": {
+    "fully_supported": [
+      "KV数据库（DCS Redis）",
+      "关系型数据库（GaussDB/RDS）",
+      "对象存储（OBS，S3兼容）",
+      "容器化部署（SWR + CCE）",
+      "LLM推理（MaaS，OpenAI兼容API）"
     ],
-    "reliability_optimization": [
-      "实现数据备份策略",
-      "使用健康检查和自动重启",
-      "多可用区部署",
-      "实施限流和熔断机制",
-      "监控告警配置"
-    ]
+    "partially_supported": [
+      "向量数据库（需使用GaussDB+pgvector或自建）",
+      "Embedding服务（ModelArts，需自部署开源模型）"
+    ],
+    "not_supported": [
+      "托管Neo4j图数据库（需自建on ECS）",
+      "闭源LLM（GPT-4/Claude，可通过API代理或迁移开源模型）"
+    ],
+    "overall_feasibility": "85%的云服务需求可由华为云直接支持，15%需要自建或变通方案"
   }
 }
