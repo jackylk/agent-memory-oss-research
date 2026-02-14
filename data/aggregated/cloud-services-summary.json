@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generated_at": "2026-02-14T01:35:27.827Z",
+    "generated_at": "2026-02-14T01:46:39.134Z",
     "total_projects_analyzed": 25,
     "analysis_version": "3.0",
     "structure": "按服务类型组织：存储、模型、部署、其他"
@@ -63,6 +63,23 @@
           "avg_dimension": 768
         },
         {
+          "name": "PostgreSQL + pgvector",
+          "count": 6,
+          "projects": [
+            "ReMe",
+            "cognee",
+            "hindsight",
+            "letta",
+            "memU",
+            "supermemory"
+          ],
+          "memory_types": [
+            "语义记忆",
+            "向量嵌入"
+          ],
+          "avg_dimension": 1365
+        },
+        {
           "name": "ChromaDB",
           "count": 5,
           "projects": [
@@ -106,20 +123,19 @@
           "avg_dimension": 960
         },
         {
-          "name": "pgvector",
-          "count": 2,
+          "name": "Backboard Cloud",
+          "count": 1,
           "projects": [
-            "hindsight",
-            "memU"
+            "Backboard-Locomo-Benchmark"
           ],
           "memory_types": [
             "语义记忆",
             "向量嵌入"
           ],
-          "avg_dimension": 960
+          "avg_dimension": 0
         },
         {
-          "name": "Backboard Cloud",
+          "name": "无本地向量DB)",
           "count": 1,
           "projects": [
             "Backboard-Locomo-Benchmark"
@@ -141,18 +157,6 @@
             "向量嵌入"
           ],
           "avg_dimension": 4096
-        },
-        {
-          "name": "无（可选集成Pinecone",
-          "count": 1,
-          "projects": [
-            "Memary"
-          ],
-          "memory_types": [
-            "语义记忆",
-            "向量嵌入"
-          ],
-          "avg_dimension": 1536
         },
         {
           "name": "Milvus）",
@@ -213,42 +217,6 @@
             "向量嵌入"
           ],
           "avg_dimension": 1024
-        },
-        {
-          "name": "PostgreSQL pgvector",
-          "count": 1,
-          "projects": [
-            "ReMe"
-          ],
-          "memory_types": [
-            "语义记忆",
-            "向量嵌入"
-          ],
-          "avg_dimension": 1024
-        },
-        {
-          "name": "无",
-          "count": 1,
-          "projects": [
-            "beads"
-          ],
-          "memory_types": [
-            "语义记忆",
-            "向量嵌入"
-          ],
-          "avg_dimension": 0
-        },
-        {
-          "name": "PGVector",
-          "count": 1,
-          "projects": [
-            "cognee"
-          ],
-          "memory_types": [
-            "语义记忆",
-            "向量嵌入"
-          ],
-          "avg_dimension": 384
         },
         {
           "name": "Milvus",
@@ -323,18 +291,6 @@
           "avg_dimension": 1536
         },
         {
-          "name": "PostgreSQL+pgvector",
-          "count": 1,
-          "projects": [
-            "letta"
-          ],
-          "memory_types": [
-            "语义记忆",
-            "向量嵌入"
-          ],
-          "avg_dimension": 4096
-        },
-        {
           "name": "Pinecone",
           "count": 1,
           "projects": [
@@ -393,18 +349,6 @@
             "向量嵌入"
           ],
           "avg_dimension": 0
-        },
-        {
-          "name": "PostgreSQL + PGVector扩展",
-          "count": 1,
-          "projects": [
-            "supermemory"
-          ],
-          "memory_types": [
-            "语义记忆",
-            "向量嵌入"
-          ],
-          "avg_dimension": 768
         }
       ],
       "huawei_cloud_support": {
@@ -1303,7 +1247,7 @@
     }
   },
   "key_insights": [
-    "29种向量数据库被使用，Qdrant/ChromaDB最流行",
+    "24种向量数据库被使用，Qdrant/ChromaDB最流行",
     "14个项目需要图数据库，华为云无托管Neo4j",
     "4个项目使用对象存储，华为云OBS完全兼容",
     "OpenAI是最常用的LLM，华为云MaaS支持OpenAI兼容API",

@@ -222,9 +222,45 @@ async function analyzeStorageServices(projects: ProjectMeta[]): Promise<StorageS
       const database = project.cloud_needs.storage_detail.vector_storage.database || '';
       const dimension = project.cloud_needs.storage_detail.vector_storage.vector_dimension || 0;
 
-      // 解析数据库名称（可能有多个，用/分隔）
-      const dbs = database.split('/').map((s: string) => s.trim().split('(')[0].trim()).filter((s: string) => s.length > 0);
+      // 解析数据库名称（可能有多个，用/或其他分隔符）
+      // 先处理特殊情况：pgvector, PGVector等
+      if (database.toLowerCase().includes('pgvector') || database.toLowerCase().includes('postgres')) {
+        const db = 'PostgreSQL + pgvector';
+        if (!vectorDbMap.has(db)) {
+          vectorDbMap.set(db, { projects: [], dimensions: [] });
+        }
+        const entry = vectorDbMap.get(db)!;
+        if (!entry.projects.includes(project.name)) {
+          entry.projects.push(project.name);
+          if (dimension > 0) entry.dimensions.push(dimension);
+        }
+      }
+
+      // 解析其他数据库名称
+      const dbs = database
+        .split(/[\/,]/)
+        .map((s: string) => {
+          // 去掉括号内容和多余空格
+          let cleaned = s.split('(')[0].trim();
+          // 过滤掉一些无效的片段
+          if (cleaned.length === 0 ||
+              cleaned === '无' ||
+              cleaned.includes('可选') ||
+              cleaned.includes('集成') ||
+              cleaned === ')' ||
+              cleaned === '）') {
+            return '';
+          }
+          return cleaned;
+        })
+        .filter((s: string) => s.length > 0);
+
       dbs.forEach((db: string) => {
+        // 跳过已经处理的pgvector
+        if (db.toLowerCase().includes('pgvector') || db.toLowerCase().includes('postgres')) {
+          return;
+        }
+
         if (!vectorDbMap.has(db)) {
           vectorDbMap.set(db, { projects: [], dimensions: [] });
         }
