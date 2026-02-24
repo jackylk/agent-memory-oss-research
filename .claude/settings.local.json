@@ -24,7 +24,26 @@
       "Bash(xargs:*)",
       "Bash(do echo \"=== $project ===\" grep \"^## \" /Users/jacky/code/agent-memory-oss-research/data/projects/$project/architecture.md)",
       "Bash(cat:*)",
-      "Bash(git rm:*)"
+      "Bash(git rm:*)",
+      "Bash(python:*)",
+      "Bash(git log:*)",
+      "Bash(do)",
+      "Bash(if [ -f \"data/projects/$proj/cloud-needs.md\" ])",
+      "Bash(then)",
+      "Bash(else)",
+      "Bash(fi)",
+      "Bash(printf:*)",
+      "Bash(cut:*)",
+      "Bash(if git ls-files --error-unmatch \"data/projects/$proj/cloud-needs.md\")",
+      "Bash(git diff:*)",
+      "Bash(README.md << 'EOF'\n# Agent Memory 研究中心 - Website\n\n开源Agent Memory项目的华为云适配性分析平台。\n\n## 🚀 功能特点\n\n- 📊 25个Agent Memory项目的详细分析\n- 🇨🇳 华为云适配性评估\n- 💰 部署成本估算\n- 🏗️ 架构分析\n- 📋 项目对比\n\n## 🛠️ 技术栈\n\n- **框架**: Next.js 16.1.6 \\(App Router\\)\n- **语言**: TypeScript\n- **样式**: Tailwind CSS 4.0\n- **Markdown**: react-markdown + remark-gfm\n- **图表**: Mermaid\n\n## 📦 部署\n\n### Railway 部署\n\n1. Fork 本仓库到你的GitHub账号\n2. 在 [Railway]\\(https://railway.app\\) 创建新项目\n3. 连接你的GitHub仓库\n4. Railway会自动检测Next.js项目并部署\n\n### 本地开发\n\n```bash\n# 安装依赖\nnpm install\n\n# 启动开发服务器\nnpm run dev\n\n# 构建生产版本\nnpm run build\n\n# 启动生产服务器\nnpm start\n```\n\n## 📁 项目结构\n\n```\nwebsite/\n├── app/                    # Next.js App Router页面\n│   ├── page.tsx           # 首页（项目列表）\n│   └── projects/[name]/   # 项目详情页\n├── components/            # React组件\n├── lib/                   # 工具函数\n├── data/                  # 项目数据\n│   ├── projects/         # 25个项目的详细数据\n│   └── aggregated/       # 聚合数据\n└── public/               # 静态资源\n```\n\n## 📊 数据说明\n\n所有项目数据存储在 `data/` 目录：\n\n- `data/projects/*/meta.json` - 项目元数据\n- `data/projects/*/architecture.md` - 架构分析\n- `data/projects/*/cloud-needs.md` - 华为云适配性分析\n- `data/aggregated/*.json` - 聚合数据\n\n## 🔧 配置\n\n无需额外配置，开箱即用。\n\n## 📝 License\n\nMIT\n\n## 🤝 贡献\n\n欢迎提交 Issue 和 Pull Request！\nEOF)",
+      "Bash(.git-repo-info.txt << 'EOF'\n请在GitHub创建新仓库：\n仓库名: agent-memory-website\nURL: https://github.com/jackylk/agent-memory-website\n\n然后运行：\ngit remote add origin https://github.com/jackylk/agent-memory-website.git\ngit push -u origin main\nEOF)",
+      "Bash(git remote add:*)",
+      "Bash(rsync:*)",
+      "Bash(npm run generate-aggregations:*)",
+      "Bash(npx tsx:*)",
+      "Bash(git status:*)",
+      "WebFetch(domain:www.svgrepo.com)"
     ]
   }
 }
